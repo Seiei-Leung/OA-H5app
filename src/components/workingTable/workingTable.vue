@@ -6,17 +6,17 @@
     	    <div>非生产采购单详情</div>
     	</div>
     	<div class="workdetail-page">
-    	    <div class="table-item" v-for="table in tableList">
+    	    <div class="table-item" v-for="(content, index1) in contentList">
     	        <div class="main-table">
     	            <ul>
-    	                <li v-for="(val, key, index) in table">
-    	                    <span>{{key}}</span>
+    	                <li v-for="(val, index2) in content">
+    	                    <span>{{nameList[index1][index2]}}</span>
     	                    <span>{{val}}</span>
     	                </li>
     	            </ul>
     	        </div>
                 <!-- 以下是副列表信息 -->
-                <!--     	        
+                <!--
                 <div class="subtable-title">
     	            <span>采购详情</span>
     	        </div>
@@ -31,9 +31,9 @@
     	                    <span>110-33650</span>
     	                </li>
     	            </ul>
-    	        </div> 
+    	        </div>
                 -->
-                <div class="passbtn-wrapper">                
+                <div class="passbtn-wrapper">
                     <div class="passbtn">
                         <span>审批</span>
                     </div>
@@ -45,7 +45,7 @@
                     </div>
                 </div>
     	    </div>
-    	</div>	
+    	</div>
 	</div>
 </template>
 
@@ -54,15 +54,41 @@ export default {
     data: function() {
         return {
             classname: this.$route.params.classname,
-            tableList: []
+            contentList: [],
+            nameList: []
         };
     },
     created: function() {
-        this.$http.get("http://192.168.1.213:38080/estapi/api/FlowApprove/GetToDoWorkDetailSmart?actorid3=fang&classname3=" + this.classname).then(resp=>{
-            console.log(resp);
-            this.tableList = resp.body.slice(0, 21);
-        }, response => {  
-            console.log("发送失败"+response.status+","+response.statusText);  
+        // 注释代码用于开发环境或实际项目接口
+        // /api/workingtable
+        // http://192.168.1.213:38080/estapi/api/FlowApprove/GetToDoWorkDetailSmart?actorid3=fang&classname3=" + this.classname
+        this.$http.get("/api/workingtable").then(resp=>{
+          console.log(resp.body.data);
+          let contentList = []; // 内容列表
+          let nameList = []; // 名称列表
+          // 循环工作单列表
+          resp.body.data.forEach((item) => {
+            // 制作名称列表
+            let forNameList = []; // 名称
+            item.fields.split(',').forEach((str) => {
+              forNameList.push(str.split('-')[1]);
+            });
+            nameList.push(forNameList);
+
+            // 制作内容列表
+            let forContentList = [];
+            let countNum = item.fieldcnt; // 表单中有多少行信息
+            for (let i=1;i<(countNum+1);i++) {
+              forContentList.push(item['feild' + i]);
+            }
+            contentList.push(forContentList);
+          });
+          console.log(contentList);
+          console.log(nameList);
+          this.contentList = contentList;
+          this.nameList = nameList;
+        }, response => {
+            console.log("发送失败"+response.status+","+response.statusText);
         });
 
     }

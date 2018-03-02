@@ -25,11 +25,15 @@ export default {
         };
     },
     created: function() {
-        this.$http.get("http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApprove?actorid=fang").then(resp=>{
-            this.todoList = resp.body;
-        }, response => {  
-            console.log("发送失败"+response.status+","+response.statusText);  
-        });  
+        // 注释代码用于开发环境或实际项目接口
+        // /api/getToDoList
+        // http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApprove?actorid=fang
+        this.$http.get("/api/getToDoList").then(resp=>{
+          this.todoList = resp.body.data;
+          // this.todoList = resp.body;
+        }, response => {
+            console.log("发送失败"+response.status+","+response.statusText);
+        });
     },
 	methods: {
 		goWorkingTable: function(kind) {
