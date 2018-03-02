@@ -50,7 +50,7 @@
                     </div>
                 	<span class="weui-cell__ft"></span>
                 </a>
-                <a class="weui-cell weui-cell_access" href="javascript:void(0);">
+                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goToDoList">
                     <div class="weui-cell__hd">
                     	<img src="./img/icon_41.png" alt="待办事项" class="iconImg">
                     </div>
@@ -86,10 +86,14 @@
 <script>
 export default {
 	methods: {
-		// 进入公告通知
-		goDB: function() {
-			this.$router.push({name: 'announcement'});
-		}
+        // 进入公告通知
+        goDB: function() {
+            this.$router.push({name: 'announcement'});
+        },
+        // 进入待办事项
+        goToDoList: function() {
+            this.$router.push({name: 'todoList'});
+        }
 	}
 }
 </script>

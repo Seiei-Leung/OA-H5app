@@ -43,7 +43,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: './', //原路径是 "/" ,修改成 "./" 后，借此可以本地访问，否则必须要后端访问器设置路径，放在首目录除外
 
     /**
      * Source Maps

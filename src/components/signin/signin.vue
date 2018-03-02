@@ -38,18 +38,22 @@ export default {
 			if (String.trim(this.userName) == '' || String.trim(this.userPW) == '') {
 				alert('请输入账号和密码');
 			} else {
-				localStorage.userMsg = [1,2]
-				this.$store.state.userMsg = [1,2];
-				// this.$http.get("http://192.168.1.213:38080/estapi/api/User/GetLogin",{
-				// 			params: {
-    //                             username: this.userName,
-    //                             password: this.userPW
-				// 			}
-    //                         }).then(resp=>{  
-    //                             console.log(resp);  
-    //                         },response => {  
-    //                             console.log("发送失败"+response.status+","+response.statusText);  
-    //                         });  
+				// 注释代码用于开发环境时应付跨域使用； 
+	//          ocalStorage.userMsg = [1,2];
+    // 	        this.$store.state.userMsg = [1,2];
+				this.$http.get("http://192.168.1.213:38080/estapi/api/User/GetLogin",{
+							params: {
+                                username: this.userName,
+                                password: this.userPW
+							}
+                            }).then(resp=>{  
+                                console.log(resp);
+                                localStorage.userMsg = resp.body;
+                                this.$store.state.userMsg = resp.body;
+                                this.$router.push({name: 'workbench'});
+                            },response => {  
+                                console.log("发送失败"+response.status+","+response.statusText);  
+                            });  
 			}
 		}
 	}

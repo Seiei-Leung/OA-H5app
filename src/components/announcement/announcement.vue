@@ -10,9 +10,9 @@
             <div class="topsearch-wrapper">
             	<div class="topsearch">
                 	<div class="select">
-                    	<p>公司动态 <i class="icon-play"></i></p>
-                    	<ul>
-                        	<li><a href="javascript:void(0);" style="display:block;">公司动态</a></li>
+                    	<p @click="showSelect">{{selectText}} <i class="icon-play"></i></p>
+                    	<ul v-show="selectIsShow">
+                        	<li>公司动态</li>
                         	<li>通知公告</li>
                         	<li>员工动态</li>
                 	        <li>员工关怀</li>
@@ -22,18 +22,18 @@
                 	</div>
                 	<div class="border"></div>
                 	<input type="text" name="">
-                	<div class="border"></div>
+                	<div class="border" style="margin-left: 85%;"></div>
                 	<button>
                 		<i class="icon-search" style="color:#999"></i>
                 	</button>
                 	<div style="clear: both"></div>
             	</div>
-            	<a class="show_modal" href="javascript:void(0);"><i class="icon-more-horizontal"></i></a>
+            	<a class="show_modal" href="javascript:void(0);" @click="showblackgreen"><i class="icon-more-horizontal"></i></a>
             	<div style="clear: both"></div>
             </div>
         </div>
         <!-- 列表 -->
-        <div class="inform_list" style="margin-top: 108px;margin-bottom: 6em">
+        <div class="inform_list">
             <a class="inform_item btn" href="./article.html">
                 <div class="title">
                     <p>标题</p>
@@ -124,7 +124,7 @@
             <i class="icon-edit"></i> 发布动态</a>
         </a>
         <!-- 模拟框 -->
-        <div class="blackscreen">
+        <div class="blackscreen" v-show="blackscreenIsShow" @click="hideblackscreen">
             <ul class="modalbox">
                 <li class="btn">已发布的</li>
                 <li class="btn">草稿</li>
@@ -136,9 +136,26 @@
 </template>
 
 <script>
-	export default{
-
-	}
+export default{
+    data: function() {
+        return {
+            blackscreenIsShow: false,
+            selectIsShow: false,
+            selectText: '公司动态'
+        };
+    },
+    methods: {
+        showSelect: function() {
+            this.selectIsShow = !this.selectIsShow;
+        },
+        showblackgreen: function() {
+            this.blackscreenIsShow = true;
+        },
+        hideblackscreen: function() {
+            this.blackscreenIsShow = false;
+        }
+    }
+}
 </script>
 
 <style>
@@ -147,14 +164,18 @@
 	top: 0;
 	bottom: 0;
 	width: 100%;
+    overflow: scroll;
 	background-color: #f5f5f5;
-	z-index: 1
+	z-index: 1;
 }
 .topsearch_container {
 	position: fixed;
 	top:0;
 	left: 0;
-	right: 0
+	right: 0;
+    background-color: #EFEFF4;
+    color: #444;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 .topsearch-wrapper {
 	padding:10px 8px;
@@ -179,6 +200,10 @@
     border-bottom-left-radius: 4px;
     color: #444;
     text-align: center;
+}
+.inform_page .topsearch_container .select p{
+    line-height: 26px;
+    font-size: 0.9em
 }
 .topsearch-wrapper .border{
 	width: 1px;
@@ -230,5 +255,76 @@
     border-radius: 4px;
     text-align: center;
     line-height: 26px;
+}
+.inform_list {
+    margin-top: 108px;
+    margin-bottom: 6em
+}
+.inform_page .inform_list .inform_item {
+    display: block;
+    margin: 0.5rem 0;
+    background-color: #fff;
+    padding: 1em 1em 0.5em 1em;
+    color: #444;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.inform_page .inform_list .inform_item .title {
+    font-size: 1.8em;
+}
+.inform_page .inform_list .inform_item .time {
+    padding-bottom: 1em;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+.inform_page .inform_list .inform_item .detail {
+    padding-top: .5em;
+    overflow: hidden;
+}
+.inform_page .inform_list .inform_item .detail i {
+    margin-right: 1em;
+    font-size: 0.8em;
+}
+.inform_page .issue {
+    color: #444;
+    outline: none;
+    border: none;
+    display: block;
+    background-color: #fff;
+    font-size: 1.5em;
+    position: fixed;
+    bottom: 0;
+    width: 10rem;
+    text-align: center;
+    line-height: 2.5em;
+    height: 2.5em;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+.blackscreen {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(0, 0, 0, .5);
+}
+.modalbox {
+    position: absolute;
+    bottom: 0;
+    width: 10rem;
+    border: 1px solid #eee;
+    text-align: center;
+    background-color: #EFEFF4;
+    z-index: -10;
+}
+.modalbox li {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    font-size: 1.5em;
+    line-height: 2em;
+}
+.hid_modal {
+    margin-top: 0.2em;
+    border-bottom: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
 </style>
