@@ -3,15 +3,15 @@
     	<!-- 详细表格 -->
     	<div class="top_title" style="position: fixed;top: 0;width: 100%">
     	    <a href="javascript:void(0);" @click="goBack"><i class="icon-chevron-left"></i>返回</a>
-    	    <div>非生产采购单详情</div>
+    	    <div>{{titleName}}</div>
     	</div>
     	<div class="workdetail-page">
     	    <div class="table-item" v-for="(content, index1) in contentList">
     	        <div class="main-table">
     	            <ul>
     	                <li v-for="(val, index2) in content">
-    	                    <span>{{nameList[index1][index2]}}</span>
-    	                    <span>{{val}}</span>
+    	                    <span>{{nameList[index1][index2]}}：</span>
+    	                    <span style="color: #999;">{{val}}</span>
     	                </li>
     	            </ul>
     	        </div>
@@ -46,28 +46,35 @@
                 </div>
     	    </div>
     	</div>
+        <!-- loading 图 -->
+        <v-loading v-show="isLoading"></v-loading>
 	</div>
 </template>
 
 <script>
+import loading from '../loading/loading';
+
 export default {
     data: function() {
         return {
-            classname: this.$route.params.classname,
+            titleName: this.$route.params.titlename,
+            className: this.$route.params.classname,
             contentList: [],
-            nameList: []
+            nameList: [],
+            isLoading: false
         };
     },
     created: function() {
+        this.isLoading = true;
+        // 提取数据
         // 注释代码用于开发环境或实际项目接口
         // /api/workingtable
-        // http://192.168.1.213:38080/estapi/api/FlowApprove/GetToDoWorkDetailSmart?actorid3=fang&classname3=" + this.classname
-        this.$http.get("/api/workingtable").then(resp=>{
-          console.log(resp.body.data);
+        // "http://192.168.1.213:38080/estapi/api/FlowApprove/GetToDoWorkDetailSmart?actorid3=fang&classname3=" + this.className
+        this.$http.get("http://192.168.1.213:38080/estapi/api/FlowApprove/GetToDoWorkDetailSmart?actorid3=fang&classname3=" + this.className).then(resp=>{
           let contentList = []; // 内容列表
           let nameList = []; // 名称列表
-          // 循环工作单列表
-          resp.body.data.forEach((item) => {
+          // 循环工作单列表 => resp.body.data.forEach(....)
+          resp.body.forEach((item) => {
             // 制作名称列表
             let forNameList = []; // 名称
             item.fields.split(',').forEach((str) => {
@@ -83,14 +90,16 @@ export default {
             }
             contentList.push(forContentList);
           });
-          console.log(contentList);
-          console.log(nameList);
+          // 赋值
           this.contentList = contentList;
           this.nameList = nameList;
+          this.isLoading = false;
         }, response => {
             console.log("发送失败"+response.status+","+response.statusText);
         });
-
+    },
+    components: {
+        'v-loading': loading
     }
 }
 </script>

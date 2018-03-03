@@ -6,7 +6,7 @@
     	</div>
     	<!-- 待办事项九宫格 -->
 		<div class="weui-grids" style="margin-top: 1rem;background-color: #fff;color:#444">
-    	    <a href="javascript:void(0);" class="weui-grid" v-for="todo in todoList" @click="goWorkingTable(todo.name)">
+    	    <a href="javascript:void(0);" class="weui-grid" v-for="todo in todoList" @click="goWorkingTable(todo.name, todo.title)">
     	        <div class="weui-grid__icon">
     	            <img src="./img/icon_16.png" v-bind:alt="todo.modname">
     	        	<span class="weui-badge">{{todo.cnt}}</span>
@@ -28,16 +28,16 @@ export default {
         // 注释代码用于开发环境或实际项目接口
         // /api/getToDoList
         // http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApprove?actorid=fang
-        this.$http.get("/api/getToDoList").then(resp=>{
-          this.todoList = resp.body.data;
-          // this.todoList = resp.body;
+        this.$http.get("http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApprove?actorid=fang").then(resp=>{
+          // this.todoList = resp.body.data;
+          this.todoList = resp.body;
         }, response => {
             console.log("发送失败"+response.status+","+response.statusText);
         });
     },
 	methods: {
-		goWorkingTable: function(kind) {
-			this.$router.push({name: "workingTable", params: {classname: kind}});
+		goWorkingTable: function(kind, title) {
+			this.$router.push({name: "workingTable", params: {classname: kind, titlename: title}});
 		}
 	}
 }

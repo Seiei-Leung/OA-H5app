@@ -41,19 +41,19 @@ export default {
 				// 注释代码用于开发环境或实际项目接口
         // /api/signin
         // http://192.168.1.213:38080/estapi/api/User/GetLogin
-				this.$http.get("/api/signin",{
+				this.$http.get("http://192.168.1.213:38080/estapi/api/User/GetLogin",{
 				  params: {
-            username: this.userName,
-            password: this.userPW
+            		username: this.userName,
+            		password: this.userPW
 				  }
-        }).then(resp=>{
-            console.log(resp);
-            localStorage.userMsg = resp.body;
-            this.$store.state.userMsg = resp.body;
-            this.$router.push({name: 'workbench'});
-        },response => {
-            console.log("发送失败"+response.status+","+response.statusText);
-        });
+        		}).then(resp=>{
+        		    console.log(resp);
+        		    localStorage.userMsg = resp.body;
+        		    this.$store.state.userMsg = resp.body;
+        		    this.$router.push({name: 'workbench'});
+        		},response => {
+        		    console.log("发送失败"+response.status+","+response.statusText);
+        		});
 			}
 		}
 	}

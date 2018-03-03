@@ -12,12 +12,7 @@
                 	<div class="select">
                     	<p @click="showSelect">{{selectText}} <i class="icon-play"></i></p>
                     	<ul v-show="selectIsShow">
-                        	<li>公司动态</li>
-                        	<li>通知公告</li>
-                        	<li>员工动态</li>
-                	        <li>员工关怀</li>
-                	        <li>员工祝福</li>
-                	        <li>私人信箱</li>
+                            <li v-for="item in selectList" @click="selectItem(item)">{{item}}</li>
                 	    </ul>
                 	</div>
                 	<div class="border"></div>
@@ -34,67 +29,7 @@
         </div>
         <!-- 列表 -->
         <div class="inform_list">
-            <a class="inform_item btn" href="./article.html">
-                <div class="title">
-                    <p>标题</p>
-                </div>
-                <div class="time">
-                    <p>2017-11-21 08:50:23</p>
-                </div>
-                <div class="detail">
-                    <div style="float:left">梁智承</div>
-                    <div style="float: right;"><i class="icon-eye">1</i><i class="icon-bubbles">2</i><i class="icon-thumbs-up">3</i></div>
-                </div>
-            </a>
-            <a class="inform_item btn" href="./article.html">
-                <div class="title">
-                    <p>标题</p>
-                </div>
-                <div class="time">
-                    <p>2017-11-21 08:50:23</p>
-                </div>
-                <div class="detail">
-                    <div style="float:left">梁智承</div>
-                    <div style="float: right;"><i class="icon-eye">1</i><i class="icon-bubbles">2</i><i class="icon-thumbs-up">3</i></div>
-                </div>
-            </a>
-            <a class="inform_item btn" href="./article.html">
-                <div class="title">
-                    <p>标题</p>
-                </div>
-                <div class="time">
-                    <p>2017-11-21 08:50:23</p>
-                </div>
-                <div class="detail">
-                    <div style="float:left">梁智承</div>
-                    <div style="float: right;"><i class="icon-eye">1</i><i class="icon-bubbles">2</i><i class="icon-thumbs-up">3</i></div>
-                </div>
-            </a>
-            <a class="inform_item btn" href="./article.html">
-                <div class="title">
-                    <p>标题</p>
-                </div>
-                <div class="time">
-                    <p>2017-11-21 08:50:23</p>
-                </div>
-                <div class="detail">
-                    <div style="float:left">梁智承</div>
-                    <div style="float: right;"><i class="icon-eye">1</i><i class="icon-bubbles">2</i><i class="icon-thumbs-up">3</i></div>
-                </div>
-            </a>
-            <a class="inform_item btn" href="./article.html">
-                <div class="title">
-                    <p>标题</p>
-                </div>
-                <div class="time">
-                    <p>2017-11-21 08:50:23</p>
-                </div>
-                <div class="detail">
-                    <div style="float:left">梁智承</div>
-                    <div style="float: right;"><i class="icon-eye">1</i><i class="icon-bubbles">2</i><i class="icon-thumbs-up">3</i></div>
-                </div>
-            </a>
-            <a class="inform_item btn" href="./article.html">
+            <a class="inform_item btn" href="javascript:void(0);" @click='goDetail()'>
                 <div class="title">
                     <p>标题</p>
                 </div>
@@ -124,11 +59,11 @@
             <i class="icon-edit"></i> 发布动态</a>
         </a>
         <!-- 模拟框 -->
-        <div class="blackscreen" v-show="blackscreenIsShow" @click="hideblackscreen">
+        <div class="blackscreen" v-show="blackscreenIsShow">
             <ul class="modalbox">
                 <li class="btn">已发布的</li>
                 <li class="btn">草稿</li>
-                <li class="btn hid_modal">取消</li>
+                <li class="btn hid_modal" @click="hideblackscreen">取消</li>
             </ul>
         </div>
     </div>
@@ -141,7 +76,8 @@ export default{
         return {
             blackscreenIsShow: false,
             selectIsShow: false,
-            selectText: '公司动态'
+            selectText: '公司动态',
+            selectList: ['公司动态', '通知公告', '员工动态', '员工关怀', '员工祝福', '私人信箱']
         };
     },
     methods: {
@@ -153,6 +89,13 @@ export default{
         },
         hideblackscreen: function() {
             this.blackscreenIsShow = false;
+        },
+        selectItem: function(item) {
+            this.selectText = item;
+            this.selectIsShow = false;
+        },
+        goDetail: function() {
+            this.$router.push({name: 'announcementDetail'});
         }
     }
 }

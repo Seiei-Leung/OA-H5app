@@ -4,7 +4,7 @@
 	<div class="weui-panel__bd">
         <div class="weui-media-box weui-media-box_small-appmsg">
             <div class="weui-cells">
-                <a class="weui-cell weui-cell_access" href="javascript:void(0);">
+                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goDataCube">
                     <div class="weui-cell__hd">
                     	<!-- 相片引用使用 相对路径 -->
                     	<img src="./img/icon_4.png" alt="数据魔方" class="iconImg">
@@ -55,7 +55,7 @@
                     	<img src="./img/icon_41.png" alt="待办事项" class="iconImg">
                     </div>
                     <div class="weui-cell__bd weui-cell_primary">
-                        <p style="position: relative;">待办事项<span class="weui-badge redPoint">2</span></p>
+                        <p style="position: relative;">待办事项<span class="weui-badge redPoint">{{todoListNum}}</span></p>
                     </div>
                     <span class="weui-cell__ft"></span>
                 </a>
@@ -85,6 +85,25 @@
 
 <script>
 export default {
+    data: function() {
+        return {
+            todoListNum: 0
+        };
+    },
+    created: function() {
+        // 注释代码用于开发环境或实际项目接口
+        // /api/getToDoList
+        // http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApprove?actorid=fang
+        this.$http.get("/api/getToDoList").then(resp=>{
+          // resp.body = resp.body.data;
+          resp.body.data.forEach((item) => {
+            this.todoListNum += item.cnt;
+          });
+
+        }, response => {
+            console.log("发送失败"+response.status+","+response.statusText);
+        });
+    },
 	methods: {
         // 进入公告通知
         goDB: function() {
@@ -93,6 +112,10 @@ export default {
         // 进入待办事项
         goToDoList: function() {
             this.$router.push({name: 'todoList'});
+        },
+        // 进入数据魔方
+        goDataCube: function() {
+            this.$router.push({name: 'dataCube'});
         }
 	}
 }

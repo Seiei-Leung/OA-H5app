@@ -6,6 +6,8 @@ import signin from '@/components/signin/signin';
 import announcement from '@/components/announcement/announcement';
 import todoList from '@/components/todoList/todoList';
 import workingTable from '@/components/workingTable/workingTable';
+import announcementDetail from '@/components/announcementDetail/announcementDetail';
+import dataCube from '@/components/dataCube/dataCube';
 
 Vue.use(Router);
 
@@ -43,9 +45,21 @@ export default new Router({
     },
     // 审核表单
     {
-      path: '/workingtable/:classname',
+      path: '/workingtable/:classname/:titlename',
       name: 'workingTable',
       component: workingTable
+    },
+    // 公告详情
+    {
+      path: '/announcementdetail',
+      name: 'announcementDetail',
+      component: announcementDetail
+    },
+    // 数据魔方
+    {
+      path: '/datacube',
+      name: 'dataCube',
+      component: dataCube
     }
   ]
 })

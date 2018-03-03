@@ -13,7 +13,7 @@
     <div class="tap">
       <ul>
         <li>
-          <router-link to="/">
+          <router-link to="/message">
             <i class="icon-bubble2"></i>
             <p>消息</p>
           </router-link>
