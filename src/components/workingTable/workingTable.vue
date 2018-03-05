@@ -6,7 +6,8 @@
     	    <div>{{titleName}}</div>
     	</div>
     	<div class="workdetail-page">
-    	    <div class="table-item" v-for="(content, index1) in contentList">
+            <!-- 动态绑定要是用 v-bind ,不然绑定的是整个字符串，下面 ref 就是个例子 -->
+    	    <div class="table-item" v-for="(content, index1) in contentList" v-bind:ref="'table-item' + index1" @click="goMyApply(billnoList[index1])">
     	        <div class="main-table">
     	            <ul>
     	                <li v-for="(val, index2) in content">
@@ -33,8 +34,8 @@
     	            </ul>
     	        </div>
                 -->
-                <div class="passbtn-wrapper">
-                    <div class="passbtn">
+                <div class="passbtn-wrapper" v-if="istodoList">
+                    <div class="passbtn" @click="approval(serialnoList[index1], billnoList[index1], index1)">
                         <span>审批</span>
                     </div>
                     <div class="passbtn">
@@ -48,20 +49,30 @@
     	</div>
         <!-- loading 图 -->
         <v-loading v-show="isLoading"></v-loading>
+        <!-- toast -->
+        <v-toast v-bind:text="toast" v-show="isToast"></v-toast>
 	</div>
 </template>
 
 <script>
 import loading from '../loading/loading';
+import toast from '../toast/toast';
 
 export default {
     data: function() {
         return {
             titleName: this.$route.params.titlename,
             className: this.$route.params.classname,
+            where: this.$route.params.where,
             contentList: [],
             nameList: [],
-            isLoading: false
+            serialnoList: [],
+            billnoList: [],
+            isLoading: false,
+            toast: '',
+            isToast: false,
+            istodoList: this.$route.params.where == 'todolist',
+            ismyApply: this.$route.params.where == 'myapply'
         };
     },
     created: function() {
@@ -70,11 +81,20 @@ export default {
         // 注释代码用于开发环境或实际项目接口
         // /api/workingtable
         // "http://192.168.1.213:38080/estapi/api/FlowApprove/GetToDoWorkDetailSmart?actorid3=fang&classname3=" + this.className
-        this.$http.get("http://192.168.1.213:38080/estapi/api/FlowApprove/GetToDoWorkDetailSmart?actorid3=fang&classname3=" + this.className).then(resp=>{
+        // /api/myApplyList
+        // "http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApplyDetailSmart?actorid2=fang&classname2=" + this.className
+        let url;
+        if (this.istodoList) {
+            url = "http://192.168.1.213:38080/estapi/api/FlowApprove/GetToDoWorkDetailSmart?actorid3=fang&classname3=";
+        } else if (this.ismyApply) {
+            url = "http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApplyDetailSmart?actorid2=fang&classname2=";
+        }
+        this.$http.get(url + this.className).then(resp=>{
           let contentList = []; // 内容列表
           let nameList = []; // 名称列表
           // 循环工作单列表 => resp.body.data.forEach(....)
           resp.body.forEach((item) => {
+
             // 制作名称列表
             let forNameList = []; // 名称
             item.fields.split(',').forEach((str) => {
@@ -89,6 +109,12 @@ export default {
               forContentList.push(item['feild' + i]);
             }
             contentList.push(forContentList);
+
+            // 制作 Serialno 列表
+            this.serialnoList.push(item.serialno);
+
+            // 制作 billno 列表
+            this.billnoList.push(item.billno);
           });
           // 赋值
           this.contentList = contentList;
@@ -98,8 +124,29 @@ export default {
             console.log("发送失败"+response.status+","+response.statusText);
         });
     },
+    methods: {
+        // 审批
+        approval: function(serialno, billno, index) {
+            this.$http.get("http://192.168.1.213:38080/estapi/api/FlowApprove/GetApproveFlow?userCode=fang&serialno=" + serialno + "&formName=" + this.className + "&billNo=" + billno).then(resp => {
+                this.toast = '审批成功';
+                this.isToast = true;
+                setTimeout(() => {
+                    this.isToast = false;
+                    this.$refs['table-item' + index][0].style.display = 'none';
+                }, 500);
+            }, response => {
+                console.log("发送失败"+response.status+","+response.statusText);
+            })
+        },
+        goMyApply: function(arg) {
+            if (this.ismyApply) {
+                this.$router.push({name: 'myApplyDetail', params: {billno: arg}})
+            }
+        }
+    },
     components: {
-        'v-loading': loading
+        'v-loading': loading,
+        'v-toast': toast
     }
 }
 </script>
@@ -117,6 +164,10 @@ export default {
 .workdetail-page {
 	margin-top: 55px
 }
+.workdetail-page li span:first-child {
+    display: inline-block;
+    min-width: 7em;
+}
 .workdetail-page .table-item {
 	box-sizing: border-box;
     width: 9.5rem;
@@ -126,6 +177,7 @@ export default {
     border-radius: 10px;
 }
 .workdetail-page .table-item .main-table {
+    padding-bottom: 1em;
     color: #169fe6;
 }
 .workdetail-page .subtable-title {
@@ -139,14 +191,14 @@ export default {
 }
 .workdetail-page .subtable {
     padding: 0.3em 0;
-    border-bottom: 1px dashed #e5e5e5;
     border-top: 1px dashed #e5e5e5;
 }
 .passbtn-wrapper {
     display: flex;
     display: -webkit-flex;
     justify-content: space-around;
-    margin-top: 1em;
+    padding-top: 1em;
+    border-top: 1px dashed #e5e5e5;
 }
 .workdetail-page .passbtn {
     width: 1.5rem;

@@ -23,7 +23,7 @@
                     </div>
                 	<span class="weui-cell__ft"></span>
                 </a>
-                <a class="weui-cell weui-cell_access" href="javascript:void(0);">
+                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goSchedule">
                     <div class="weui-cell__hd">
                     	<img src="./img/icon_16.png" alt="日程" class="iconImg">
                     </div>
@@ -50,12 +50,21 @@
                     </div>
                 	<span class="weui-cell__ft"></span>
                 </a>
-                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goToDoList">
+                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goWhere('todolist')">
                     <div class="weui-cell__hd">
-                    	<img src="./img/icon_41.png" alt="待办事项" class="iconImg">
+                        <img src="./img/icon_41.png" alt="待办事项" class="iconImg">
                     </div>
                     <div class="weui-cell__bd weui-cell_primary">
                         <p style="position: relative;">待办事项<span class="weui-badge redPoint">{{todoListNum}}</span></p>
+                    </div>
+                    <span class="weui-cell__ft"></span>
+                </a>
+                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goWhere('myapply')">
+                    <div class="weui-cell__hd">
+                        <img src="./img/icon_16.png" alt="待办事项" class="iconImg">
+                    </div>
+                    <div class="weui-cell__bd weui-cell_primary">
+                        <p style="position: relative;">我的申请<span class="weui-badge redPoint">{{myApplyNum}}</span></p>
                     </div>
                     <span class="weui-cell__ft"></span>
                 </a>
@@ -84,22 +93,34 @@
 </template>
 
 <script>
+
 export default {
     data: function() {
         return {
-            todoListNum: 0
+            todoListNum: 0,
+            myApplyNum: 0,
+            toast: '审批成功'
         };
     },
     created: function() {
         // 注释代码用于开发环境或实际项目接口
         // /api/getToDoList
         // http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApprove?actorid=fang
-        this.$http.get("/api/getToDoList").then(resp=>{
+        // /api/getMyApply
+        // http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApply?actorid1=fang
+        this.$http.get("http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApprove?actorid=fang").then(resp=>{
           // resp.body = resp.body.data;
-          resp.body.data.forEach((item) => {
+          resp.body.forEach((item) => {
             this.todoListNum += item.cnt;
           });
-
+        }, response => {
+            console.log("发送失败"+response.status+","+response.statusText);
+        });
+        this.$http.get("http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApply?actorid1=fang").then(resp=>{
+          // resp.body = resp.body.data;
+          resp.body.forEach((item) => {
+            this.myApplyNum += item.cnt;
+          });
         }, response => {
             console.log("发送失败"+response.status+","+response.statusText);
         });
@@ -110,12 +131,16 @@ export default {
             this.$router.push({name: 'announcement'});
         },
         // 进入待办事项
-        goToDoList: function() {
-            this.$router.push({name: 'todoList'});
+        goWhere: function(arg) {
+            this.$router.push({name: 'todoList', params: {where: arg}});
         },
         // 进入数据魔方
         goDataCube: function() {
             this.$router.push({name: 'dataCube'});
+        },
+        // 进入日程表
+        goSchedule: function() {
+            window.open('./schedule.html', '_self');
         }
 	}
 }

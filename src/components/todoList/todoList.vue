@@ -1,8 +1,8 @@
 <template>
 	<div class="todoList-component">
 		<div class="top_title">
-    	    <a href="javascript:void(0);" @click="goBack"><i class="icon-chevron-left"></i>首页</a>
-    	    <div>待办事项</div>
+    	    <a href="javascript:void(0);" @click="goBack"><i class="icon-chevron-left"></i>返回</a>
+    	    <div>{{titleName}}</div>
     	</div>
     	<!-- 待办事项九宫格 -->
 		<div class="weui-grids" style="margin-top: 1rem;background-color: #fff;color:#444">
@@ -21,14 +21,28 @@
 export default {
     data: function() {
         return {
-            todoList: []
+            todoList: [],
+            present: this.$route.params.where,
+            istodoList: this.$route.params.where == 'todolist',
+            ismyApply: this.$route.params.where == 'myapply',
+            titleName: ''
         };
     },
     created: function() {
         // 注释代码用于开发环境或实际项目接口
         // /api/getToDoList
         // http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApprove?actorid=fang
-        this.$http.get("http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApprove?actorid=fang").then(resp=>{
+        // /api/getMyApplys
+        // http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApply?actorid1=fang
+        let url;
+        if (this.istodoList) {
+            this.titleName = '待办事项';
+            url = "http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApprove?actorid=fang"; // 当前页面内容为 审核表单
+        } else if (this.ismyApply) {
+            this.titleName = '我的申请';
+            url = "http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApply?actorid1=fang"; // 当前页面内容为 我的申请
+        }
+        this.$http.get(url).then(resp=>{
           // this.todoList = resp.body.data;
           this.todoList = resp.body;
         }, response => {
@@ -37,7 +51,8 @@ export default {
     },
 	methods: {
 		goWorkingTable: function(kind, title) {
-			this.$router.push({name: "workingTable", params: {classname: kind, titlename: title}});
+            let present = this.present;
+			this.$router.push({name: "workingTable", params: {classname: kind, titlename: title, where: present}});
 		}
 	}
 }

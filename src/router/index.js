@@ -8,6 +8,8 @@ import todoList from '@/components/todoList/todoList';
 import workingTable from '@/components/workingTable/workingTable';
 import announcementDetail from '@/components/announcementDetail/announcementDetail';
 import dataCube from '@/components/dataCube/dataCube';
+import schedule from '@/components/schedule/schedule';
+import myApplyDetail from '@/components/myApplyDetail/myApplyDetail';
 
 Vue.use(Router);
 
@@ -37,15 +39,15 @@ export default new Router({
       name: 'announcement',
       component: announcement
     },
-    // 待办事项
+    // 待办事项 或 我的申请
     {
-      path: '/todolist',
+      path: '/todolist/:where',
       name: 'todoList',
       component: todoList
     },
-    // 审核表单
+    // 审核表单 或 我的申请详情
     {
-      path: '/workingtable/:classname/:titlename',
+      path: '/workingtable/:classname/:titlename/:where',
       name: 'workingTable',
       component: workingTable
     },
@@ -60,6 +62,18 @@ export default new Router({
       path: '/datacube',
       name: 'dataCube',
       component: dataCube
+    },
+    // 日程表
+    {
+      path: '/schedule',
+      name: 'schedule',
+      component: schedule
+    },
+    // 我的申请进度详情页面
+    {
+      path: '/myapplydetail/:billno',
+      name: 'myApplyDetail',
+      component: myApplyDetail
     }
   ]
 })
