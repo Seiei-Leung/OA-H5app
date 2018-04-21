@@ -87,6 +87,12 @@
 export default {
   name: 'HelloWorld',
   data () {
+                                      domItem.innerHTML = '<li><div class="titleTxt">数量：</div><div>' + result.Quantity + '</div></li><li><div class="titleTxt">金额：</div><div>' + result.Amount + '</div></li><li><div class="titleTxt">时间：</div><div>' + result.CDate + '</div></li>';
+
+
+
+
+
     return {
       msg: 'Welcome to Your Vue.js App'
     }
@@ -94,7 +100,7 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
+<!-- Add "scoped" attribute to limit CSS to this component only  -->
 <style scoped>
 h1, h2 {
   font-weight: normal;

@@ -15,7 +15,9 @@ export default {
 <style scoped>
 .toast-component {
 	display: flex;
+	display: -webkit-flex;
 	justify-content: center;
+	-webkit-justify-content: center;
 	position: fixed;
 	top: 45%;
 	left: 0;

@@ -8,14 +8,14 @@
     	<div class="workdetail-page">
             <!-- 动态绑定要是用 v-bind ,不然绑定的是整个字符串，下面 ref 就是个例子 -->
     	    <div class="table-item" v-for="(content, index1) in contentList" v-bind:ref="'table-item' + index1" @click="goMyApply(billnoList[index1])">
-    	        <div class="main-table">
-    	            <ul>
-    	                <li v-for="(val, index2) in content">
-    	                    <span>{{nameList[index1][index2]}}：</span>
-    	                    <span style="color: #999;">{{val}}</span>
-    	                </li>
-    	            </ul>
-    	        </div>
+                <div class="main-table">
+                    <ul>
+                        <li v-for="(val, index2) in content">
+                            <span>{{nameList[index1][index2]}}：</span>
+                            <span style="color: #999;">{{val}}</span>
+                        </li>
+                    </ul>
+                </div>
                 <!-- 以下是副列表信息 -->
                 <!--
                 <div class="subtable-title">
@@ -35,7 +35,7 @@
     	        </div>
                 -->
                 <div class="passbtn-wrapper" v-if="istodoList">
-                    <div class="passbtn" @click="approval(serialnoList[index1], billnoList[index1], index1)">
+                    <div class="passbtn" @click="approval(serialnoList[index1], billnoList[index1], index1, $event)">
                         <span>审批</span>
                     </div>
                     <div class="passbtn">
@@ -80,19 +80,23 @@ export default {
         // 提取数据
         // 注释代码用于开发环境或实际项目接口
         // /api/workingtable
-        // "http://192.168.1.213:38080/estapi/api/FlowApprove/GetToDoWorkDetailSmart?actorid3=fang&classname3=" + this.className
+        // "http://59.33.36.124:38080/estapi/api/FlowApprove/GetToDoWorkDetailSmart?actorid3=fang&classname3=" + this.className
         // /api/myApplyList
-        // "http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApplyDetailSmart?actorid2=fang&classname2=" + this.className
+        // "http://59.33.36.124:38080/estapi/api/FlowApprove/GetMyApplyDetailSmart?actorid2=fang&classname2=" + this.className
         let url;
         if (this.istodoList) {
-            url = "http://192.168.1.213:38080/estapi/api/FlowApprove/GetToDoWorkDetailSmart?actorid3=fang&classname3=";
+            url = "http://59.33.36.124:38080/estapi/api/FlowApprove/GetToDoWorkMasterDetailSmart?actorid4=andylao&classname4=";
         } else if (this.ismyApply) {
-            url = "http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApplyDetailSmart?actorid2=fang&classname2=";
+            url = "http://59.33.36.124:38080/estapi/api/FlowApprove/GetMyApplyDetailSmart?actorid2=fang&classname2=";
         }
         this.$http.get(url + this.className).then(resp=>{
           let contentList = []; // 内容列表
           let nameList = []; // 名称列表
+          let detailsList = []; // 附表内容列表
+          let detailsNameList = []; // 附表名字列表
           // 循环工作单列表 => resp.body.data.forEach(....)
+
+          resp.body = resp.body.slice(0, 51);
           resp.body.forEach((item) => {
 
             // 制作名称列表
@@ -105,9 +109,24 @@ export default {
             // 制作内容列表
             let forContentList = [];
             let countNum = item.fieldcnt; // 表单中有多少行信息
-            for (let i=1;i<(countNum+1);i++) {
+            for (let i=1; i<(countNum+1); i++) {
               forContentList.push(item['feild' + i]);
             }
+            // 测试是否含有副表
+            if (item['details'].length > 0) {
+                var 
+                    detailsData = item['details'],
+                    detailsDataNum = detailsData.length;
+                for (let n=1; n<(detailsDataNum+1); n++) {
+                    var 
+                        fordetailsList = [];
+                    for (let m=1; m<(Number(detailsData[n].fieldcnt) + 1); m++) {
+                        fordetailsList.push(detailsData[n]['field' + m]);
+                    }
+                }
+
+            }
+            detailsList.push(fordetailsList);
             contentList.push(forContentList);
 
             // 制作 Serialno 列表
@@ -126,8 +145,15 @@ export default {
     },
     methods: {
         // 审批
-        approval: function(serialno, billno, index) {
-            this.$http.get("http://192.168.1.213:38080/estapi/api/FlowApprove/GetApproveFlow?userCode=fang&serialno=" + serialno + "&formName=" + this.className + "&billNo=" + billno).then(resp => {
+        approval: function(serialno, billno, index, event) {
+            event.target.innerText = "审批中";
+            // 获取实质要改变背景色的元素
+            if (event.target.tagName.toLowerCase() == 'div') {
+                event.target.style.backgroundColor = '#d6dde0';
+            } else {
+                event.target.parentNode.style.backgroundColor = '#d6dde0';
+            }
+            this.$http.get("http://59.33.36.124:38080/estapi/api/FlowApprove/GetApproveFlow?userCode=fang&serialno=" + serialno + "&formName=" + this.className + "&billNo=" + billno).then(resp => {
                 this.toast = '审批成功';
                 this.isToast = true;
                 setTimeout(() => {
@@ -197,6 +223,7 @@ export default {
     display: flex;
     display: -webkit-flex;
     justify-content: space-around;
+    -webkit-justify-content: space-around;
     padding-top: 1em;
     border-top: 1px dashed #e5e5e5;
 }

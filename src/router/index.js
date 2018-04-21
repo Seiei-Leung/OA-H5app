@@ -10,6 +10,7 @@ import announcementDetail from '@/components/announcementDetail/announcementDeta
 import dataCube from '@/components/dataCube/dataCube';
 import schedule from '@/components/schedule/schedule';
 import myApplyDetail from '@/components/myApplyDetail/myApplyDetail';
+import timeCard from '@/components/timeCard/timeCard';
 
 Vue.use(Router);
 
@@ -74,6 +75,12 @@ export default new Router({
       path: '/myapplydetail/:billno',
       name: 'myApplyDetail',
       component: myApplyDetail
+    },
+    // 考勤查询
+    {
+      path: '/timeCard',
+      name: 'timeCard',
+      component: timeCard
     }
   ]
 })

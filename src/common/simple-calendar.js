@@ -526,7 +526,7 @@ export var SimpleCalendar = function() {
             }
 
             // 计算当前第一个格子已经过了第几周
-            var year_start = new Date(thispageStart.getFullYear() + '-1-1').getTime(); // 计算年初的时间戳
+            var year_start = new Date(thispageStart.getFullYear() + '-01-01').getTime(); // 计算年初的时间戳
             var pass_week = Math.round((thispageStart.getTime() - year_start) / 86400 / 7 / 1000); // 
             // 计算日历表格第一行的周期数
 

@@ -21,15 +21,25 @@
     	    	</div>
     	    </div>
 		</div>
+        <!-- loading 图 -->
+        <v-loading v-show="isLoading"></v-loading>
+        <!-- toast -->
+        <v-toast v-bind:text="toast" v-show="isToast"></v-toast>
 	</div>
 </template>
 
 <script>
+import loading from '../loading/loading';
+import toast from '../toast/toast';
+
 export default {
 	data: function() {
 		return {
 			userName: '',
-			userPW: ''
+			userPW: '',
+			isToast: false,
+			toast: '',
+			isLoading: false
 		};
 	},
 	methods: {
@@ -40,23 +50,38 @@ export default {
 			} else {
 				// 注释代码用于开发环境或实际项目接口
         // /api/signin
-        // http://192.168.1.213:38080/estapi/api/User/GetLogin
-				this.$http.get("http://192.168.1.213:38080/estapi/api/User/GetLogin",{
+        // http://59.33.36.124:38080/estapi/api/User/GetLogin
+        		this.isLoading = true;
+				this.$http.get("http://59.33.36.124:38080/estapi/api/User/GetLogin",{
 				  params: {
             		username: this.userName,
             		password: this.userPW
 				  }
         		}).then(resp=>{
-        		    console.log(resp);
-        		    localStorage.userMsg = resp.body;
-        		    this.$store.state.userMsg = resp.body;
-        		    this.$router.push({name: 'workbench'});
+        		    console.log(resp.body[0]);
+        		    this.isLoading = false;
+        		    if (resp.body.length == 0) {
+        		    	console.log("123");
+        		    	this.toast = "账号与密码不符";
+        		    	this.isToast = true;
+                		setTimeout(() => {
+                		    this.isToast = false;
+                		}, 1500);
+        		    } else {
+        		    	localStorage.userMsg = JSON.stringify(resp.body[0]);
+        		    	this.$store.state.userMsg = JSON.stringify(resp.body[0]);
+        		    	this.$router.push({name: 'workbench'});
+        		    }
         		},response => {
         		    console.log("发送失败"+response.status+","+response.statusText);
         		});
 			}
 		}
-	}
+	},
+    components: {
+        'v-loading': loading,
+        'v-toast': toast
+    }
 }
 </script>
 

@@ -7,6 +7,12 @@ export default{
 			methods: {
 				goBack: function() {
 					this.$router.go(-1);
+				},
+				touchS: function(event) {
+					event.target.style.backgroundColor = '#eee';
+				},
+				touchE: function(event) {
+					event.target.style.backgroundColor = '#fff';
 				}
 			},
 			created: function () {

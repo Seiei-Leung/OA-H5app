@@ -32,14 +32,23 @@
                     </div>
                 	<span class="weui-cell__ft"></span>
                 </a>
-                <a class="weui-cell weui-cell_access" href="javascript:void(0);">
+                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="gotimeCard">
                     <div class="weui-cell__hd">
                     	<img src="./img/icon_7.png" alt="业务查询" class="iconImg">
                     </div>
                     <div class="weui-cell__bd weui-cell_primary">
-                        <p>业务查询</p>
+                        <p>考勤查询</p>
                     </div>
                 	<span class="weui-cell__ft"></span>
+                </a>
+                <a class="weui-cell weui-cell_access" href="javascript:void(0);">
+                    <div class="weui-cell__hd">
+                        <img src="./img/icon_7.png" alt="业务查询" class="iconImg">
+                    </div>
+                    <div class="weui-cell__bd weui-cell_primary">
+                        <p>业务查询</p>
+                    </div>
+                    <span class="weui-cell__ft"></span>
                 </a>
                 <a class="weui-cell weui-cell_access" href="javascript:void(0);">
                     <div class="weui-cell__hd">
@@ -68,7 +77,7 @@
                     </div>
                     <span class="weui-cell__ft"></span>
                 </a>
-                <a class="weui-cell weui-cell_access" href="javascript:void(0);">
+                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goUpLoadimg()">
                     <div class="weui-cell__hd">
                     	<img src="./img/icon_21.png" alt="上传图片" class="iconImg">
                     </div>
@@ -77,7 +86,7 @@
                     </div>
                     <span class="weui-cell__ft"></span>
                 </a>
-                <a class="weui-cell weui-cell_access" href="javascript:void(0);">
+                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goMap()">
                     <div class="weui-cell__hd">
                     	<img src="./img/icon_37.png" alt="出差约车" class="iconImg">
                     </div>
@@ -105,10 +114,10 @@ export default {
     created: function() {
         // 注释代码用于开发环境或实际项目接口
         // /api/getToDoList
-        // http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApprove?actorid=fang
-        // /api/getMyApply
-        // http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApply?actorid1=fang
-        this.$http.get("http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApprove?actorid=fang").then(resp=>{
+        // http://59.33.36.124:38080/estapi/api/FlowApprove/GetMyApprove?actorid=fang
+        // /api/getMyApplys
+        // http://59.33.36.124:38080/estapi/api/FlowApprove/GetMyApply?actorid1=fang
+        this.$http.get("http://59.33.36.124:38080/estapi/api/FlowApprove/GetMyApprove?actorid=fang").then(resp=>{
           // resp.body = resp.body.data;
           resp.body.forEach((item) => {
             this.todoListNum += item.cnt;
@@ -116,7 +125,7 @@ export default {
         }, response => {
             console.log("发送失败"+response.status+","+response.statusText);
         });
-        this.$http.get("http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApply?actorid1=fang").then(resp=>{
+        this.$http.get("http://59.33.36.124:38080/estapi/api/FlowApprove/GetMyApply?actorid1=fang").then(resp=>{
           // resp.body = resp.body.data;
           resp.body.forEach((item) => {
             this.myApplyNum += item.cnt;
@@ -141,6 +150,18 @@ export default {
         // 进入日程表
         goSchedule: function() {
             window.open('./schedule.html', '_self');
+        },
+        // 进入地图
+        goMap: function() {
+            window.open('./map.html', '_self');
+        },
+        // 进入上传图片
+        goUpLoadimg: function() {
+            window.open('./UpLoadimg.html', '_self');
+        },
+        // 进入考勤查询
+        gotimeCard: function() {
+            window.open('./timeCard.html', '_self');
         }
 	}
 }

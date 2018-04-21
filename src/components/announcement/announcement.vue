@@ -29,7 +29,7 @@
         </div>
         <!-- 列表 -->
         <div class="inform_list">
-            <a class="inform_item btn" href="javascript:void(0);" @click='goDetail()'>
+            <a class="inform_item btn" href="javascript:void(0);" @click='goDetail' v-on:touchstart.self='touchS($event)' v-on:touchend.self='touchE($event)'>
                 <div class="title">
                     <p>标题</p>
                 </div>

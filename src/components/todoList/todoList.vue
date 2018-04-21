@@ -31,16 +31,16 @@ export default {
     created: function() {
         // 注释代码用于开发环境或实际项目接口
         // /api/getToDoList
-        // http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApprove?actorid=fang
+        // http://59.33.36.124:38080/estapi/api/FlowApprove/GetMyApprove?actorid=fang
         // /api/getMyApplys
-        // http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApply?actorid1=fang
+        // http://59.33.36.124:38080/estapi/api/FlowApprove/GetMyApply?actorid1=fang
         let url;
         if (this.istodoList) {
             this.titleName = '待办事项';
-            url = "http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApprove?actorid=fang"; // 当前页面内容为 审核表单
+            url = "http://59.33.36.124:38080/estapi/api/FlowApprove/GetMyApprove?actorid=fang"; // 当前页面内容为 审核表单
         } else if (this.ismyApply) {
             this.titleName = '我的申请';
-            url = "http://192.168.1.213:38080/estapi/api/FlowApprove/GetMyApply?actorid1=fang"; // 当前页面内容为 我的申请
+            url = "http://59.33.36.124:38080/estapi/api/FlowApprove/GetMyApply?actorid1=fang"; // 当前页面内容为 我的申请
         }
         this.$http.get(url).then(resp=>{
           // this.todoList = resp.body.data;

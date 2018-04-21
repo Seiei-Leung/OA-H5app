@@ -179,6 +179,16 @@ const devWebpackConfig = merge(baseWebpackConfig, {
               }
             ]
         })
+      }),
+      app.get("/api/GetApproveFlow", (req, res) => {
+        res.json({
+          errno: 0,
+          data: [
+            {
+              sitition: "OK"
+            }
+          ]
+        })
       })
     }
   },

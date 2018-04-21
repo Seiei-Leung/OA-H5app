@@ -15,7 +15,8 @@
     "vue-router": "^3.0.1",
     "vue-resource": "1.0.1",
     "vuex": "^2.5.0",
-    "echarts": "^3.8.5"
+    "echarts": "^3.8.5",
+    "vue-mobile-calendar": "2.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
