@@ -2,7 +2,7 @@
 	<div class="dataCube-component">
     	<div class="dataTable">
     	    <div class="top_title">
-    	        <a href="javascript:void(0);" @click="goBack"><i class="icon-chevron-left"></i>返回</a>
+    	        <a href="javascript:void(0);" @click="goBack"><i class="icon-chevron-left"></i><span>返回</span></a>
     	        <div>数据魔方</div>
     	    </div>
     	    <div class="search-wrapper">

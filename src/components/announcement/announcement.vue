@@ -4,7 +4,7 @@
         <!-- 顶部搜索栏 -->
         <div class="topsearch_container" style="">
             <div class="top_title">
-                <a href="javascript:void(0);" @click="goBack"><i class="icon-chevron-left"></i>返回</a>
+                <a href="javascript:void(0);" @click="goBack"><i class="icon-chevron-left"></i><span>返回</span></a>
                 <div>通知公告</div>
             </div>
             <div class="topsearch-wrapper">

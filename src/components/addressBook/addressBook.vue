@@ -61,6 +61,9 @@ export default{
 </script>
 
 <style scoped>
+.addressbook{
+    margin-top: 48px;
+}
 #searchText {
 	transform-origin: 0px 0px 0px;
 	opacity: 1;

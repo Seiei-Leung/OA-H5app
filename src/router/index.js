@@ -11,6 +11,8 @@ import dataCube from '@/components/dataCube/dataCube';
 import schedule from '@/components/schedule/schedule';
 import myApplyDetail from '@/components/myApplyDetail/myApplyDetail';
 import timeCard from '@/components/timeCard/timeCard';
+import personalMsg from '@/components/personalMsg/personalMsg';
+import tabledetail from '@/components/tabledetail/tabledetail';
 
 Vue.use(Router);
 
@@ -81,6 +83,18 @@ export default new Router({
       path: '/timeCard',
       name: 'timeCard',
       component: timeCard
+    },
+    // 个人中心
+    {
+      path: '/personalMsg',
+      name: 'personalMsg',
+      component: personalMsg
+    },
+    // 副表
+    {
+      path: '/tabledetail',
+      name: 'tabledetail',
+      component: tabledetail
     }
   ]
 })

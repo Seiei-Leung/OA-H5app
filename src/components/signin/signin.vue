@@ -2,7 +2,6 @@
 	<div class="personalMsg-component">
 		<div class="signin_page">
     	    <div class="top_title">
-    	    	<a href="javascript:void(0);" @click="goBack"><i class="icon-chevron-left"></i>首页</a>
     	        <div>登录</div>
     	    </div>
     	    <div class="signin_wrapper" style="color:#444;line-height: 2em">
@@ -52,7 +51,7 @@ export default {
         // /api/signin
         // http://59.33.36.124:38080/estapi/api/User/GetLogin
         		this.isLoading = true;
-				this.$http.get("http://59.33.36.124:38080/estapi/api/User/GetLogin",{
+				this.$http.get(this.seieiURL + "/estapi/api/User/GetLogin",{
 				  params: {
             		username: this.userName,
             		password: this.userPW
@@ -61,7 +60,6 @@ export default {
         		    console.log(resp.body[0]);
         		    this.isLoading = false;
         		    if (resp.body.length == 0) {
-        		    	console.log("123");
         		    	this.toast = "账号与密码不符";
         		    	this.isToast = true;
                 		setTimeout(() => {
@@ -69,6 +67,7 @@ export default {
                 		}, 1500);
         		    } else {
         		    	localStorage.userMsg = JSON.stringify(resp.body[0]);
+        		    	localStorage.forOApersonID = resp.body[0].EmployeeNo;
         		    	this.$store.state.userMsg = JSON.stringify(resp.body[0]);
         		    	this.$router.push({name: 'workbench'});
         		    }
@@ -87,15 +86,16 @@ export default {
 
 <style scoped>
 .personalMsg-component {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	width: 100%;
-	background-color: #f5f5f5;
-	z-index: 1
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    overflow: scroll;
+    background-color: #f5f5f5;
+    z-index: 1;
 }
 .signin_page .signin_wrapper {
-	margin-top:1rem;
+	margin-top:95px;
 	background-color: #fff;
 }
 .signin_page .signin_wrapper input{

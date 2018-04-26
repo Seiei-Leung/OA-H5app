@@ -1,7 +1,7 @@
 <template>
 	<div class="myApplyDetail-component">
 		<div class="top_title">
-    	    <a href="javascript:void(0);" @click="goBack"><i class="icon-chevron-left"></i>返回</a>
+    	    <a href="javascript:void(0);" @click="goBack"><i class="icon-chevron-left"></i><span>返回</span></a>
     	    <div>申请进度</div>
     	</div>
 		<div v-for="(billno, index) in billnoList">
@@ -55,7 +55,7 @@ export default {
         // 注释代码用于开发环境或实际项目接口
         // /api/getMyApplyDetail
         // "http://59.33.36.124:38080/estapi/api/FlowApprove/GetMyApplySchedule?billno=" + billno
-		this.$http.get("http://59.33.36.124:38080/estapi/api/FlowApprove/GetMyApplySchedule?billno=" + billno).then(resp => {
+		this.$http.get(this.seieiURL + "/estapi/api/FlowApprove/GetMyApplySchedule?billno=" + billno).then(resp => {
 			this.billnoList = resp.body;
 		})
 	},

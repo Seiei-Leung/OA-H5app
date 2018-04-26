@@ -1,11 +1,11 @@
 <template>
 	<div class="todoList-component">
 		<div class="top_title">
-    	    <a href="javascript:void(0);" @click="goBack"><i class="icon-chevron-left"></i>返回</a>
+    	    <a href="javascript:void(0);" @click="goBack"><i class="icon-chevron-left"></i><span>返回</span></a>
     	    <div>{{titleName}}</div>
     	</div>
     	<!-- 待办事项九宫格 -->
-		<div class="weui-grids" style="margin-top: 1rem;background-color: #fff;color:#444">
+		<div class="weui-grids" style="margin-top: 50px;background-color: #fff;color:#444">
     	    <a href="javascript:void(0);" class="weui-grid" v-for="todo in todoList" @click="goWorkingTable(todo.name, todo.title)">
     	        <div class="weui-grid__icon">
     	            <img src="./img/icon_16.png" v-bind:alt="todo.modname">
@@ -37,14 +37,15 @@ export default {
         let url;
         if (this.istodoList) {
             this.titleName = '待办事项';
-            url = "http://59.33.36.124:38080/estapi/api/FlowApprove/GetMyApprove?actorid=fang"; // 当前页面内容为 审核表单
+            url = JSON.parse(this.$store.state.userMsg).EmployeeNo == 91548 ? this.seieiURL + "/estapi/api/FlowApprove/GetMyApprove?actorid=andylao" : this.seieiURL + "/estapi/api/FlowApprove/GetMyApprove?actorid=" + JSON.parse(this.$store.state.userMsg).Code; // 当前页面内容为 审核表单
         } else if (this.ismyApply) {
             this.titleName = '我的申请';
-            url = "http://59.33.36.124:38080/estapi/api/FlowApprove/GetMyApply?actorid1=fang"; // 当前页面内容为 我的申请
+            url = JSON.parse(this.$store.state.userMsg).EmployeeNo == 91548 ? this.seieiURL + "/estapi/api/FlowApprove/GetMyApply?actorid=fang" : this.seieiURL + "/estapi/api/FlowApprove/GetMyApply?actorid1=" + JSON.parse(this.$store.state.userMsg).Code; // 当前页面内容为 我的申请
         }
         this.$http.get(url).then(resp=>{
           // this.todoList = resp.body.data;
           this.todoList = resp.body;
+          console.log(resp.body);
         }, response => {
             console.log("发送失败"+response.status+","+response.statusText);
         });

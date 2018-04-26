@@ -1,6 +1,6 @@
 <template>
 	<!-- 工作台 -->
-	<div class="workbench-component">	
+	<div class="workbench-component" style="z-index: -1;">	
 	<div class="weui-panel__bd">
         <div class="weui-media-box weui-media-box_small-appmsg">
             <div class="weui-cells">
@@ -34,12 +34,39 @@
                 </a>
                 <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="gotimeCard">
                     <div class="weui-cell__hd">
-                    	<img src="./img/icon_7.png" alt="业务查询" class="iconImg">
+                        <img src="./img/timg2.jpg" alt="考勤查询" class="iconImg">
                     </div>
                     <div class="weui-cell__bd weui-cell_primary">
                         <p>考勤查询</p>
                     </div>
-                	<span class="weui-cell__ft"></span>
+                    <span class="weui-cell__ft"></span>
+                </a>
+                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="gotimeCardXLF">
+                    <div class="weui-cell__hd">
+                        <img src="./img/timg.jpg" alt="效率分查询" class="iconImg">
+                    </div>
+                    <div class="weui-cell__bd weui-cell_primary">
+                        <p>效率分查询</p>
+                    </div>
+                    <span class="weui-cell__ft"></span>
+                </a>
+                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="gotimeCardZSGZ">
+                    <div class="weui-cell__hd">
+                        <img src="./img/timg4.png" alt="效率分查询" class="iconImg">
+                    </div>
+                    <div class="weui-cell__bd weui-cell_primary">
+                        <p>计时查询</p>
+                    </div>
+                    <span class="weui-cell__ft"></span>
+                </a>
+                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="gotimeCardSS">
+                    <div class="weui-cell__hd">
+                        <img src="./img/timg3.jpg" alt="膳食查询" class="iconImg">
+                    </div>
+                    <div class="weui-cell__bd weui-cell_primary">
+                        <p>膳食查询</p>
+                    </div>
+                    <span class="weui-cell__ft"></span>
                 </a>
                 <a class="weui-cell weui-cell_access" href="javascript:void(0);">
                     <div class="weui-cell__hd">
@@ -117,7 +144,7 @@ export default {
         // http://59.33.36.124:38080/estapi/api/FlowApprove/GetMyApprove?actorid=fang
         // /api/getMyApplys
         // http://59.33.36.124:38080/estapi/api/FlowApprove/GetMyApply?actorid1=fang
-        this.$http.get("http://59.33.36.124:38080/estapi/api/FlowApprove/GetMyApprove?actorid=fang").then(resp=>{
+        this.$http.get(this.seieiURL + "/estapi/api/FlowApprove/GetMyApprove?actorid=" + JSON.parse(this.$store.state.userMsg).Code).then(resp=>{
           // resp.body = resp.body.data;
           resp.body.forEach((item) => {
             this.todoListNum += item.cnt;
@@ -125,7 +152,7 @@ export default {
         }, response => {
             console.log("发送失败"+response.status+","+response.statusText);
         });
-        this.$http.get("http://59.33.36.124:38080/estapi/api/FlowApprove/GetMyApply?actorid1=fang").then(resp=>{
+        this.$http.get(this.seieiURL + "/estapi/api/FlowApprove/GetMyApply?actorid1=" + JSON.parse(this.$store.state.userMsg).Code).then(resp=>{
           // resp.body = resp.body.data;
           resp.body.forEach((item) => {
             this.myApplyNum += item.cnt;
@@ -161,7 +188,19 @@ export default {
         },
         // 进入考勤查询
         gotimeCard: function() {
-            window.open('./timeCard.html', '_self');
+            window.open('./KQ2/timeCard.html', '_self');
+        },
+        // 进入效率分查询
+        gotimeCardXLF: function() {
+            window.open('./KQ2/timeCardXLF.html', '_self');
+        },
+        // 进入膳食查询
+        gotimeCardSS: function() {
+            window.open('./KQ2/timeCardSS.html', '_self');
+        },
+        // 进入计时查询
+        gotimeCardZSGZ: function() {
+            window.open('./KQ2/timeCardZSGZ.html', '_self');
         }
 	}
 }
@@ -169,7 +208,7 @@ export default {
 
 <style scoped>
 .workbench-component {
-	margin:1rem 0 3rem 0;
+	margin:48px 0 3rem 0;
 }
 .iconImg {
 	display:block;

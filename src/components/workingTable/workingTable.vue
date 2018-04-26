@@ -2,7 +2,7 @@
 	<div class="shoppingList-component">
     	<!-- 详细表格 -->
     	<div class="top_title" style="position: fixed;top: 0;width: 100%">
-    	    <a href="javascript:void(0);" @click="goBack"><i class="icon-chevron-left"></i>返回</a>
+    	    <a href="javascript:void(0);" @click="goBack"><i class="icon-chevron-left"></i><span>返回</span></a>
     	    <div>{{titleName}}</div>
     	</div>
     	<div class="workdetail-page">
@@ -11,8 +11,13 @@
                 <div class="main-table">
                     <ul>
                         <li v-for="(val, index2) in content">
-                            <span>{{nameList[index1][index2]}}：</span>
-                            <span style="color: #999;">{{val}}</span>
+                            <div v-if="!(val instanceof Array)">
+                                <span>{{nameList[index1][index2]}}：</span>
+                                <span style="color: #999;">{{val}}</span>
+                            </div>
+                            <div v-if="val instanceof Array" style="text-align: right;" @click="goTableDetail(val)">
+                                详情
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -85,9 +90,10 @@ export default {
         // "http://59.33.36.124:38080/estapi/api/FlowApprove/GetMyApplyDetailSmart?actorid2=fang&classname2=" + this.className
         let url;
         if (this.istodoList) {
-            url = "http://59.33.36.124:38080/estapi/api/FlowApprove/GetToDoWorkMasterDetailSmart?actorid4=andylao&classname4=";
+            url = JSON.parse(this.$store.state.userMsg).EmployeeNo == 91548 ? this.seieiURL + "/estapi/api/FlowApprove/GetToDoWorkMasterDetailSmart?actorid4=andylao&classname4=" : this.seieiURL + "/estapi/api/FlowApprove/GetToDoWorkMasterDetailSmart?actorid4=" + JSON.parse(this.$store.state.userMsg).Code +"&classname4=";
+            
         } else if (this.ismyApply) {
-            url = "http://59.33.36.124:38080/estapi/api/FlowApprove/GetMyApplyDetailSmart?actorid2=fang&classname2=";
+            url = JSON.parse(this.$store.state.userMsg).EmployeeNo == 91548 ? this.seieiURL + "/estapi/api/FlowApprove/GetMyApplyDetailSmart?actorid2=fang&classname2=" : this.seieiURL + "/estapi/api/FlowApprove/GetMyApplyDetailSmart?actorid2=" + JSON.parse(this.$store.state.userMsg).Code + "&classname2=";
         }
         this.$http.get(url + this.className).then(resp=>{
           let contentList = []; // 内容列表
@@ -97,6 +103,7 @@ export default {
           // 循环工作单列表 => resp.body.data.forEach(....)
 
           resp.body = resp.body.slice(0, 51);
+          console.log(resp.body);
           resp.body.forEach((item) => {
 
             // 制作名称列表
@@ -113,22 +120,32 @@ export default {
               forContentList.push(item['feild' + i]);
             }
             // 测试是否含有副表
-            if (item['details'].length > 0) {
-                var 
-                    detailsData = item['details'],
-                    detailsDataNum = detailsData.length;
-                for (let n=1; n<(detailsDataNum+1); n++) {
+            if (item["details"]) {
+                detailsList = [];
+                if (item['details'].length > 0) {
+                    // 制作副表内容列表
                     var 
-                        fordetailsList = [];
-                    for (let m=1; m<(Number(detailsData[n].fieldcnt) + 1); m++) {
-                        fordetailsList.push(detailsData[n]['field' + m]);
+                        detailsData = item['details'],
+                        detailsDataNum = detailsData.length;
+                    for (let n=0; n<detailsDataNum; n++) {
+                        var 
+                            fordetailsList = [],
+                            fordetailsNameList = [];
+                        for (let m=1; m<(Number(detailsData[n].fieldcnt) + 1 ); m++) {
+                            fordetailsList.push(detailsData[n]['feild' + m]);
+                        }
+                        // 制作副表名字列表
+                        detailsData[n].fields.split(',').forEach((str) => {
+                            fordetailsNameList.push(str.split('-')[1]);
+                        })
+                        fordetailsList.push(fordetailsNameList);
+                        detailsList.push(fordetailsList);
                     }
+                    forContentList.push(detailsList);
                 }
-
             }
-            detailsList.push(fordetailsList);
             contentList.push(forContentList);
-
+            // console.log(contentList);
             // 制作 Serialno 列表
             this.serialnoList.push(item.serialno);
 
@@ -153,7 +170,7 @@ export default {
             } else {
                 event.target.parentNode.style.backgroundColor = '#d6dde0';
             }
-            this.$http.get("http://59.33.36.124:38080/estapi/api/FlowApprove/GetApproveFlow?userCode=fang&serialno=" + serialno + "&formName=" + this.className + "&billNo=" + billno).then(resp => {
+            this.$http.get(this.seieiURL + "/estapi/api/FlowApprove/GetApproveFlow?userCode=" + JSON.parse(this.$store.state.userMsg).Code + "&serialno=" + serialno + "&formName=" + this.className + "&billNo=" + billno).then(resp => {
                 this.toast = '审批成功';
                 this.isToast = true;
                 setTimeout(() => {
@@ -166,8 +183,12 @@ export default {
         },
         goMyApply: function(arg) {
             if (this.ismyApply) {
-                this.$router.push({name: 'myApplyDetail', params: {billno: arg}})
+                this.$router.push({name: 'myApplyDetail', params: {billno: arg}});
             }
+        },
+        goTableDetail: function(arg) {
+            this.$store.state.tableDetailData = arg;
+            this.$router.push({name: "tabledetail"});
         }
     },
     components: {

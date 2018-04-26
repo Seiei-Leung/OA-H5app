@@ -49,11 +49,15 @@ export default {
 
 <style scoped>
 .header {
+  position: fixed;
+  top: 0;
+  width: 100%;
   background-color: #667e9c;
   color: #fff;
   text-align: center;
   font-size: 24px;
   line-height: 2em;
+  z-index: 1;
 }
 .tap {
   position: fixed;

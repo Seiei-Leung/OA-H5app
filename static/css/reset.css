@@ -20,6 +20,10 @@ i{font-style:normal;-webkit-user-select: none;}
 .clearfix:after{display: block;content:'';height: 0;line-height: 0;clear: both;visibility: hidden;}
 
 .top_title {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 10000;
 	background-color: #667e9c;
     color: #fff;
     text-align: center;
@@ -32,4 +36,12 @@ i{font-style:normal;-webkit-user-select: none;}
     left: 0.2em;
     color: #fff;
     font-size: 0.7em;
+}
+.top_title .icon-chevron-left{
+    font-size: 1.5em!important;
+    line-height: 48px!important;
+}
+.top_title a span{
+    vertical-align: top;
+    line-height: 48px;
 }
