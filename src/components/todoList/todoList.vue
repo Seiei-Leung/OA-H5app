@@ -5,15 +5,28 @@
     	    <div>{{titleName}}</div>
     	</div>
     	<!-- 待办事项九宫格 -->
-		<div class="weui-grids" style="margin-top: 50px;background-color: #fff;color:#444">
+        <div class="weui-media-box weui-media-box_small-appmsg" style="margin-top: 48px;">
+            <div class="weui-cells">
+                <a class="weui-cell weui-cell_access" href="javascript:void(0);" v-for="todo in todoList" @click="goWorkingTable(todo.name, todo.title)">
+                    <div class="weui-cell__hd">
+                        <img src="./img/icon_11.png" class="iconImg">
+                    </div>
+                    <div class="weui-cell__bd weui-cell_primary">
+                        <p>{{todo.modname}}<span class="weui-badge redPoint">{{todo.cnt}}</span></p>
+                    </div>
+                    <span class="weui-cell__ft"></span>
+                </a>
+            </div>
+        </div>
+<!-- 		<div class="weui-grids" style="margin-top: 50px;background-color: #fff;color:#444">
     	    <a href="javascript:void(0);" class="weui-grid" v-for="todo in todoList" @click="goWorkingTable(todo.name, todo.title)">
     	        <div class="weui-grid__icon">
     	            <img src="./img/icon_16.png" v-bind:alt="todo.modname">
     	        	<span class="weui-badge">{{todo.cnt}}</span>
     	        </div>
     	        <p class="weui-grid__label">{{todo.modname}}</p>
-    	    </a>
-    	</div>
+    	    </a> 
+    	</div> -->
 	</div>
 </template>
 
@@ -72,10 +85,13 @@ export default {
 .weui-grid__icon {
 	position: relative;
 }
-.weui-badge {
-	margin-left: 5px;
-	position:absolute;
-	top:-8px;
-	right:-8px;
+.iconImg {
+    display:block;
+    width:20px;
+    margin-right:5px;
+}
+.redPoint {
+    position: absolute;
+    top: 0.6em;
 }
 </style>

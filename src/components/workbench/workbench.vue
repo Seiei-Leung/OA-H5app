@@ -4,16 +4,16 @@
 	<div class="weui-panel__bd">
         <div class="weui-media-box weui-media-box_small-appmsg">
             <div class="weui-cells">
-                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goDataCube">
+                        <!-- 相片引用使用 相对路径 -->
+<!--                 <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goDataCube">
                     <div class="weui-cell__hd">
-                    	<!-- 相片引用使用 相对路径 -->
                     	<img src="./img/icon_4.png" alt="数据魔方" class="iconImg">
                     </div>
                     <div class="weui-cell__bd weui-cell_primary">
                         <p>数据魔方</p>
                     </div>
                 	<span class="weui-cell__ft"></span>
-                </a>
+                </a> -->
                 <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goDB">
                     <div class="weui-cell__hd">
                     	<img src="./img/icon_11.png" alt="通知公告" class="iconImg">
@@ -23,7 +23,7 @@
                     </div>
                 	<span class="weui-cell__ft"></span>
                 </a>
-                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goSchedule">
+<!--                 <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goSchedule">
                     <div class="weui-cell__hd">
                     	<img src="./img/icon_16.png" alt="日程" class="iconImg">
                     </div>
@@ -31,43 +31,7 @@
                         <p>日程</p>
                     </div>
                 	<span class="weui-cell__ft"></span>
-                </a>
-                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="gotimeCard">
-                    <div class="weui-cell__hd">
-                        <img src="./img/timg2.jpg" alt="考勤查询" class="iconImg">
-                    </div>
-                    <div class="weui-cell__bd weui-cell_primary">
-                        <p>考勤查询</p>
-                    </div>
-                    <span class="weui-cell__ft"></span>
-                </a>
-                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="gotimeCardXLF">
-                    <div class="weui-cell__hd">
-                        <img src="./img/timg.jpg" alt="效率分查询" class="iconImg">
-                    </div>
-                    <div class="weui-cell__bd weui-cell_primary">
-                        <p>效率分查询</p>
-                    </div>
-                    <span class="weui-cell__ft"></span>
-                </a>
-                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="gotimeCardZSGZ">
-                    <div class="weui-cell__hd">
-                        <img src="./img/timg4.png" alt="效率分查询" class="iconImg">
-                    </div>
-                    <div class="weui-cell__bd weui-cell_primary">
-                        <p>计时查询</p>
-                    </div>
-                    <span class="weui-cell__ft"></span>
-                </a>
-                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="gotimeCardSS">
-                    <div class="weui-cell__hd">
-                        <img src="./img/timg3.jpg" alt="膳食查询" class="iconImg">
-                    </div>
-                    <div class="weui-cell__bd weui-cell_primary">
-                        <p>膳食查询</p>
-                    </div>
-                    <span class="weui-cell__ft"></span>
-                </a>
+                </a> -->
                 <a class="weui-cell weui-cell_access" href="javascript:void(0);">
                     <div class="weui-cell__hd">
                         <img src="./img/icon_7.png" alt="业务查询" class="iconImg">
@@ -77,7 +41,7 @@
                     </div>
                     <span class="weui-cell__ft"></span>
                 </a>
-                <a class="weui-cell weui-cell_access" href="javascript:void(0);">
+<!--                 <a class="weui-cell weui-cell_access" href="javascript:void(0);">
                     <div class="weui-cell__hd">
                     	<img src="./img/icon_5.png" alt="预警" class="iconImg">
                     </div>
@@ -85,7 +49,7 @@
                         <p>预警</p>
                     </div>
                 	<span class="weui-cell__ft"></span>
-                </a>
+                </a> -->
                 <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goWhere('todolist')">
                     <div class="weui-cell__hd">
                         <img src="./img/icon_41.png" alt="待办事项" class="iconImg">
@@ -95,7 +59,7 @@
                     </div>
                     <span class="weui-cell__ft"></span>
                 </a>
-                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goWhere('myapply')">
+<!--                 <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goWhere('myapply')">
                     <div class="weui-cell__hd">
                         <img src="./img/icon_16.png" alt="待办事项" class="iconImg">
                     </div>
@@ -121,7 +85,7 @@
                         <p>出差约车</p>
                     </div>
                     <span class="weui-cell__ft"></span>
-                </a>
+                </a> -->
             </div>
         </div>
     </div>

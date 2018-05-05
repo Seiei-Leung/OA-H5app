@@ -5,53 +5,35 @@
     	    <a href="javascript:void(0);" @click="goBack"><i class="icon-chevron-left"></i><span>返回</span></a>
     	    <div>{{titleName}}</div>
     	</div>
-    	<div class="workdetail-page">
+    	<div class="workdetail-page" ref="findHook">
             <!-- 动态绑定要是用 v-bind ,不然绑定的是整个字符串，下面 ref 就是个例子 -->
     	    <div class="table-item" v-for="(content, index1) in contentList" v-bind:ref="'table-item' + index1" @click="goMyApply(billnoList[index1])">
                 <div class="main-table">
+                    <div v-if="istodoList" class="checkbox" @click="select()" v-bind:data-serialno="serialnoList[index1]" v-bind:data-billno="billnoList[index1]" v-bind:data-index="index1"></div>
                     <ul>
                         <li v-for="(val, index2) in content">
                             <div v-if="!(val instanceof Array)">
                                 <span>{{nameList[index1][index2]}}：</span>
                                 <span style="color: #999;">{{val}}</span>
                             </div>
-                            <div v-if="val instanceof Array" style="text-align: right;" @click="goTableDetail(val)">
+                            <div v-if="val instanceof Array" style="position: absolute;bottom: -36px;right: 0;" @click="goTableDetail(val)">
                                 详情
                             </div>
                         </li>
                     </ul>
                 </div>
-                <!-- 以下是副列表信息 -->
-                <!--
-                <div class="subtable-title">
-    	            <span>采购详情</span>
-    	        </div>
-    	        <div class="subtable">
-    	            <ul>
-    	                <li>
-    	                    <span>名称：</span>
-    	                    <span>平车梭床</span>
-    	                </li>
-    	                <li>
-    	                    <span>规格：</span>
-    	                    <span>110-33650</span>
-    	                </li>
-    	            </ul>
-    	        </div>
-                -->
                 <div class="passbtn-wrapper" v-if="istodoList">
                     <div class="passbtn" @click="approval(serialnoList[index1], billnoList[index1], index1, $event)">
                         <span>审批</span>
                     </div>
-                    <div class="passbtn">
-                        <span>拒签</span>
-                    </div>
-                    <div class="passbtn">
-                        <span>取回</span>
-                    </div>
                 </div>
     	    </div>
     	</div>
+        <div class="footerBar">
+            <div class="btn" @click="selectAll">全选</div>
+            <div class="btn" @click="selectNone">全不选</div>
+            <div class="btn" @click="batchApproval">批量审批</div>
+        </div>
         <!-- loading 图 -->
         <v-loading v-show="isLoading"></v-loading>
         <!-- toast -->
@@ -77,7 +59,8 @@ export default {
             toast: '',
             isToast: false,
             istodoList: this.$route.params.where == 'todolist',
-            ismyApply: this.$route.params.where == 'myapply'
+            ismyApply: this.$route.params.where == 'myapply',
+            batchList: []
         };
     },
     created: function() {
@@ -186,9 +169,72 @@ export default {
                 this.$router.push({name: 'myApplyDetail', params: {billno: arg}});
             }
         },
+        // 查看详情
         goTableDetail: function(arg) {
-            this.$store.state.tableDetailData = arg;
-            this.$router.push({name: "tabledetail"});
+            this.isLoading = true;
+            var that = this;
+            setTimeout(function() {
+                that.$store.state.tableDetailData = arg;
+                that.$router.push({name: "tabledetail"});
+            }, 500)
+        },
+        // 选择按钮
+        select: function() {
+            if (event.target.className == "checkbox") {
+                event.target.className += " active";
+            } else {
+                event.target.className = "checkbox";
+            }
+        },
+        // 全选
+        selectAll: function(){
+            var elementList = this.$refs.findHook.getElementsByClassName("checkbox");
+            for (var i=0; i<elementList.length; i++){
+                if (elementList[i].className == "checkbox"){
+                    elementList[i].className += " active";
+                }
+            }
+        },
+        // 全不选
+        selectNone: function(){
+            var elementList = this.$refs.findHook.getElementsByClassName("checkbox");
+            for (var i=0; i<elementList.length; i++){
+                elementList[i].className = "checkbox";
+            }
+        },
+        // 批量提交
+        batchApproval: function(){
+            var elementList = this.$refs.findHook.getElementsByClassName("active");
+            if (elementList.length == 0) {
+                this.toast = '请选择要审批的项目';
+                this.isToast = true;
+                setTimeout(() => {
+                    this.isToast = false;
+                }, 500);
+            } else {
+                this.isLoading = true;
+                var doneNum = [];
+                for (var i=0; i<elementList.length; i++) {
+                    this.$http.get(this.seieiURL + "/estapi/api/FlowApprove/GetApproveFlow?userCode=" + JSON.parse(this.$store.state.userMsg).Code + "&serialno=" + elementList[i].getAttribute("data-serialno") + "&formName=" + this.className + "&billNo=" + elementList[i].getAttribute("data-billno")).then(resp => {
+                            doneNum.push(i);
+                            setTimeout(() => {
+                                this.$refs['table-item' + elementList[i].getAttribute("data-index")][0].style.display = 'none';
+                            }, 500);
+                            if (doneNum == elementList.length) {
+                                this.isLoading = false;
+                                this.toast = '审批成功';
+                                this.isToast = true;
+                                setTimeout(() => {
+                                    this.isToast = false;
+                                }, 500);
+                            }
+                        }, response => {
+                            this.isLoading = false;
+                            console.log("发送失败"+response.status+","+response.statusText);
+                        })
+                }
+                
+            }
         }
     },
     components: {
@@ -198,7 +244,21 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+.checkbox {
+    position: absolute;
+    left: 0px;
+    top: 50%;
+    width: 20px;
+    height: 20px;
+    margin-bottom: 10px;
+    background-image: url("./img/badge-circle.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+}
+.checkbox.active {
+    background-image: url("./img/select.png");
+}
 .shoppingList-component {
 	position: absolute;
 	top: 0;
@@ -209,7 +269,7 @@ export default {
 	z-index: 1;
 }
 .workdetail-page {
-	margin-top: 55px
+	margin: 55px 0
 }
 .workdetail-page li span:first-child {
     display: inline-block;
@@ -224,6 +284,8 @@ export default {
     border-radius: 10px;
 }
 .workdetail-page .table-item .main-table {
+    position: relative;
+    padding-left: 30px;
     padding-bottom: 1em;
     color: #169fe6;
 }
@@ -241,19 +303,38 @@ export default {
     border-top: 1px dashed #e5e5e5;
 }
 .passbtn-wrapper {
-    display: flex;
-    display: -webkit-flex;
-    justify-content: space-around;
-    -webkit-justify-content: space-around;
     padding-top: 1em;
     border-top: 1px dashed #e5e5e5;
 }
 .workdetail-page .passbtn {
+    margin-left: 30px;
     width: 1.5rem;
     text-align: center;
     line-height: 1;
     font-size: 14px;
     padding: 0.5em;
+    background-color: #169fe6;
+    border-radius: 10px;
+    color: #fff;
+}
+.footerBar {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 5px 0;
+    display: flex;
+    display: -webkit-flex;
+    justify-content: space-around;
+    -webkit-justify-content: space-around;
+    background-color: #fff;
+    border-top: 1px solid #ddd
+}
+.footerBar .btn {
+    width: 4em;
+    padding: 0.5em;
+    line-height: 1;
+    text-align: center;
+    font-size: 14px;
     background-color: #169fe6;
     border-radius: 10px;
     color: #fff;
