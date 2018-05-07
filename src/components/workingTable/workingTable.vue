@@ -9,18 +9,29 @@
             <!-- 动态绑定要是用 v-bind ,不然绑定的是整个字符串，下面 ref 就是个例子 -->
     	    <div class="table-item" v-for="(content, index1) in contentList" v-bind:ref="'table-item' + index1" @click="goMyApply(billnoList[index1])">
                 <div class="main-table">
-                    <div v-if="istodoList" class="checkbox" @click="select()" v-bind:data-serialno="serialnoList[index1]" v-bind:data-billno="billnoList[index1]" v-bind:data-index="index1"></div>
-                    <ul>
-                        <li v-for="(val, index2) in content">
-                            <div v-if="!(val instanceof Array)">
+                    <!-- 主表 -->
+                    <div style="position:relative;">
+                        <div v-for="(val, index2) in content" v-if="!(val instanceof Array)">
+                            <div class="titlehook">
                                 <span>{{nameList[index1][index2]}}：</span>
                                 <span style="color: #999;">{{val}}</span>
                             </div>
-                            <div v-if="val instanceof Array" style="position: absolute;bottom: -36px;right: 0;" @click="goTableDetail(val)">
-                                详情
+                        </div>
+                        <div v-if="istodoList" class="checkbox" @click="select()" v-bind:data-serialno="serialnoList[index1]" v-bind:data-billno="billnoList[index1]" v-bind:data-index="index1"></div>
+                    </div>
+                    <!-- 详情链接 -->
+                    <div v-for="(val, index2) in content" v-if="(val instanceof Array) && (!isShowdetail)" style="position: absolute;bottom: -36px;right: 0;" @click="goTableDetail(val)">
+                        详情
+                    </div>
+                    <div v-for="(val, index2) in content" v-if="(val instanceof Array) && isShowdetail" class="border"></div>
+                    <div v-for="(val, index2) in content" v-if="(val instanceof Array) && isShowdetail" class="detailWrapper">
+                        <div v-for="(detailContent, index3) in getDetailList[index1]" class="detailItem">
+                            <div v-for="(detailItem, index4) in detailContent" v-if="!(detailItem instanceof Array)" class="titlehook">
+                                <span class="itemTitle">{{getDetailNameList[index3][index4]}}:</span><span style="color: #999;">{{detailItem}}</span>
                             </div>
-                        </li>
-                    </ul>
+                        </div>
+                    </div>
+                    <!-- 副表 -->
                 </div>
                 <div class="passbtn-wrapper" v-if="istodoList">
                     <div class="passbtn" @click="approval(serialnoList[index1], billnoList[index1], index1, $event)">
@@ -60,7 +71,10 @@ export default {
             isToast: false,
             istodoList: this.$route.params.where == 'todolist',
             ismyApply: this.$route.params.where == 'myapply',
-            batchList: []
+            batchList: [],
+            isShowdetail: false,
+            getDetailList: [],
+            getDetailNameList: []
         };
     },
     created: function() {
@@ -74,7 +88,11 @@ export default {
         let url;
         if (this.istodoList) {
             url = JSON.parse(this.$store.state.userMsg).EmployeeNo == 91548 ? this.seieiURL + "/estapi/api/FlowApprove/GetToDoWorkMasterDetailSmart?actorid4=andylao&classname4=" : this.seieiURL + "/estapi/api/FlowApprove/GetToDoWorkMasterDetailSmart?actorid4=" + JSON.parse(this.$store.state.userMsg).Code +"&classname4=";
-            
+            this.$http.get(this.seieiURL + "/estapi/api/FlowApprove?classname=" + this.className).then(resp=>{
+                if (resp.body.MDInOnePhone == true) {
+                    this.isShowdetail = true;
+                }
+            })
         } else if (this.ismyApply) {
             url = JSON.parse(this.$store.state.userMsg).EmployeeNo == 91548 ? this.seieiURL + "/estapi/api/FlowApprove/GetMyApplyDetailSmart?actorid2=fang&classname2=" : this.seieiURL + "/estapi/api/FlowApprove/GetMyApplyDetailSmart?actorid2=" + JSON.parse(this.$store.state.userMsg).Code + "&classname2=";
         }
@@ -82,6 +100,8 @@ export default {
           let contentList = []; // 内容列表
           let nameList = []; // 名称列表
           let detailsList = []; // 附表内容列表
+          let forShowDetailList = [];
+          let forShowDetailNameList = [];
           let detailsNameList = []; // 附表名字列表
           // 循环工作单列表 => resp.body.data.forEach(....)
 
@@ -105,6 +125,8 @@ export default {
             // 测试是否含有副表
             if (item["details"]) {
                 detailsList = [];
+                forShowDetailList = [];
+                forShowDetailNameList = [];
                 if (item['details'].length > 0) {
                     // 制作副表内容列表
                     var 
@@ -121,12 +143,17 @@ export default {
                         detailsData[n].fields.split(',').forEach((str) => {
                             fordetailsNameList.push(str.split('-')[1]);
                         })
+                        forShowDetailList.push(fordetailsList);
+                        console.log(fordetailsList);
+                        this.getDetailNameList.push(fordetailsNameList);
                         fordetailsList.push(fordetailsNameList);
                         detailsList.push(fordetailsList);
                     }
                     forContentList.push(detailsList);
                 }
             }
+            this.getDetailList.push(forShowDetailList);
+            console.log(this.getDetailList);
             contentList.push(forContentList);
             // console.log(contentList);
             // 制作 Serialno 列表
@@ -247,11 +274,11 @@ export default {
 <style scoped>
 .checkbox {
     position: absolute;
-    left: 0px;
+    left: -28px;
     top: 50%;
     width: 20px;
     height: 20px;
-    margin-bottom: 10px;
+    margin-top: -10px;
     background-image: url("./img/badge-circle.png");
     background-size: 100% 100%;
     background-repeat: no-repeat;
@@ -271,7 +298,7 @@ export default {
 .workdetail-page {
 	margin: 55px 0
 }
-.workdetail-page li span:first-child {
+.titlehook span:first-child {
     display: inline-block;
     min-width: 7em;
 }
@@ -321,12 +348,12 @@ export default {
     position: fixed;
     bottom: 0;
     width: 100%;
-    padding: 5px 0;
+    padding: 10px 0;
     display: flex;
     display: -webkit-flex;
     justify-content: space-around;
     -webkit-justify-content: space-around;
-    background-color: #fff;
+    background-color: #e5e5e5;
     border-top: 1px solid #ddd
 }
 .footerBar .btn {
@@ -338,5 +365,26 @@ export default {
     background-color: #169fe6;
     border-radius: 10px;
     color: #fff;
+}
+.border {
+    margin-top: 1em;
+    position:absolute;
+    left: 0;
+    width:100%;
+    border-top:2px #ddd dotted
+}
+.detailItem {
+    padding:1em 0;
+    border-bottom:1px dotted #ddd;
+}
+.detailWrapper {
+    margin-top: 1em
+}
+.detailItem {
+    padding:1em 0;
+    border-bottom:1px dotted #ddd;
+}
+.detailWrapper .detailItem:last-child{
+    border-bottom: none
 }
 </style>

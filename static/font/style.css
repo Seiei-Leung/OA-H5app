@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icomoon';
-  src:  url('fonts/icomoon.eot?4j9bs');
-  src:  url('fonts/icomoon.eot?4j9bs#iefix') format('embedded-opentype'),
-    url('fonts/icomoon.ttf?4j9bs') format('truetype'),
-    url('fonts/icomoon.woff?4j9bs') format('woff'),
-    url('fonts/icomoon.svg?4j9bs#icomoon') format('svg');
+  src:  url('fonts/icomoon.eot?437wdg');
+  src:  url('fonts/icomoon.eot?437wdg#iefix') format('embedded-opentype'),
+    url('fonts/icomoon.ttf?437wdg') format('truetype'),
+    url('fonts/icomoon.woff?437wdg') format('woff'),
+    url('fonts/icomoon.svg?437wdg#icomoon') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -24,11 +24,20 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.icon-grid:before {
+  content: "\e90f";
+}
+.icon-list:before {
+  content: "\e910";
+}
 .icon-directions_car:before {
   content: "\e531";
 }
 .icon-directions_run:before {
   content: "\e566";
+}
+.icon-my_location:before {
+  content: "\e55c";
 }
 .icon-chevron-down:before {
   content: "\e909";
@@ -57,6 +66,9 @@
 .icon-user2:before {
   content: "\e90b";
 }
+.icon-home3:before {
+  content: "\e90e";
+}
 .icon-compass:before {
   content: "\e949";
 }
@@ -74,8 +86,6 @@
 }
 .icon-play:before {
   content: "\e901";
-  display: inline-block;
-  transform:rotate(90deg);
 }
 .icon-image:before {
   content: "\e90d";

@@ -14,7 +14,7 @@ export default {
 
 <style>
 .loading-wrapper {
-	position: absolute;
+	position: fixed;
 	top: 45%;
 	width: 100%;
 	text-align: center;

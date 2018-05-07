@@ -3,13 +3,14 @@
 		<div class="top_title">
     	    <a href="javascript:void(0);" @click="goBack"><i class="icon-chevron-left"></i><span>返回</span></a>
     	    <div>{{titleName}}</div>
+            <i class="icon-grid" @click="showAsGrid" v-show="isShowAsList"></i>
+            <i class="icon-list" @click="showAsList" v-show="!(isShowAsList)"></i>
     	</div>
-    	<!-- 待办事项九宫格 -->
-        <div class="weui-media-box weui-media-box_small-appmsg" style="margin-top: 48px;">
+        <div class="weui-media-box weui-media-box_small-appmsg" style="margin-top: 48px;" v-show="isShowAsList">
             <div class="weui-cells">
                 <a class="weui-cell weui-cell_access" href="javascript:void(0);" v-for="todo in todoList" @click="goWorkingTable(todo.name, todo.title)">
                     <div class="weui-cell__hd">
-                        <img src="./img/icon_11.png" class="iconImg">
+                        <img src="./img/icon_16.png" class="iconImg">
                     </div>
                     <div class="weui-cell__bd weui-cell_primary">
                         <p>{{todo.modname}}<span class="weui-badge redPoint">{{todo.cnt}}</span></p>
@@ -18,7 +19,8 @@
                 </a>
             </div>
         </div>
-<!-- 		<div class="weui-grids" style="margin-top: 50px;background-color: #fff;color:#444">
+        <!-- 待办事项九宫格 -->
+		<div class="weui-grids" style="margin-top: 50px;background-color: #fff;color:#444" v-show="!(isShowAsList)">
     	    <a href="javascript:void(0);" class="weui-grid" v-for="todo in todoList" @click="goWorkingTable(todo.name, todo.title)">
     	        <div class="weui-grid__icon">
     	            <img src="./img/icon_16.png" v-bind:alt="todo.modname">
@@ -26,7 +28,7 @@
     	        </div>
     	        <p class="weui-grid__label">{{todo.modname}}</p>
     	    </a> 
-    	</div> -->
+    	</div>
 	</div>
 </template>
 
@@ -38,7 +40,8 @@ export default {
             present: this.$route.params.where,
             istodoList: this.$route.params.where == 'todolist',
             ismyApply: this.$route.params.where == 'myapply',
-            titleName: ''
+            titleName: '',
+            isShowAsList: true
         };
     },
     created: function() {
@@ -67,7 +70,13 @@ export default {
 		goWorkingTable: function(kind, title) {
             let present = this.present;
 			this.$router.push({name: "workingTable", params: {classname: kind, titlename: title, where: present}});
-		}
+		},
+        showAsGrid: function(){
+            this.isShowAsList = false;
+        },
+        showAsList: function(){
+            this.isShowAsList = true;
+        }
 	}
 }
 </script>
@@ -87,11 +96,26 @@ export default {
 }
 .iconImg {
     display:block;
-    width:20px;
+    width: 28px;
     margin-right:5px;
+}
+.weui-badge {
+    position: absolute;
+    left: 20px;
+    top: -10px;
 }
 .redPoint {
     position: absolute;
     top: 0.6em;
+    left: 2.5em;
+}
+.icon-grid,
+.icon-list {
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 48px;
+    line-height: 48px;
 }
 </style>
