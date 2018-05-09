@@ -14,13 +14,13 @@
                         <div v-for="(val, index2) in content" v-if="!(val instanceof Array)">
                             <div class="titlehook">
                                 <span>{{nameList[index1][index2]}}：</span>
-                                <span style="color: #999;">{{val}}</span>
+                                <span style="color: #999;">{{String(val).replace("T00:00:00", "")}}</span>
                             </div>
                         </div>
                         <div v-if="istodoList" class="checkbox" @click="select()" v-bind:data-serialno="serialnoList[index1]" v-bind:data-billno="billnoList[index1]" v-bind:data-index="index1"></div>
                     </div>
                     <!-- 详情链接 -->
-                    <div v-for="(val, index2) in content" v-if="(val instanceof Array) && (!isShowdetail)" style="position: absolute;bottom: -36px;right: 0;" @click="goTableDetail(val)">
+                    <div v-for="(val, index2) in content" v-if="(val instanceof Array) && (!isShowdetail)" style="position: absolute;bottom: -36px;right: 0.5em;line-height: 35px;" @click="goTableDetail(val)">
                         详情
                     </div>
                     <div v-for="(val, index2) in content" v-if="(val instanceof Array) && isShowdetail" class="border"></div>
@@ -241,13 +241,15 @@ export default {
             } else {
                 this.isLoading = true;
                 var doneNum = [];
+                console.log("长度" + elementList.length);
                 for (var i=0; i<elementList.length; i++) {
                     this.$http.get(this.seieiURL + "/estapi/api/FlowApprove/GetApproveFlow?userCode=" + JSON.parse(this.$store.state.userMsg).Code + "&serialno=" + elementList[i].getAttribute("data-serialno") + "&formName=" + this.className + "&billNo=" + elementList[i].getAttribute("data-billno")).then(resp => {
+                            console.log("次数：" + i)
                             doneNum.push(i);
-                            setTimeout(() => {
-                                this.$refs['table-item' + elementList[i].getAttribute("data-index")][0].style.display = 'none';
-                            }, 500);
                             if (doneNum == elementList.length) {
+                                for (var n=0; n<elementList.length; n++) {
+                                    this.$refs['table-item' + elementList[n].getAttribute("data-index")][0].style.display = 'none';
+                                }
                                 this.isLoading = false;
                                 this.toast = '审批成功';
                                 this.isToast = true;
@@ -259,6 +261,15 @@ export default {
                             this.isLoading = false;
                             console.log("发送失败"+response.status+","+response.statusText);
                         })
+                    // 休眠
+                    var now = new Date(); 
+                    var exitTime = now.getTime() + 2000; 
+                    while (true) {
+                        now = new Date(); 
+                        if (now.getTime() > exitTime) {
+                            break;
+                        }
+                    }
                 }
                 
             }
@@ -306,15 +317,16 @@ export default {
 	box-sizing: border-box;
     width: 9.5rem;
     margin: 0.3rem auto;
-    padding: 1em;
+    padding: 0.5em;
     background-color: #fff;
     border-radius: 10px;
 }
 .workdetail-page .table-item .main-table {
     position: relative;
     padding-left: 30px;
-    padding-bottom: 1em;
+    padding-bottom: 0.5em;
     color: #169fe6;
+    line-height: 1.4
 }
 .workdetail-page .subtable-title {
     font-size: 1.5em;
@@ -330,7 +342,7 @@ export default {
     border-top: 1px dashed #e5e5e5;
 }
 .passbtn-wrapper {
-    padding-top: 1em;
+    padding-top: 0.5em;
     border-top: 1px dashed #e5e5e5;
 }
 .workdetail-page .passbtn {

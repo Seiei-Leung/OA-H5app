@@ -5,14 +5,15 @@ import addressBook from '@/components/addressBook/addressBook';
 import signin from '@/components/signin/signin';
 import announcement from '@/components/announcement/announcement';
 import todoList from '@/components/todoList/todoList?v=2018-5-7';
-import workingTable from '@/components/workingTable/workingTable?v=2018-5-7';
+import workingTable from '@/components/workingTable/workingTable?v=2018-5-09';
 import announcementDetail from '@/components/announcementDetail/announcementDetail';
 import dataCube from '@/components/dataCube/dataCube';
 import schedule from '@/components/schedule/schedule';
 import myApplyDetail from '@/components/myApplyDetail/myApplyDetail';
-import timeCard from '@/components/timeCard/timeCard';
 import personalMsg from '@/components/personalMsg/personalMsg';
 import tabledetail from '@/components/tabledetail/tabledetail';
+import businessQuery from '@/components/businessQuery/businessQuery';
+import sourcePlan from '@/components/sourcePlan/sourcePlan';
 
 Vue.use(Router);
 
@@ -78,12 +79,6 @@ export default new Router({
       name: 'myApplyDetail',
       component: myApplyDetail
     },
-    // 考勤查询
-    {
-      path: '/timeCard',
-      name: 'timeCard',
-      component: timeCard
-    },
     // 个人中心
     {
       path: '/personalMsg',
@@ -95,6 +90,18 @@ export default new Router({
       path: '/tabledetail',
       name: 'tabledetail',
       component: tabledetail
+    },
+    // 业务查询
+    {
+      path: '/businessQuery',
+      name: 'businessQuery',
+      component: businessQuery
+    },
+    // 物料计划
+    {
+      path: '/sourcePlan',
+      name: 'sourcePlan',
+      component: sourcePlan
     }
   ]
 })

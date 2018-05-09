@@ -11,6 +11,7 @@ export default new Vuex.Store({
 		// 用户登陆信息
 		tableDetailData: [],
 		userMsg: UserMsg,
-		seieiURL: "http://www.seieiblog.top:38080"
+		seieiURL: "http://www.seieiblog.top:38080",
+		isShowAsList: true
 	}
 })

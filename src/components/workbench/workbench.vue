@@ -32,7 +32,7 @@
                     </div>
                 	<span class="weui-cell__ft"></span>
                 </a> -->
-                <a class="weui-cell weui-cell_access" href="javascript:void(0);">
+                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goBusinessQuery">
                     <div class="weui-cell__hd">
                         <img src="./img/icon_7.png" alt="业务查询" class="iconImg">
                     </div>
@@ -138,6 +138,10 @@ export default {
         goDataCube: function() {
             this.$router.push({name: 'dataCube'});
         },
+        // 进入业务查询
+        goBusinessQuery: function(){
+            this.$router.push({name: 'businessQuery'});
+        },
         // 进入日程表
         goSchedule: function() {
             window.open('./schedule.html', '_self');
@@ -149,22 +153,6 @@ export default {
         // 进入上传图片
         goUpLoadimg: function() {
             window.open('./UpLoadimg.html', '_self');
-        },
-        // 进入考勤查询
-        gotimeCard: function() {
-            window.open('./KQ2/timeCard.html', '_self');
-        },
-        // 进入效率分查询
-        gotimeCardXLF: function() {
-            window.open('./KQ2/timeCardXLF.html', '_self');
-        },
-        // 进入膳食查询
-        gotimeCardSS: function() {
-            window.open('./KQ2/timeCardSS.html', '_self');
-        },
-        // 进入计时查询
-        gotimeCardZSGZ: function() {
-            window.open('./KQ2/timeCardZSGZ.html', '_self');
         }
 	}
 }

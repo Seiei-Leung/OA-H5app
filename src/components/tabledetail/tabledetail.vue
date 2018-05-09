@@ -64,6 +64,7 @@ export default {
 .contentItem {
 	margin: 3px;
 	padding: 0.5em;
+	line-height: 1.4;
 	background-color: #fff;
 	border-radius: 4px;
 	color: #444;
