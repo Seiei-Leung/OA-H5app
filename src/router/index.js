@@ -5,7 +5,7 @@ import addressBook from '@/components/addressBook/addressBook';
 import signin from '@/components/signin/signin';
 import announcement from '@/components/announcement/announcement';
 import todoList from '@/components/todoList/todoList?v=2018-5-7';
-import workingTable from '@/components/workingTable/workingTable?v=2018-5-09';
+import workingTable from '@/components/workingTable/workingTable?v=2018-5-10';
 import announcementDetail from '@/components/announcementDetail/announcementDetail';
 import dataCube from '@/components/dataCube/dataCube';
 import schedule from '@/components/schedule/schedule';

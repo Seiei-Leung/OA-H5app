@@ -72,5 +72,15 @@ export default {
 .resultList-wrapper {
 	margin-top: 100px;
 	padding: 0.5em;
+	padding-bottom: 5em;
+}
+.resultItem {
+	display: inline-block;
+	margin: 8px;
+	padding: 2px 4px;
+	line-height: 1.2em;
+	border-radius: 4px;
+	background-color: #ddd;
+	color: #444;
 }
 </style>

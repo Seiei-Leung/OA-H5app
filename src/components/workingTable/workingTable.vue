@@ -47,6 +47,8 @@
         </div>
         <!-- loading 图 -->
         <v-loading v-show="isLoading"></v-loading>
+        <!-- 黑色遮盖 图 -->
+        <v-blackBackground v-show="isblackBackground"></v-blackBackground>
         <!-- toast -->
         <v-toast v-bind:text="toast" v-show="isToast"></v-toast>
 	</div>
@@ -55,6 +57,8 @@
 <script>
 import loading from '../loading/loading';
 import toast from '../toast/toast';
+import Vue from 'vue';
+import blackBackground from '../blackBackground/blackBackground';
 
 export default {
     data: function() {
@@ -67,6 +71,7 @@ export default {
             serialnoList: [],
             billnoList: [],
             isLoading: false,
+            isblackBackground: false,
             toast: '',
             isToast: false,
             istodoList: this.$route.params.where == 'todolist',
@@ -173,6 +178,7 @@ export default {
     methods: {
         // 审批
         approval: function(serialno, billno, index, event) {
+            this.isLoading = true;
             event.target.innerText = "审批中";
             // 获取实质要改变背景色的元素
             if (event.target.tagName.toLowerCase() == 'div') {
@@ -181,11 +187,14 @@ export default {
                 event.target.parentNode.style.backgroundColor = '#d6dde0';
             }
             this.$http.get(this.seieiURL + "/estapi/api/FlowApprove/GetApproveFlow?userCode=" + JSON.parse(this.$store.state.userMsg).Code + "&serialno=" + serialno + "&formName=" + this.className + "&billNo=" + billno).then(resp => {
+                this.isLoading = false;
                 this.toast = '审批成功';
                 this.isToast = true;
                 setTimeout(() => {
                     this.isToast = false;
                     this.$refs['table-item' + index][0].style.display = 'none';
+                    this.$refs['table-item' + index][0].innerHTML = "";
+                    this.$refs['table-item' + index][0].className = "";
                 }, 500);
             }, response => {
                 console.log("发送失败"+response.status+","+response.statusText);
@@ -240,44 +249,73 @@ export default {
                 }, 500);
             } else {
                 this.isLoading = true;
+                this.isblackBackground = true;
                 var doneNum = [];
-                console.log("长度" + elementList.length);
+                var data = [];
+                console.log("批量个数" + elementList.length);
                 for (var i=0; i<elementList.length; i++) {
-                    this.$http.get(this.seieiURL + "/estapi/api/FlowApprove/GetApproveFlow?userCode=" + JSON.parse(this.$store.state.userMsg).Code + "&serialno=" + elementList[i].getAttribute("data-serialno") + "&formName=" + this.className + "&billNo=" + elementList[i].getAttribute("data-billno")).then(resp => {
-                            console.log("次数：" + i)
-                            doneNum.push(i);
-                            if (doneNum == elementList.length) {
-                                for (var n=0; n<elementList.length; n++) {
-                                    this.$refs['table-item' + elementList[n].getAttribute("data-index")][0].style.display = 'none';
+                    var item = {};
+                    item.UserCode = JSON.parse(this.$store.state.userMsg).Code;
+                    item.Serialno = elementList[i].getAttribute("data-serialno");
+                    item.FormName = this.className;
+                    item.BillNo = elementList[i].getAttribute("data-billno");
+                    data.push(item);
+                }
+                var form = "=" + JSON.stringify(data);
+                // 传递 Form-Data 数据
+                Vue.http.options.headers = {
+                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+                };
+                this.$http.post(this.seieiURL + "/estapi/api/FlowApprove/BacthApproveFlow", form).then(resp => {
+                    var isSuccess = true;
+                    for (var n=0; n<resp.body.length; n++) {
+                        if (resp.body[n].success) {
+                            for (var i=0; i<this.$refs.findHook.getElementsByClassName("table-item").length; i++) {
+                                if (this.$refs.findHook.getElementsByClassName("table-item")[i].getElementsByClassName("checkbox")[0].getAttribute("data-billno") == resp.body[n].billno) {
+                                    this.$refs.findHook.getElementsByClassName("table-item")[i].style.display = 'none';
+                                    this.$refs.findHook.getElementsByClassName("table-item")[i].innerHTML = "";
+                                    this.$refs.findHook.getElementsByClassName("table-item")[i].className = "";
+                                    break;
                                 }
-                                this.isLoading = false;
-                                this.toast = '审批成功';
-                                this.isToast = true;
-                                setTimeout(() => {
-                                    this.isToast = false;
-                                }, 500);
                             }
-                        }, response => {
-                            this.isLoading = false;
-                            console.log("发送失败"+response.status+","+response.statusText);
-                        })
-                    // 休眠
-                    var now = new Date(); 
-                    var exitTime = now.getTime() + 2000; 
-                    while (true) {
-                        now = new Date(); 
-                        if (now.getTime() > exitTime) {
-                            break;
+                        } else {
+                            isSuccess = false;
                         }
                     }
-                }
-                
+                    if (isSuccess) {
+                        this.isblackBackground = false;
+                        this.isLoading = false;
+                        this.toast = '审批成功';
+                        this.isToast = true;
+                        setTimeout(() => {
+                            this.isToast = false;
+                        }, 500);
+                    } else {
+                        this.isblackBackground = false;
+                        this.isLoading = false;
+                        this.toast = '审批失败';
+                        this.isToast = true;
+                        setTimeout(() => {
+                            this.isToast = false;
+                        }, 500);
+                    }
+                },response => {
+                    this.isblackBackground = false;
+                    this.isLoading = false;
+                    this.toast = '审批失败';
+                    this.isToast = true;
+                    setTimeout(() => {
+                        this.isToast = false;
+                    }, 500);
+                    console.log("发送失败" + response.status + "," + response.statusText);
+                })
             }
         }
     },
     components: {
         'v-loading': loading,
-        'v-toast': toast
+        'v-toast': toast,
+        'v-blackBackground': blackBackground
     }
 }
 </script>
