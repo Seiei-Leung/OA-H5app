@@ -12,7 +12,7 @@
                     <div class="title">员工工号：</div><div class="contentTxt" id="staffID">{{user.EmployeeNo}}</div>
                 </div>
                 <div>
-                    <div class="title">员工姓名：</div><div class="contentTxt" id="staffDepartment">{{user.EmployeeName}}</div>
+                    <div class="title">员工姓名：</div><div class="contentTxt" id="staffDepartment">{{user.Name}}</div>
                 </div>
             </div>
             <button class="weui-btn weui-btn_primary signout" @click="signout">登 出</button>
