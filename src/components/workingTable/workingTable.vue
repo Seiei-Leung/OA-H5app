@@ -11,7 +11,8 @@
                 <div class="main-table">
                     <!-- 主表 -->
                     <div style="position:relative;">
-                        <div v-for="(val, index2) in content" v-if="!(val instanceof Array)">
+                        <!--  v-bind:class="{boldFont: (styleList[index1][index2].fontbold == 'true')}" -->
+                        <div v-bind:class="{boldFont:(styleList[index1][index2].fontbold == 'True')}" v-for="(val, index2) in content" v-if="!(val instanceof Array)">
                             <div class="titlehook">
                                 <span>{{nameList[index1][index2]}}：</span>
                                 <span style="color: #999;">{{String(val).replace("T00:00:00", "")}}</span>
@@ -79,7 +80,8 @@ export default {
             batchList: [],
             isShowdetail: false,
             getDetailList: [],
-            getDetailNameList: []
+            getDetailNameList: [],
+            styleList: []
         };
     },
     created: function() {
@@ -104,6 +106,7 @@ export default {
         this.$http.get(url + this.className).then(resp=>{
           let contentList = []; // 内容列表
           let nameList = []; // 名称列表
+          let styleList = []; // 样式列表
           let detailsList = []; // 附表内容列表
           let forShowDetailList = [];
           let forShowDetailNameList = [];
@@ -121,12 +124,16 @@ export default {
             });
             nameList.push(forNameList);
 
-            // 制作内容列表
+            // 制作内容列表 & 样式列表
             let forContentList = [];
+            let forStyleList = [];
             let countNum = item.fieldcnt; // 表单中有多少行信息
             for (let i=1; i<(countNum+1); i++) {
               forContentList.push(item['feild' + i]);
+              forStyleList.push(item['feildattr' + i]);
             }
+            styleList.push(forStyleList);
+
             // 测试是否含有副表
             if (item["details"]) {
                 detailsList = [];
@@ -168,6 +175,8 @@ export default {
             this.billnoList.push(item.billno);
           });
           // 赋值
+
+          this.styleList = styleList;
           this.contentList = contentList;
           this.nameList = nameList;
           this.isLoading = false;
@@ -436,5 +445,8 @@ export default {
 }
 .detailWrapper .detailItem:last-child{
     border-bottom: none
+}
+.boldFont {
+    font-weight: bold;
 }
 </style>

@@ -20,14 +20,19 @@
         </div>
         <!-- 搜索结果表单号 -->
         <div class="resultList-wrapper" v-show="!(isShowDetailTable)">
-        	<div class="resultItem" v-for="item in resultList" @click="godetail(item.serialno)">
-        		<span>{{item.orderno}} </span>
-        		<span> {{item.custname}}</span>
+        	<div v-for="item in resultList">
+        		<div @click="godetail(item.serialno,item.orderno,item.custname)" class="resultItem">
+        			<span>{{item.orderno}} </span>
+        			<span> {{item.custname}}</span>
+        		</div>
         	</div>
         </div>
         <!-- 点击搜索表单号 -->
         <div class="serialnoDetail-Wrapper" v-show="isShowDetailTable">
     		<div class="headerBarWrapper">
+    			<div class="header-Title">
+    				制单号：{{selectOrderno}} 客户：{{selectCustname}}
+    			</div>
 				<div class="headerBar" ref="headerBarHook">
 					<div class="hearderItem active" @click="selectHearderItem('全部', $event)">
 						全部
@@ -40,18 +45,19 @@
 			<!-- 物料细节表 -->
 			<div class="contentWrapper">
 				<div v-for="item in contentList" class="contentItem">
-					<div><span class="title">物料目录：</span><span>{{item.FKIND}}</span></div>
-					<div><span class="title">物料名称：</span><span>{{item.FNAME}}</span></div>
-					<div><span class="title">色组：</span><span>{{item.Groupno}}</span></div>
-					<div><span class="title">颜色：</span><span>{{item.F03}}</span></div>
-					<div><span class="title">尺码：</span><span>{{item.F04}}</span></div>
-					<div><span class="title">布封：</span><span>{{item.FWidth}}</span></div>
-					<div><span class="title">克重：</span><span>{{item.FKz}}</span></div>
-					<div><span class="title">尺码规格：</span><span>{{item.SpecSz}}</span></div>
-					<div><span class="title">最晚确认货期：</span><span>{{item.F14 ? String(item.F14).replace("T00:00:00", "") : ""}}</span></div>
-					<div><span class="title">需求用量：</span><span>{{item.PLANQTY ? String(item.PLANQTY).split(".")[0] : 0}}</span></div>
-					<div><span class="title">采购数：</span><span>{{item.F15 ? String(item.F15).split(".")[0] : 0}}</span></div>
-					<div><span class="title">入仓数：</span><span>{{item.F17 ? String(item.F17).split(".")[0] : 0}}</span></div>
+					<!-- <div><span class="title">物料目录：</span><span>{{item.FKIND}}</span></div> -->
+					<div v-show="item.FNAME"><span class="title">物料名称：</span><span>{{item.FNAME}}</span></div>
+					<div v-show="item.Groupno"><span class="title">色组：</span><span>{{item.Groupno}}</span></div>
+					<div v-show="item.F03"><span class="title">颜色：</span><span>{{item.F03}}</span></div>
+					<div v-show="item.F04"><span class="title">尺码：</span><span>{{item.F04}}</span></div>
+					<div v-show="item.BType == '布料'"><span class="title">布封：</span><span>{{item.FWidth}}</span></div>
+					<div v-show="item.BType == '布料'"><span class="title">克重：</span><span>{{item.FKz}}</span></div>
+					<div v-show="item.SpecSz"><span class="title">尺码规格：</span><span>{{item.SpecSz}}</span></div>
+					<div><div style="display:inline-block;width:50%"><span class="title" style="width:100%">最早确认货期：</span><span>{{item.ConfirmDate ? String(item.ConfirmDate).replace("T00:00:00", "") : ""}}</span></div><div style="display:inline-block;width:50%"><span class="title" style="width:100%">最晚确认货期：</span><span>{{item.F14 ? String(item.F14).replace("T00:00:00", "") : ""}}</span></div></div>
+					<div v-show="item.PLANQTY"><span class="title">需求用量：</span><span>{{item.PLANQTY ? String(item.PLANQTY).split(".")[0] : 0}}</span></div>
+					<div v-show="item.F15"><span class="title">采购数：</span><span>{{item.F15 ? String(item.F15).split(".")[0] : 0}}</span></div>
+					<div v-show="item.F17"><span class="title">入仓数：</span><span>{{item.F17 ? String(item.F17).split(".")[0] : 0}}</span></div>
+					<div v-show="item.F05"><span class="title">单位：</span><span>{{item.F05}}</span></div>
 				</div>
 			</div>
         </div>
@@ -69,7 +75,9 @@ export default {
 			isShowDetailTable: false,
 			headerTitle: [],
 			contentList: [],
-			contentListSource: []
+			contentListSource: [],
+			selectOrderno: "",
+			selectCustname: ""
 		}
 	},
 	methods: {
@@ -88,11 +96,13 @@ export default {
 			}, 1500);
 		},
 		// 获取表单信息
-		godetail: function(arg) {
-			this.isShowDetailTable = true;
+		godetail: function(arg, orderno, custname) {
 			this.$http.get(this.seieiURL + "/estapi/api/Mrpplana?serialno=" + arg).then(resp => {
 				this.headerTitle = resp.body;
 				this.$http.get(this.seieiURL + "/estapi/api/Mrpplana?serialno1=" + arg).then(resp1 => {
+					this.isShowDetailTable = true;
+					this.selectOrderno = orderno;
+					this.selectCustname = custname;
 					this.contentList = resp1.body;
 					this.contentListSource = resp1.body;
 				}, response1 => {
@@ -155,8 +165,12 @@ export default {
 	top: 92px;
 	width: 100%;
 }
+.headerBarWrapper .header-Title {
+	padding-left: 1em;
+    background-color: #f5f5f5;
+    line-height: 25px;
+}
 .headerBar {
-	padding-top: 10px;
 	font-size: 0;
     white-space: nowrap;
     overflow: scroll;
@@ -177,7 +191,7 @@ export default {
 	background-color: #fff;
 }
 .contentWrapper {
-	padding: 87px 0 20px 0;
+	padding: 95px 0 20px 0;
 	background-color: #fff
 }
 .contentItem {
