@@ -7,7 +7,12 @@
     </div>
     <!-- 用于页面跳转 以及 Tap台控制显示的内容 -->
     <div>
-      <router-view></router-view>
+      <!-- 不缓存 -->
+      <keep-alive>
+        <router-view v-if="$route.meta.keepAlive"></router-view>
+      </keep-alive>
+      <!-- 不缓存路由 -->
+      <router-view v-if="!$route.meta.keepAlive"></router-view>
     </div>
     <!-- Tap台 -->
     <div class="tap">

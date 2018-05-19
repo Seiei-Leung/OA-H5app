@@ -20,12 +20,23 @@
                 </a>
             </div>
             <div class="weui-cells">
-                <a class="weui-cell weui-cell_access" href="javascript:void(0);">
+                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goCuttingbedReport">
                     <div class="weui-cell__hd">
                         <img class="iconImg" v-bind:src="'http://www.seieiblog.top:38080/oa/KQ/img/2.png'">
                     </div>
                     <div class="weui-cell__bd weui-cell_primary">
                         <p>裁床报表</p>
+                    </div>
+                    <span class="weui-cell__ft"></span>
+                </a>
+            </div>
+            <div class="weui-cells">
+                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goProductScheduleQuery">
+                    <div class="weui-cell__hd">
+                        <img class="iconImg" v-bind:src="'http://www.seieiblog.top:38080/oa/KQ/img/3.png'">
+                    </div>
+                    <div class="weui-cell__bd weui-cell_primary">
+                        <p>生产排期查询</p>
                     </div>
                     <span class="weui-cell__ft"></span>
                 </a>
@@ -67,9 +78,20 @@ export default{
         },
         goSourcePlan:function(){
         	this.$router.push({name: 'sourcePlan'});
+        },
+        goCuttingbedReport: function() {
+            this.$router.push({name: "cuttingbedReport"});
+        },
+        goProductScheduleQuery: function() {
+            this.$router.push({name: "productScheduleQuery"});
         }
-
-	}
+	},
+    beforeRouteLeave: function(to,from,next) {
+        to.meta.keepAlive = false;
+        setTimeout(function() {
+            next();
+        }, 1000);
+    }
 }
 </script>
 
