@@ -110,7 +110,6 @@ export default {
         			this.totalNum = num;
         			this.isLoading = false;
         			this.$nextTick(function() {
-        				console.log(this.$refs['cssHook'].getElementsByClassName("colorTitleHook")[0].offsetWidth);
         				this.$refs['cssHook'].getElementsByClassName("colorTitle")[0].style.width = this.$refs['cssHook'].getElementsByClassName("colorTitleHook")[0].offsetWidth + "px";
         				this.$refs['cssHook'].getElementsByClassName("colorTitle")[0].style.height = this.$refs['cssHook'].getElementsByClassName("colorTitleHook")[0].offsetHeight + "px";
         				this.$refs['cssHook'].getElementsByClassName("totalTitle")[0].style.width = this.$refs['cssHook'].getElementsByClassName("colorTitleHook")[0].offsetWidth + "px";

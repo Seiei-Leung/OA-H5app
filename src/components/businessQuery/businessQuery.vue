@@ -95,7 +95,7 @@ export default{
 }
 </script>
 
-<style>
+<style scoped>
 .businessQuery-component {
 	position: absolute;
 	top: 0;

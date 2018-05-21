@@ -48,7 +48,7 @@ export default {
 }
 </script>
 
-<style scope>
+<style scoped>
 .tabledetail-component {
     position: absolute;
     top: 0;

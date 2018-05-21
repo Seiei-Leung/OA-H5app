@@ -29,17 +29,20 @@
         	</div>
         </div>
         <!-- 高级查询 -->
-        <div class="contentWrapper" ref="contentWrapperHook">
+        <div class="heightLevelQueryWrapper" ref="heightLevelQueryHook">
         	<!-- 左侧 -->
         	<div class="leftBar">
-        		<div class="item" v-for="item in groupList" @click="getdetailInLevelQuery(item.bnsgroup)">
+        		<div class="item" v-for="item, index in groupList" @click="getdetailInLevelQuery(item.bnsgroup, $event)" v-bind:class="{active : index == 0}">
         			{{item.bnsgroup}}
         		</div>
         	</div>
         	<div class="rightBar">
         		<div class="item" v-for="item in workshopList">
-        			<div class="workshopItem">
-        				{{item}}
+        			<div class="workshopTitle">
+        				生产车间：{{item}}
+        			</div>
+        			<div>
+        				生产线：
         			</div>
         			<div v-for="item2 in getworklineList(item)" class="worklineItem">
         				{{item2}}
@@ -47,10 +50,33 @@
         		</div>
         	</div>
         </div>
+        <!-- 查询结果 -->
+        <div class="Result-Wrapper" v-show="isShowResult">
+        	<div class="headerBarWrapper">
+    			<div class="header-Title">
+    				{{selectOrderno}} | {{selectCustname}}
+    			</div>
+				<div class="headerBar" ref="headerBarHook">
+					<div class="hearderItem active" @click="selectHearderItem('全部', $event)">
+						全部
+					</div>
+					<div v-for="item in headerTitle" class="hearderItem" @click="selectHearderItem(item.FKIND, $event)">
+						{{item.FKIND}}
+					</div>
+				</div>
+				<div>
+					
+				</div>
+			</div>
+        </div>
+        <!-- loading 图 -->
+        <v-loading v-show="isLoading"></v-loading>
 	</div>
 </template>
 
 <script>
+import loading from '../loading/loading';
+
 var T;
 export default {
 	data: function() {
@@ -60,20 +86,44 @@ export default {
 			searchTxt: "",
 			groupList: [],
 			workshopList: [],
-			worklineList: {}
+			worklineList: {},
+			isLoading: false,
+			isShowResult: false
 		};
 	},
 	created: function() {
-		this.$nextTick(function() {
-			this.$refs['contentWrapperHook'].style.height = window.innerHeight - 96 + "px";
-			this.$refs['contentWrapperHook'].getElementsByClassName('leftBar')[0].style.height = window.innerHeight - 96 + "px";
-			this.$refs['contentWrapperHook'].getElementsByClassName('rightBar')[0].style.height = window.innerHeight - 96 + "px";
-			this.$http.get(this.seieiURL + "/estapi/api/ProductionPlanning/Group").then(resp => {
-				this.groupList = resp.body;
+		this.$http.get(this.seieiURL + "/estapi/api/ProductionPlanning/Group").then(resp => {
+			this.groupList = resp.body;
+			this.workshopList = [];
+			this.worklineList = {};
+			this.$http.get(this.seieiURL + "/estapi/api/ProductionPlanning?group=" + encodeURIComponent(this.groupList[0].bnsgroup)).then(resp => {
+				resp.body.forEach((item) => {
+					this.workshopList.push(item.workshop);
+				})
+				this.workshopList.forEach((item) => {
+					this.$http.get(this.seieiURL + "/estapi/api/ProductionPlanning?group=" + encodeURIComponent(this.groupList[0].bnsgroup) + "&workshop=" + encodeURIComponent(item)).then(resp1 => {
+						var list = [];
+						resp1.body.forEach((item2) => {
+							list.push(item2.line)
+						});
+						// Vue 对象类型赋值要使用 $set 用于监听
+						this.$set(this.worklineList, item, list);
+					}, response1 => {
+						console.log("发送失败"+response1.status+","+response1.statusText);
+					})
+				})
 			}, response => {
 				console.log("发送失败"+response.status+","+response.statusText);
 			})
-		})
+		}, response => {
+			console.log("发送失败"+response.status+","+response.statusText);
+		});
+
+		this.$nextTick(function() {
+			this.$refs['heightLevelQueryHook'].style.height = window.innerHeight - 96 + "px";
+			this.$refs['heightLevelQueryHook'].getElementsByClassName('leftBar')[0].style.height = window.innerHeight - 96 + "px";
+			this.$refs['heightLevelQueryHook'].getElementsByClassName('rightBar')[0].style.height = window.innerHeight - 96 + "px";
+		});
 	},
 	methods: {
 		// 检查输入框输入事件
@@ -91,15 +141,16 @@ export default {
 			}, 1500);
 		},
 		// 高级查询点击事件
-		getdetailInLevelQuery: function(group) {
+		getdetailInLevelQuery: function(group, event) {
+			this.isLoading = true;
 			this.workshopList = [];
 			this.worklineList = {};
+			this.$refs['heightLevelQueryHook'].getElementsByClassName("active")[0].className = "item";
+			event.currentTarget.className += " active";
 			this.$http.get(this.seieiURL + "/estapi/api/ProductionPlanning?group=" + encodeURIComponent(group)).then(resp => {
 				resp.body.forEach((item) => {
 					this.workshopList.push(item.workshop);
 				})
-				console.log(this.workshopList);
-				console.log("生产线");
 				this.workshopList.forEach((item) => {
 					this.$http.get(this.seieiURL + "/estapi/api/ProductionPlanning?group=" + encodeURIComponent(group) + "&workshop=" + encodeURIComponent(item)).then(resp1 => {
 						var list = [];
@@ -111,23 +162,23 @@ export default {
 					}, response1 => {
 						console.log("发送失败"+response1.status+","+response1.statusText);
 					})
-				})
+				});
+				this.isLoading = false;
 			}, response => {
 				console.log("发送失败"+response.status+","+response.statusText);
 			})
 		},
 		getworklineList: function(arg) {
-			console.log(arg);
-			console.log(this.worklineList);
-			console.log(this.worklineList[arg]);
-			console.log(this.worklineList["2A"]);
 			return this.worklineList[arg];
 		}
+	},
+	components: {
+        'v-loading': loading
 	}
 }
 </script>
 
-<style>
+<style scoped>
 .productScheduleQuery-component {
 	position: absolute;
 	top: 0;
@@ -182,34 +233,64 @@ export default {
 	background-color: #ddd;
 	color: #444;
 }
-.contentWrapper {
+.heightLevelQueryWrapper {
 	margin-top: 96px;
 	font-size: 0px
 }
-.contentWrapper .leftBar {
+.heightLevelQueryWrapper .leftBar {
 	box-sizing: border-box;
 	display: inline-block;
-	width: 35%;
+	width: 30%;
 	overflow: scroll;
 	vertical-align: top;
 }
-.contentWrapper .leftBar .item {
+.heightLevelQueryWrapper .leftBar .item {
 	box-sizing: border-box;
 	width: 100%;
 	line-height: 40px;
-	border: 1px solid #ddd;
+	border: 1px solid #aaa;
 	border-bottom: none;
+	border-left: none;
 	text-align: center;
 	font-size: 14px;
 }
-.contentWrapper .rightBar {
+.heightLevelQueryWrapper .leftBar .item:first-child {
+	border-top: none
+}
+.heightLevelQueryWrapper .leftBar .active {
+	border-right: none;
+	background-color: #fff;
+}
+.heightLevelQueryWrapper .rightBar {
 	box-sizing: border-box;
 	display: inline-block;
-	width: 65%;
+	width: 70%;
 	overflow: scroll;
 	vertical-align: top;
+	background-color: #fff;
 }
-.contentWrapper .rightBar .item {
+.heightLevelQueryWrapper .rightBar .item {
+	padding: 10px;
+	border-bottom: 1px solid #999;
 	font-size: 14px;
+}
+.heightLevelQueryWrapper .rightBar .item:last-child {
+	border-bottom: none;
+}
+.heightLevelQueryWrapper .rightBar .workshopTitle {
+	margin-bottom: 0.5em;
+	padding-bottom: 0.5em;
+	text-align: center;
+	border-bottom: #ddd 1px solid;
+}
+.heightLevelQueryWrapper .rightBar .worklineItem {
+    box-sizing: border-box;
+    display: inline-block;
+    width: 24%;
+    padding-left: 10px;
+    margin: 10px 8px;
+    border-radius: 4px;
+    background-color: #ddd;
+    vertical-align: top;
 }
 </style>

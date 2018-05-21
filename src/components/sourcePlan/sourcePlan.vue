@@ -314,6 +314,7 @@ export default {
     background-color: #f9f9f9;
     border-radius: 4px;
     border: 1px solid #999;
+    font-size: 12px;
 }
 .contentItem .title {
 	display: inline-block;

@@ -48,7 +48,7 @@
 								小计
 							</th>
 						</tr>
-						<tr v-for="contents, index in contentList" class="contentRow">
+						<tr v-for="contents, index in contentList" class="contentRow" v-bind:class="rowBorder(index)">
 							<td class="item title" v-bind:class="'Hook' + index">
 								{{colorList[index]}}
 							</td>
@@ -59,18 +59,6 @@
 								{{item}}
 							</td>
 						</tr>
-<!-- 						<tr class="total bar">
-							<td class="item title">
-								总计
-							</td>
-							<td class="item"></td>
-							<td class="item" v-for="item in totalNums">
-								{{item}}
-							</td>
-							<td class="item">
-								{{totalNum}}
-							</td>
-						</tr> -->
 					</table>
 					<div class="copy">
 						<div class="colorTitle copyitem">
@@ -98,6 +86,7 @@
 
 var T;
 var startX, startY;
+var rowBorderHook;
 export default {
 	data: function() {
 		return {
@@ -173,21 +162,43 @@ export default {
         			this.totalNum = num;
         			this.$nextTick(function() {
 
-        				// 颜色定位
-        				this.$refs['cssHook'].getElementsByClassName("colorTitle")[0].style.width = this.$refs['cssHook'].getElementsByClassName("colorTitleHook")[0].offsetWidth + "px";
-        				this.$refs['cssHook'].getElementsByClassName("colorTitle")[0].style.height = this.$refs['cssHook'].getElementsByClassName("colorTitleHook")[0].offsetHeight + "px";
+        				var indexList = [];
+        				var cssHook = this.$refs['cssHook'];
         				for (var i=0; i<this.colorList.length; i++) {
-        					this.$refs['cssHook'].getElementsByClassName("copy" + i)[0].style.width = this.$refs['cssHook'].getElementsByClassName('Hook' + i)[0].offsetWidth + "px";
-        					this.$refs['cssHook'].getElementsByClassName("copy" + i)[0].style.height = this.$refs['cssHook'].getElementsByClassName('Hook' + i)[0].offsetHeight + "px";
+        					if (!(this.colorList[i] == this.colorList[i+1])) {
+        						indexList.push(i);
+        					}
+        				}
+
+        				console.log(indexList);
+
+
+        				// 颜色定位
+        				cssHook.getElementsByClassName("colorTitle")[0].style.width = cssHook.getElementsByClassName("colorTitleHook")[0].offsetWidth + "px";
+        				cssHook.getElementsByClassName("colorTitle")[0].style.height = cssHook.getElementsByClassName("colorTitleHook")[0].offsetHeight + "px";
+        				for (var i=0; i<this.colorList.length; i++) {
+        					cssHook.getElementsByClassName("copy" + i)[0].style.height = cssHook.getElementsByClassName('Hook' + i)[0].offsetHeight + "px";
+        					cssHook.getElementsByClassName("copy" + i)[0].style.width = cssHook.getElementsByClassName('Hook' + i)[0].offsetWidth + "px";
         				}
 
         				// 项目定位
-        				this.$refs['cssHook'].getElementsByClassName("copyOne")[0].style.left = this.$refs['cssHook'].getElementsByClassName("colorTitleHook")[0].offsetWidth + "px";
-        				this.$refs['cssHook'].getElementsByClassName("copyOneColorTitle")[0].style.width = this.$refs['cssHook'].getElementsByClassName("copyOneColorTitleHook")[0].offsetWidth + "px";
-        				this.$refs['cssHook'].getElementsByClassName("copyOneColorTitle")[0].style.height = this.$refs['cssHook'].getElementsByClassName("copyOneColorTitleHook")[0].offsetHeight + "px";
+        				cssHook.getElementsByClassName("copyOne")[0].style.left = cssHook.getElementsByClassName("colorTitleHook")[0].offsetWidth + "px";
+        				cssHook.getElementsByClassName("copyOneColorTitle")[0].style.width = cssHook.getElementsByClassName("copyOneColorTitleHook")[0].offsetWidth + "px";
+        				cssHook.getElementsByClassName("copyOneColorTitle")[0].style.height = cssHook.getElementsByClassName("copyOneColorTitleHook")[0].offsetHeight + "px";
         				for (var i=0; i<this.kindTxtList.length; i++) {
-        					this.$refs['cssHook'].getElementsByClassName("copyOne" + i)[0].style.width = this.$refs['cssHook'].getElementsByClassName("copyOneHook" + i)[0].offsetWidth + "px";
-        					this.$refs['cssHook'].getElementsByClassName("copyOne" + i)[0].style.height = this.$refs['cssHook'].getElementsByClassName("copyOneHook" + i)[0].offsetHeight + "px";
+        					cssHook.getElementsByClassName("copyOne" + i)[0].style.width = cssHook.getElementsByClassName("copyOneHook" + i)[0].offsetWidth + "px";
+        					cssHook.getElementsByClassName("copyOne" + i)[0].style.height = cssHook.getElementsByClassName("copyOneHook" + i)[0].offsetHeight + "px";
+        				}
+
+        				for (var i=0; i<indexList.length-1; i++) {
+
+        					cssHook.getElementsByClassName("copy" + indexList[i])[0].style.marginBottom = "10px";
+        					cssHook.getElementsByClassName("copy" + indexList[i])[0].style.height = cssHook.getElementsByClassName("copy" + indexList[i])[0].style.height.split("px")[0] - 5 + "px";
+        					cssHook.getElementsByClassName("copy" + (indexList[i] + 1))[0].style.height = cssHook.getElementsByClassName("copy" + (indexList[i] + 1))[0].style.height.split("px")[0] - 5 + "px";
+
+        					cssHook.getElementsByClassName("copyOne" + indexList[i])[0].style.marginBottom = "10px";
+        					cssHook.getElementsByClassName("copyOne" + indexList[i])[0].style.height = cssHook.getElementsByClassName("copyOne" + indexList[i])[0].style.height.split("px")[0] - 5 + "px";
+        					cssHook.getElementsByClassName("copyOne" + (indexList[i] + 1))[0].style.height = cssHook.getElementsByClassName("copyOne" + (indexList[i] + 1))[0].style.height.split("px")[0] - 5 + "px";
         				}
         			})
 				}, response1 => {
@@ -196,6 +207,19 @@ export default {
 			}, response => {
 				console.log("发送失败" + response.status + "," + response.statusText);
 			});
+		},
+		rowBorder: function(index) {
+			// 不能适用 this.rowBorderHook 的形式，因为 vue 的方法优惠监测 this.rowBorderHook 是否改变而决定是否再度执行
+			if (index == 0) {
+				rowBorderHook = this.colorList[0];
+				return;
+			}
+			if (this.colorList[index] == rowBorderHook) {
+				return;
+			} else {
+				rowBorderHook = this.colorList[index];
+			    return "border";
+			}
 		}
 	}
 }
@@ -262,6 +286,7 @@ export default {
     line-height: 25px;
     z-index: 10;
     background-color: #f5f5f5;
+    font-size: 12px;
 }
 .contentTable {
 	padding-top: 25px;
@@ -299,5 +324,8 @@ export default {
 	border-bottom: none;
 	font-size: 12px;
 	vertical-align: inherit;
+}
+.contentRow.border {
+	border-top: 10px solid #ddd;
 }
 </style>

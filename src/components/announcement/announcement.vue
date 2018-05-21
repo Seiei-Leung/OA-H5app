@@ -101,7 +101,7 @@ export default{
 }
 </script>
 
-<style>
+<style scoped>
 .announcement-component {
 	position: absolute;
 	top: 0;
