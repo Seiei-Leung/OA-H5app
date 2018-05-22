@@ -16,20 +16,22 @@
                     <span style="line-height:32px">搜索</span>
                 </label>
             </form>
-            <a href="javascript:;" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
-            <a href="javascript:void(0);" class="levelQuery">高级查询</a>
+            <a href="javascript:void(0);" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
+            <a href="javascript:void(0);" class="levelQuery" @click="changeQuery">高级查询</a>
         </div>
         <!-- 搜索结果表单号 -->
-        <div class="resultList-wrapper" v-show="!(isShowDetailTable)">
-        	<div v-for="item in resultList">
-        		<div class="resultItem">
-        			<span>{{item.orderno}} </span>
-        			<span> {{item.custname}}</span>
+        <div style="margin-top: 96px;width: 100%;overflow: scroll;-webkit-overflow-scrolling : touch;" ref="resultListwrapper" v-show="!(isShowDetailTable) && !(isShowResult)">
+        	<div class="resultList-wrapper">
+        		<div v-for="item in resultList">
+        			<div class="resultItem" @click="getResult(item.orderno, item.custname)">
+        				<span>{{item.orderno}} </span>
+        				<span> {{item.custname}}</span>
+        			</div>
         		</div>
         	</div>
-        </div>
+    	</div>
         <!-- 高级查询 -->
-        <div class="heightLevelQueryWrapper" ref="heightLevelQueryHook">
+        <div class="heightLevelQueryWrapper" ref="heightLevelQueryHook" v-show="isShowDetailTable && !isShowResult">
         	<!-- 左侧 -->
         	<div class="leftBar">
         		<div class="item" v-for="item, index in groupList" @click="getdetailInLevelQuery(item.bnsgroup, $event)" v-bind:class="{active : index == 0}">
@@ -44,7 +46,7 @@
         			<div>
         				生产线：
         			</div>
-        			<div v-for="item2 in getworklineList(item)" class="worklineItem">
+        			<div v-for="item2 in getworklineList(item)" class="worklineItem" @click="getResults(item, item2)">
         				{{item2}}
         			</div>
         		</div>
@@ -54,19 +56,49 @@
         <div class="Result-Wrapper" v-show="isShowResult">
         	<div class="headerBarWrapper">
     			<div class="header-Title">
-    				{{selectOrderno}} | {{selectCustname}}
+    				<span v-show="selectOrderno">
+    					{{selectOrderno}} | {{selectCustname}}
+    				</span>
+    				<span v-show="!selectOrderno">
+    					{{selectGroup}} | {{selectWorkshop}} | {{selectWorkLine}}
+    				</span>
     			</div>
 				<div class="headerBar" ref="headerBarHook">
 					<div class="hearderItem active" @click="selectHearderItem('全部', $event)">
 						全部
 					</div>
-					<div v-for="item in headerTitle" class="hearderItem" @click="selectHearderItem(item.FKIND, $event)">
-						{{item.FKIND}}
+					<div v-for="item in headerTitle" class="hearderItem" @click="selectHearderItem(item, $event)">
+						{{item}}
 					</div>
 				</div>
-				<div>
-					
+			</div>
+			<div class="contentWrapper" v-show="resultContentList.length > 0">
+				<div v-for="item in resultContentList" class="contentItem">
+					<div v-show="item.orderno"><span class="title">制单号：</span><span>{{item.orderno}}</span></div>
+					<div v-show="item.custname"><span class="title">客户：</span><span>{{item.custname}}</span></div>
+					<div v-show="item.styleno"><span class="title">款号：</span><span>{{item.styleno}}</span></div>
+					<div v-show="item.outdate"><span class="title">工厂离厂期：</span><span>{{String(item.outdate).split("T")[0]}}</span></div>
+					<div v-show="item.planqty"><span class="title">分配数：</span><span>{{item.planqty}}</span></div>
+					<div v-show="item.finishqty"><span class="title">完成数：</span><span>{{item.finishqty}}</span></div>
+					<div v-show="item.yhgcname"><span class="title">印花工厂：</span><span>{{item.yhgcname}}</span></div>
+					<div v-show="item.cyhgcname"><span class="title">车花工厂：</span><span>{{item.cyhgcname}}</span></div>
+					<div v-show="item.orderkind"><span class="title">订单类别：</span><span>{{item.orderkind}}</span></div>
+					<div v-show="item.sampledate"><span class="title">系统推算批办时间：</span><span>{{String(item.sampledate).split("T")[0]}}</span></div>
+					<div v-show="item.sampledatedays"><span class="title">批办期差异：</span><span>{{item.sampledatedays}}</span></div>
+					<div v-show="item.fabricconfirmdate"><span class="title">布料确认开始日期：</span><span>{{String(item.fabricconfirmdate).split("T")[0]}}</span></div>
+					<div v-show="item.fabricdate"><span class="title">系统推算布期：</span><span>{{String(item.fabricdate).split("T")[0]}}</span></div>
+					<div v-show="item.firstfabricindate"><span class="title">首次布料入仓日期：</span><span>{{String(item.firstfabricindate).split("T")[0]}}</span></div>
+					<div v-show="item.fabricdatedays"><span class="title">布期差异：</span><span>{{String(item.fabricdatedays).split("T")[0]}}</span></div>
+					<div v-show="item.cutsdate"><span class="title">裁剪开始期：</span><span>{{String(item.cutsdate).split("T")[0]}}</span></div>
+					<div v-show="item.cutedate"><span class="title">推算裁剪完成期：</span><span>{{String(item.cutedate).split("T")[0]}}</span></div>
+					<div v-show="item.sendpiecedate"><span class="title">发裁片期：</span><span>{{String(item.sendpiecedate).split("T")[0]}}</span></div>						
+					<div v-show="item.hangpiecedate"><span class="title">开始挂片期：</span><span>{{String(item.hangpiecedate).split("T")[0]}}</span></div>
+					<div v-show="item.ssewdate"><span class="title">开始车缝期：</span><span>{{String(item.ssewdate).split("T")[0]}}</span></div>
+					<div v-show="item.esewdate"><span class="title">完成车缝期：</span><span>{{String(item.esewdate).split("T")[0]}}</span></div>
 				</div>
+			</div>
+			<div class="contentWrapper" v-show="resultContentList.length == 0" style="text-align: center;">
+				无
 			</div>
         </div>
         <!-- loading 图 -->
@@ -81,19 +113,28 @@ var T;
 export default {
 	data: function() {
 		return {
-			isShowDetailTable: true,
+			isShowDetailTable: false,
 			resultList: [],
 			searchTxt: "",
 			groupList: [],
 			workshopList: [],
 			worklineList: {},
 			isLoading: false,
-			isShowResult: false
+			isShowResult: false,
+			selectGroup: "",
+			headerTitle: [],
+			resultContentList: [],
+			resultContentListSource: [],
+			selectOrderno: "",
+			selectCustname: "",
+			selectWorkshop: "",
+			selectWorkLine: ""
 		};
 	},
 	created: function() {
 		this.$http.get(this.seieiURL + "/estapi/api/ProductionPlanning/Group").then(resp => {
 			this.groupList = resp.body;
+			this.selectGroup = this.groupList[0].bnsgroup;
 			this.workshopList = [];
 			this.worklineList = {};
 			this.$http.get(this.seieiURL + "/estapi/api/ProductionPlanning?group=" + encodeURIComponent(this.groupList[0].bnsgroup)).then(resp => {
@@ -129,12 +170,16 @@ export default {
 		// 检查输入框输入事件
 		watchInput: function() {
 			var that = this;
+			this.isShowResult = false;
 			this.isShowDetailTable = false;
 			clearTimeout(T);
 			T = setTimeout(() => {
 				var url = that.seieiURL + "/estapi/api/WorkOrder?keywords=" + that.searchTxt;
 				that.$http.get(url).then(resp => {
 					that.resultList = resp.body;
+					this.$nextTick(() => {
+						this.$refs["resultListwrapper"].style.height = window.innerHeight - 96 + "px";
+					});
 				}, response => {
 					console.log("发送失败"+response.status+","+response.statusText);
 				});
@@ -143,6 +188,7 @@ export default {
 		// 高级查询点击事件
 		getdetailInLevelQuery: function(group, event) {
 			this.isLoading = true;
+			this.selectGroup = group;
 			this.workshopList = [];
 			this.worklineList = {};
 			this.$refs['heightLevelQueryHook'].getElementsByClassName("active")[0].className = "item";
@@ -168,8 +214,69 @@ export default {
 				console.log("发送失败"+response.status+","+response.statusText);
 			})
 		},
+		// 点击生产组别
 		getworklineList: function(arg) {
 			return this.worklineList[arg];
+		},
+		// 点击生产线
+		getResults: function(workshop, workline) {
+			this.selectOrderno = "";
+			this.selectCustname = "";
+			this.selectWorkshop = workshop;
+			this.selectWorkLine = workline;
+			this.isLoading = true;
+			this.$http.get(this.seieiURL + "/estapi/api/ProductionPlanning?group=" + encodeURIComponent(this.selectGroup) + "&workshop=" + encodeURIComponent(workshop) + "&line=" + encodeURIComponent(workline) + "&orderno").then(resp => {
+				var headerTitleHook = [];
+				resp.body.forEach((item) => {
+					
+					headerTitleHook.push(item.orderno);
+				})
+				this.$refs.headerBarHook.getElementsByClassName("active")[0].className = "hearderItem";
+				this.$refs.headerBarHook.getElementsByClassName("hearderItem")[0].className += " active";
+				this.headerTitle = headerTitleHook;
+				this.resultContentList = resp.body;
+				this.resultContentListSource = resp.body;
+				this.isLoading = false;
+				this.isShowResult = true;
+			}, response => {
+				console.log("发送失败"+response.status+","+response.statusText);
+			});
+		},
+		// 点击标题分项卡
+		selectHearderItem: function(kind, event) {
+			if (kind == "全部") {
+				this.resultContentList = this.resultContentListSource;
+			} else {
+				this.resultContentList = [];
+				this.resultContentListSource.forEach((item) => {
+					if (item.orderno == kind) {
+						this.resultContentList.push(item);
+					}
+				});
+			}
+			this.$refs.headerBarHook.getElementsByClassName("active")[0].className = "hearderItem";
+			event.target.className += " active";
+		},
+		getResult: function(orderno, custname) {
+			this.isLoading = true;
+			this.isShowResult = true;
+			this.selectOrderno = orderno;
+			this.selectCustname = custname;
+			this.$http.get(this.seieiURL + "/estapi/api/ProductionPlanning?group=&workshop=&line=&orderno=" + encodeURIComponent(orderno)).then(resp => {
+				this.isLoading = false;
+				this.headerTitle = [];
+				this.headerTitle.push(orderno);
+				this.resultContentListSource = resp.body;
+				this.resultContentList = resp.body;
+				this.$refs.headerBarHook.getElementsByClassName("active")[0].className = "hearderItem";
+				this.$refs.headerBarHook.getElementsByClassName("hearderItem")[0].className += " active"; 
+			}, response => {
+				console.log("发送失败"+response.status+","+response.statusText);
+			});
+		},
+		changeQuery: function() {
+			this.isShowResult = false;
+			this.isShowDetailTable = true;
 		}
 	},
 	components: {
@@ -186,6 +293,7 @@ export default {
 	width: 100%;
 	height: 100%;
     overflow: scroll;
+    -webkit-overflow-scrolling : touch;
 	background-color: #f5f5f5;
 	z-index: 1;
 }
@@ -220,7 +328,6 @@ export default {
     white-space: nowrap;
 }
 .resultList-wrapper {
-	margin-top: 100px;
 	padding: 0.5em;
 	padding-bottom: 5em;
 }
@@ -242,6 +349,7 @@ export default {
 	display: inline-block;
 	width: 30%;
 	overflow: scroll;
+    -webkit-overflow-scrolling : touch;
 	vertical-align: top;
 }
 .heightLevelQueryWrapper .leftBar .item {
@@ -266,6 +374,7 @@ export default {
 	display: inline-block;
 	width: 70%;
 	overflow: scroll;
+    -webkit-overflow-scrolling : touch;
 	vertical-align: top;
 	background-color: #fff;
 }
@@ -292,5 +401,59 @@ export default {
     border-radius: 4px;
     background-color: #ddd;
     vertical-align: top;
+}
+.Result-Wrapper .headerBarWrapper {
+	position: fixed;
+	top: 96px;
+	width: 100%;
+}
+.Result-Wrapper .headerBarWrapper .header-Title {
+	padding-left: 1em;
+    background-color: #f5f5f5;
+    line-height: 32px;
+    overflow: hidden;
+}
+.Result-Wrapper .headerBarWrapper .headerBar {
+	font-size: 0;
+    white-space: nowrap;
+    overflow: scroll;
+    -webkit-overflow-scrolling : touch;
+    border-bottom: 2px solid #fff;
+    background-color: #f5f5f5
+}
+.Result-Wrapper .headerBarWrapper .hearderItem {
+	display: inline-block;    
+	padding: 2px 6px;
+    margin: 2px;
+    margin-bottom: 0;
+    background-color: #e5e5e5;
+	font-size: 16px;
+	border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    line-height: 32px;
+}
+.Result-Wrapper .headerBarWrapper .hearderItem.active {
+	background-color: #fff;
+}
+.Result-Wrapper .contentWrapper {
+	margin-top: 166px;
+	padding: 10px 0 20px 0;
+	background-color: #fff;
+}
+.Result-Wrapper .contentWrapper .contentItem {
+    box-sizing: border-box;
+	width: 95%;
+    margin: auto;
+    margin-top: 10px;
+    padding: 0.5em;
+    background-color: #f9f9f9;
+    border-radius: 4px;
+    border: 1px solid #999;
+    font-size: 12px;
+}
+.Result-Wrapper .contentWrapper .contentItem .title {
+	display: inline-block;
+	min-width: 10em;
+	color: #169fe6
 }
 </style>

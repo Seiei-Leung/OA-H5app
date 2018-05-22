@@ -76,6 +76,7 @@ export default {
 	width: 100%;
 	padding-bottom: 2em;
     overflow: scroll;
+    -webkit-overflow-scrolling : touch;
 	background-color: #f5f5f5;
 	z-index: 1;
 }

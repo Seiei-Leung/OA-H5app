@@ -19,20 +19,24 @@
             <a href="javascript:;" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
         </div>
         <!-- 搜索结果表单号 -->
-        <div class="resultList-wrapper" v-show="!(isShowDetailTable)">
-        	<div v-for="item in resultList">
-        		<div @click="godetail(item.serialno,item.orderno,item.custname,item.quantity)" class="resultItem">
-        			<span>{{item.orderno}} </span>
-        			<span> {{item.custname}}</span>
-        		</div>
-        	</div>
-        </div>
+        <div style="margin-top: 96px;width: 100%;overflow: scroll;-webkit-overflow-scrolling : touch;" ref="resultListwrapper" v-show="!(isShowDetailTable)">
+       		<div class="resultList-wrapper">
+       			<div v-for="item in resultList">
+       				<div @click="godetail(item.serialno,item.orderno,item.custname,item.quantity)" class="resultItem">
+       					<span>{{item.orderno}} </span>
+       					<span> {{item.custname}}</span>
+       				</div>
+       			</div>
+       		</div>
+    	</div>
 		<div class="" v-show="isShowDetailTable">
 			<div class="contentWrapper">
 				<div class="header-Title">
 					{{orderno}} | {{custname}} | {{ordernonum}}
 				</div>
 				<div class="contentTable" ref="cssHook">
+					<div style="position: relative;">
+					<div style="overflow: scroll;-webkit-overflow-scrolling : touch;" ref="overflowHook">
 					<table class="table">
 						<tr class="header bar">
 							<th class="item title colorTitleHook">
@@ -60,6 +64,7 @@
 							</td>
 						</tr>
 					</table>
+					</div>
 					<div class="copy">
 						<div class="colorTitle copyitem">
 							颜色
@@ -75,6 +80,7 @@
 						<div v-for="item, index in kindTxtList" v-bind:class="'copyOne' + index" class="copyitem">
 							{{item}}
 						</div>
+					</div>
 					</div>
 				</div>
 			</div>
@@ -114,6 +120,9 @@ export default {
 				var url = that.seieiURL + "/estapi/api/WorkOrder?keywords=" + that.searchTxt;
 				that.$http.get(url).then(resp => {
 					that.resultList = resp.body;
+					this.$nextTick(() => {
+						this.$refs["resultListwrapper"].style.height = window.innerHeight - 96 + "px";
+					});
 				}, response => {
 					console.log("发送失败"+response.status+","+response.statusText);
 				});
@@ -170,9 +179,6 @@ export default {
         					}
         				}
 
-        				console.log(indexList);
-
-
         				// 颜色定位
         				cssHook.getElementsByClassName("colorTitle")[0].style.width = cssHook.getElementsByClassName("colorTitleHook")[0].offsetWidth + "px";
         				cssHook.getElementsByClassName("colorTitle")[0].style.height = cssHook.getElementsByClassName("colorTitleHook")[0].offsetHeight + "px";
@@ -200,6 +206,10 @@ export default {
         					cssHook.getElementsByClassName("copyOne" + indexList[i])[0].style.height = cssHook.getElementsByClassName("copyOne" + indexList[i])[0].style.height.split("px")[0] - 5 + "px";
         					cssHook.getElementsByClassName("copyOne" + (indexList[i] + 1))[0].style.height = cssHook.getElementsByClassName("copyOne" + (indexList[i] + 1))[0].style.height.split("px")[0] - 5 + "px";
         				}
+
+        				this.$refs["overflowHook"].height = this.$refs["overflowHook"].getElementsByClassName("table").offsetHeight + "px";
+        				this.$refs["overflowHook"].width = window.innerWidth + "px";
+        				cssHook.height = window.innerHeight - 131 + "px";
         			})
 				}, response1 => {
 					console.log("发送失败" + response.status + "," + response.statusText);
@@ -227,12 +237,13 @@ export default {
 
 <style scoped>
 .cuttingbedReport-component {
-	position: absolute;
+	position: fixed;
 	top: 0;
 	bottom: 0;
 	width: 100%;
 	height: 100%;
     overflow: scroll;
+    -webkit-overflow-scrolling : touch;
 	background-color: #f5f5f5;
 	z-index: 1;
 }
@@ -261,7 +272,6 @@ export default {
 }
 
 .resultList-wrapper {
-	margin-top: 100px;
 	padding: 0.5em;
 	padding-bottom: 5em;
 }
@@ -289,8 +299,10 @@ export default {
     font-size: 12px;
 }
 .contentTable {
-	padding-top: 25px;
+	width: 100%;
 	overflow: scroll;
+	-webkit-overflow-scrolling : touch;
+	padding-top: 25px;
 }
 .table {
 	position: relative;
@@ -307,12 +319,12 @@ export default {
 }
 .copy {
 	position: absolute;
-	top: 121px;
+	top: 0px;
 	z-index: 1
 }
 .copyOne {
 	position: absolute;
-	top: 121px;
+	top: 0px;
 	z-index: 1;
 }
 .copyitem {

@@ -50,12 +50,18 @@
     	        </div>
     	        <p class="weui-grid__label">物料计划</p>
     	    </a>
-    	    <a href="javascript:void(0);" class="weui-grid">
-    	        <div class="weui-grid__icon">
-    	            <img v-bind:src="'http://www.seieiblog.top:38080/oa/KQ/img/2.png'">
-    	        </div>
-    	        <p class="weui-grid__label">裁床报表</p>
-    	    </a>
+            <a href="javascript:void(0);" class="weui-grid" @click="goCuttingbedReport">
+                <div class="weui-grid__icon">
+                    <img v-bind:src="'http://www.seieiblog.top:38080/oa/KQ/img/2.png'">
+                </div>
+                <p class="weui-grid__label">裁床报表</p>
+            </a>
+            <a href="javascript:void(0);" class="weui-grid" @click="goProductScheduleQuery">
+                <div class="weui-grid__icon">
+                    <img v-bind:src="'http://www.seieiblog.top:38080/oa/KQ/img/2.png'">
+                </div>
+                <p class="weui-grid__label">生产排期查询</p>
+            </a>
     	</div>
 	</div>
 </template>
@@ -102,6 +108,7 @@ export default{
 	bottom: 0;
 	width: 100%;
     overflow: scroll;
+    -webkit-overflow-scrolling : touch;
 	background-color: #f5f5f5;
 	z-index: 1;
 }

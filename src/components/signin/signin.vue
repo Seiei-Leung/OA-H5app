@@ -91,6 +91,7 @@ export default {
     bottom: 0;
     width: 100%;
     overflow: scroll;
+    -webkit-overflow-scrolling : touch;
     background-color: #f5f5f5;
     z-index: 1;
 }

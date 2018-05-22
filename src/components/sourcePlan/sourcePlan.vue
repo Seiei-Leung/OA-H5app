@@ -19,14 +19,16 @@
             <a href="javascript:;" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
         </div>
         <!-- 搜索结果表单号 -->
-        <div class="resultList-wrapper" v-show="!(isShowDetailTable)">
-        	<div v-for="item in resultList">
-        		<div @click="godetail(item.serialno,item.orderno,item.custname,item.quantity)" class="resultItem">
-        			<span>{{item.orderno}} </span>
-        			<span> {{item.custname}}</span>
+        <div style="margin-top: 96px;width: 100%;overflow: scroll;-webkit-overflow-scrolling : touch;" ref="resultListwrapper" v-show="!(isShowDetailTable)">
+        	<div class="resultList-wrapper">
+        		<div v-for="item in resultList">
+        			<div @click="godetail(item.serialno,item.orderno,item.custname,item.quantity)" class="resultItem">
+        				<span>{{item.orderno}} </span>
+        				<span> {{item.custname}}</span>
+        			</div>
         		</div>
         	</div>
-        </div>
+    	</div>
         <!-- 点击搜索表单号 -->
         <div class="serialnoDetail-Wrapper" v-show="isShowDetailTable">
     		<div class="headerBarWrapper">
@@ -131,6 +133,9 @@ export default {
 				var url = that.seieiURL + "/estapi/api/WorkOrder?keywords=" + that.searchTxt;
 				that.$http.get(url).then(resp => {
 					that.resultList = resp.body;
+					this.$nextTick(() => {
+						this.$refs["resultListwrapper"].style.height = window.innerHeight - 96 + "px";
+					});
 				}, response => {
 					console.log("发送失败"+response.status+","+response.statusText);
 				});
@@ -245,6 +250,7 @@ export default {
 	bottom: 0;
 	width: 100%;
     overflow: scroll;
+    -webkit-overflow-scrolling : touch;
 	background-color: #f5f5f5;
 	z-index: 1;
 }
@@ -254,7 +260,6 @@ export default {
 	width: 100%
 }
 .resultList-wrapper {
-	margin-top: 100px;
 	padding: 0.5em;
 	padding-bottom: 5em;
 }
@@ -282,6 +287,7 @@ export default {
 	font-size: 0;
     white-space: nowrap;
     overflow: scroll;
+    -webkit-overflow-scrolling : touch;
     border-bottom: 2px solid #fff;
     background-color: #f5f5f5
 }
