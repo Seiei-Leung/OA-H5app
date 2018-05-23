@@ -48,7 +48,10 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  created: function() {
+    console.log("index");
+  }
 }
 </script>
 

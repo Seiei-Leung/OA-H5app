@@ -36,8 +36,8 @@
 				</div>
 				<div class="contentTable" ref="cssHook">
 					<div style="position: relative;">
-					<div style="overflow: scroll;-webkit-overflow-scrolling : touch;" ref="overflowHook">
-					<table class="table">
+					<div style="overflow: scroll;-webkit-overflow-scrolling:touch;" ref="overflowHook">
+						<table class="table">
 						<tr class="header bar">
 							<th class="item title colorTitleHook">
 								颜色
@@ -63,7 +63,7 @@
 								{{item}}
 							</td>
 						</tr>
-					</table>
+						</table>
 					</div>
 					<div class="copy">
 						<div class="colorTitle copyitem">
@@ -89,6 +89,8 @@
 </template>
 
 <script>
+import BScroll from 'better-scroll';
+
 
 var T;
 var startX, startY;
@@ -207,9 +209,9 @@ export default {
         					cssHook.getElementsByClassName("copyOne" + (indexList[i] + 1))[0].style.height = cssHook.getElementsByClassName("copyOne" + (indexList[i] + 1))[0].style.height.split("px")[0] - 5 + "px";
         				}
 
-        				this.$refs["overflowHook"].height = this.$refs["overflowHook"].getElementsByClassName("table").offsetHeight + "px";
-        				this.$refs["overflowHook"].width = window.innerWidth + "px";
-        				cssHook.height = window.innerHeight - 131 + "px";
+        				this.$refs["overflowHook"].style.height = this.$refs["overflowHook"].getElementsByClassName("table")[0].offsetHeight + "px";
+        				this.$refs["overflowHook"].style.width = window.innerWidth + "px";
+        				cssHook.style.height = window.innerHeight - 121 + "px";
         			})
 				}, response1 => {
 					console.log("发送失败" + response.status + "," + response.statusText);

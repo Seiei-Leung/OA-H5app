@@ -17,10 +17,10 @@
                 </label>
             </form>
             <a href="javascript:void(0);" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
-            <a href="javascript:void(0);" class="levelQuery" @click="showLevelQuery">高级查询</a>
+            <a href="javascript:void(0);" class="levelQuery" @click="changeQuery">{{changeQueryTxt}}</a>
         </div>
         <!-- 搜索结果表单号 -->
-        <div style="margin-top: 96px;width: 100%;overflow: scroll;-webkit-overflow-scrolling : touch;" ref="resultListwrapper" v-show="!(isShowResult)">
+        <div style="margin-top: 96px;width: 100%;overflow: scroll;-webkit-overflow-scrolling : touch;" ref="resultListwrapper" v-show="!(isShowDetailTable) && !(isShowResult)">
         	<div class="resultList-wrapper">
         		<div v-for="item in resultList">
         			<div class="resultItem" @click="getResult(item.orderno, item.custname)">
@@ -31,31 +31,23 @@
         	</div>
     	</div>
         <!-- 高级查询 -->
-        <div class="heightLevelQueryWrapper" ref="heightLevelQueryHook" v-show="isShowDetailTable">
-        	<!-- 关闭按钮 -->
-        	<div class="closeBtn">
-        		<i class="weui-icon-clear" @click="hideLevelQuery"></i>
-        	</div>
+        <div class="heightLevelQueryWrapper" ref="heightLevelQueryHook" v-show="isShowDetailTable && !isShowResult">
         	<!-- 左侧 -->
-        	<div class="leftBar" ref="leftBar">
-        		<div>
-        			<div class="item" v-for="item, index in groupList" @click="getdetailInLevelQuery(item.bnsgroup, $event)" v-bind:class="{active : index == 0}">
-        				{{item.bnsgroup}}
-        			</div>
+        	<div class="leftBar">
+        		<div class="item" v-for="item, index in groupList" @click="getdetailInLevelQuery(item.bnsgroup, $event)" v-bind:class="{active : index == 0}">
+        			{{item.bnsgroup}}
         		</div>
         	</div>
-        	<div class="rightBar" ref="rightBar">
-        		<div>
-        			<div class="item" v-for="item in workshopList">
-        				<div class="workshopTitle">
-        					生产车间：{{item}}
-        				</div>
-        				<div>
-        					生产线：
-        				</div>
-        				<div v-for="item2 in getworklineList(item)" class="worklineItem" @click="getResults(item, item2)">
-        					{{item2}}
-        				</div>
+        	<div class="rightBar">
+        		<div class="item" v-for="item in workshopList">
+        			<div class="workshopTitle">
+        				生产车间：{{item}}
+        			</div>
+        			<div>
+        				生产线：
+        			</div>
+        			<div v-for="item2 in getworklineList(item)" class="worklineItem" @click="getResults(item, item2)">
+        				{{item2}}
         			</div>
         		</div>
         	</div>
@@ -115,7 +107,6 @@
 </template>
 
 <script>
-import BScroll from 'better-scroll';
 import loading from '../loading/loading';
 
 var T;
@@ -171,11 +162,9 @@ export default {
 		});
 
 		this.$nextTick(function() {
-			this.$refs['heightLevelQueryHook'].style.height = window.innerHeight + "px";
-			this.$refs['heightLevelQueryHook'].getElementsByClassName('leftBar')[0].style.height = window.innerHeight - 48 + "px";
-			new BScroll(this.$refs.leftBar, {click: true});
-			new BScroll(this.$refs.rightBar, {click: true});
-			this.$refs['heightLevelQueryHook'].getElementsByClassName('rightBar')[0].style.height = window.innerHeight - 48 + "px";
+			this.$refs['heightLevelQueryHook'].style.height = window.innerHeight - 96 + "px";
+			this.$refs['heightLevelQueryHook'].getElementsByClassName('leftBar')[0].style.height = window.innerHeight - 96 + "px";
+			this.$refs['heightLevelQueryHook'].getElementsByClassName('rightBar')[0].style.height = window.innerHeight - 96 + "px";
 		});
 	},
 	methods: {
@@ -183,6 +172,7 @@ export default {
 		watchInput: function() {
 			var that = this;
 			this.isShowResult = false;
+			this.isShowDetailTable = false;
 			clearTimeout(T);
 			T = setTimeout(() => {
 				var url = that.seieiURL + "/estapi/api/WorkOrder?keywords=" + that.searchTxt;
@@ -262,6 +252,7 @@ export default {
 				this.isLoading = false;
 				this.isShowResult = true;
 				this.isShowDetailTable = false;
+				this.changeQueryTxt = "高级查询";
 			}, response => {
 				this.isLoading = false;
 				console.log("发送失败"+response.status+","+response.statusText);
@@ -282,13 +273,13 @@ export default {
 			this.$refs.headerBarHook.getElementsByClassName("active")[0].className = "hearderItem";
 			event.target.className += " active";
 		},
-		// 点击查询后的单条制单号
 		getResult: function(orderno, custname) {
 			this.isLoading = true;
 			this.isShowResult = true;
 			this.selectOrderno = orderno;
 			this.selectCustname = custname;
 			this.$http.get(this.seieiURL + "/estapi/api/ProductionPlanning?group=&workshop=&line=&orderno=" + encodeURIComponent(orderno)).then(resp => {
+				this.changeQueryTxt = "高级查询";
 				this.isLoading = false;
 				this.headerTitle = [];
 				this.headerTitle.push(orderno);
@@ -300,11 +291,25 @@ export default {
 				console.log("发送失败"+response.status+","+response.statusText);
 			});
 		},
-		showLevelQuery: function() {
-			this.isShowDetailTable = true;
-		},
-		hideLevelQuery: function() {
-			this.isShowDetailTable = false;
+		changeQuery: function() {
+			if (this.resultContentList.length == 0 && !this.isShowDetailTable) {
+				this.changeQueryTxt = "高级查询";
+				this.isShowDetailTable = true;
+				this.isShowResult = false;
+				return;
+			}
+			if (this.resultContentList.length > 0 && !this.isShowDetailTable) {
+				this.changeQueryTxt = "历史查询";
+				this.isShowDetailTable = true;
+				this.isShowResult = false;
+				return;
+			} 
+			if (this.resultContentList.length > 0 && this.isShowDetailTable) {
+				this.changeQueryTxt = "高级查询";
+				this.isShowResult = true;
+				this.isShowDetailTable = false;
+				return;
+			}
 		}
 	},
 	components: {
@@ -369,45 +374,16 @@ export default {
 	color: #444;
 }
 .heightLevelQueryWrapper {
-	position: fixed;
-	top: 0;
-	bottom: 0;
-	width: 100%;
-	font-size: 0px;
-	z-index: 10000;
-}
-.heightLevelQueryWrapper .closeBtn {
-	position: relative;
-	width: 100%;
-	height: 48px;
-	text-align: center;
-	background-color: rgba(0,0,0,0.5);
-}
-.heightLevelQueryWrapper .closeBtn .weui-icon-clear{
-	position: absolute;
-    bottom: -16px;
-    right: 12px;
-    color: #444;
-    width: 32px;
-    height: 32px;
-    border-radius: 100%;
-    background-color: #fff;
-    font-size: 32px;
-    z-index: 100000;
-}
-.heightLevelQueryWrapper .closeBtn [class^="weui-icon-"]:before,
-.heightLevelQueryWrapper .closeBtn [class*=" weui-icon-"]:before {
-    display: inline-block;
-    margin-left: 0;
-    margin-right: 0;
+	margin-top: 96px;
+	font-size: 0px
 }
 .heightLevelQueryWrapper .leftBar {
 	box-sizing: border-box;
 	display: inline-block;
 	width: 30%;
-	overflow: hidden;
+	overflow: scroll;
+    -webkit-overflow-scrolling : touch;
 	vertical-align: top;
-	background-color: #f5f5f5
 }
 .heightLevelQueryWrapper .leftBar .item {
 	box-sizing: border-box;
@@ -430,7 +406,8 @@ export default {
 	box-sizing: border-box;
 	display: inline-block;
 	width: 70%;
-	overflow: hidden;
+	overflow: scroll;
+    -webkit-overflow-scrolling : touch;
 	vertical-align: top;
 	background-color: #fff;
 }

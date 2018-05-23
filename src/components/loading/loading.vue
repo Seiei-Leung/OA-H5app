@@ -18,6 +18,7 @@ export default {
 	top: 45%;
 	width: 100%;
 	text-align: center;
+	z-index: 1000000;
 }
 .loading-wrapper img {
 	width: 1rem
