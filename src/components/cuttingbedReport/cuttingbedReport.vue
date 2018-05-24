@@ -19,7 +19,7 @@
             <a href="javascript:;" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
         </div>
         <!-- 搜索结果表单号 -->
-        <div class="resultListwrapper" style="margin-top: 96px;width: 100%;overflow: scroll;-webkit-overflow-scrolling : touch;" ref="resultListwrapper" v-show="!(isShowDetailTable)">
+        <div style="margin-top: 96px;width: 100%;overflow: scroll;-webkit-overflow-scrolling : touch;" ref="resultListwrapper" v-show="!(isShowDetailTable)">
        		<div class="resultList-wrapper">
        			<div v-for="item in resultList">
        				<div @click="godetail(item.serialno,item.orderno,item.custname,item.quantity)" class="resultItem">
@@ -30,13 +30,12 @@
        		</div>
     	</div>
 		<div class="" v-show="isShowDetailTable">
+			<div class="header-Title">
+				{{orderno}} | {{custname}} | {{ordernonum}}
+			</div>
 			<div class="contentWrapper">
-				<div class="header-Title">
-					{{orderno}} | {{custname}} | {{ordernonum}}
-				</div>
 				<div class="contentTable" ref="cssHook">
-					<div style="position: relative;">
-					<div ref="overflowHook">
+					<div ref="overflowHook" style="padding-bottom: 30px;">
 						<table class="table">
 						<tr class="header bar">
 							<th class="item title colorTitleHook">
@@ -45,11 +44,11 @@
 							<th class="item copyOneColorTitleHook">
 								项目
 							</th>
-							<th v-for="item, index in titleHearder" class="item" v-bind:class="'titleHearderHook' + index">
-								{{item}}
-							</th>
 							<th class="item">
 								小计
+							</th>
+							<th v-for="item, index in titleHearder" class="item" v-bind:class="'titleHearderHook' + index">
+								{{item}}
 							</th>
 						</tr>
 						<tr v-for="contents, index in contentList" class="contentRow" v-bind:class="rowBorder(index)">
@@ -64,23 +63,6 @@
 							</td>
 						</tr>
 						</table>
-					</div>
-					<div class="copy">
-						<div class="colorTitle copyitem">
-							颜色
-						</div>
-						<div v-for="item, index in colorList" v-bind:class="'copy' + index" class="copyitem">
-							{{item}}
-						</div>
-					</div>
-					<div class="copyOne">
-						<div class="copyitem copyOneColorTitle">
-							项目
-						</div>
-						<div v-for="item, index in kindTxtList" v-bind:class="'copyOne' + index" class="copyitem">
-							{{item}}
-						</div>
-					</div>
 					</div>
 				</div>
 			</div>
@@ -151,10 +133,10 @@ export default {
 					console.log(resp1.body);
 					for (var i=0; i<resp1.body.length; i++) {
 						var forContentList = [];
+						forContentList.push(resp1.body[i].total);
 						for (var j=1; j<this.titleHearder.length+1; j++) {
 							forContentList.push(resp1.body[i]['size' + j]);
 						}
-						forContentList.push(resp1.body[i].total);
 						this.contentList.push(forContentList);
 						this.colorList.push(resp1.body[i]['color']);
 						this.kindTxtList.push(resp1.body[i]['item']);
@@ -181,39 +163,12 @@ export default {
         					}
         				}
 
-        				// 颜色定位
-        				cssHook.getElementsByClassName("colorTitle")[0].style.width = cssHook.getElementsByClassName("colorTitleHook")[0].offsetWidth + "px";
-        				cssHook.getElementsByClassName("colorTitle")[0].style.height = cssHook.getElementsByClassName("colorTitleHook")[0].offsetHeight + "px";
-        				for (var i=0; i<this.colorList.length; i++) {
-        					cssHook.getElementsByClassName("copy" + i)[0].style.height = cssHook.getElementsByClassName('Hook' + i)[0].offsetHeight + "px";
-        					cssHook.getElementsByClassName("copy" + i)[0].style.width = cssHook.getElementsByClassName('Hook' + i)[0].offsetWidth + "px";
-        				}
-
-        				// 项目定位
-        				cssHook.getElementsByClassName("copyOne")[0].style.left = cssHook.getElementsByClassName("colorTitleHook")[0].offsetWidth + "px";
-        				cssHook.getElementsByClassName("copyOneColorTitle")[0].style.width = cssHook.getElementsByClassName("copyOneColorTitleHook")[0].offsetWidth + "px";
-        				cssHook.getElementsByClassName("copyOneColorTitle")[0].style.height = cssHook.getElementsByClassName("copyOneColorTitleHook")[0].offsetHeight + "px";
-        				for (var i=0; i<this.kindTxtList.length; i++) {
-        					cssHook.getElementsByClassName("copyOne" + i)[0].style.width = cssHook.getElementsByClassName("copyOneHook" + i)[0].offsetWidth + "px";
-        					cssHook.getElementsByClassName("copyOne" + i)[0].style.height = cssHook.getElementsByClassName("copyOneHook" + i)[0].offsetHeight + "px";
-        				}
-
-        				for (var i=0; i<indexList.length-1; i++) {
-
-        					cssHook.getElementsByClassName("copy" + indexList[i])[0].style.marginBottom = "10px";
-        					cssHook.getElementsByClassName("copy" + indexList[i])[0].style.height = cssHook.getElementsByClassName("copy" + indexList[i])[0].style.height.split("px")[0] - 5 + "px";
-        					cssHook.getElementsByClassName("copy" + (indexList[i] + 1))[0].style.height = cssHook.getElementsByClassName("copy" + (indexList[i] + 1))[0].style.height.split("px")[0] - 5 + "px";
-
-        					cssHook.getElementsByClassName("copyOne" + indexList[i])[0].style.marginBottom = "10px";
-        					cssHook.getElementsByClassName("copyOne" + indexList[i])[0].style.height = cssHook.getElementsByClassName("copyOne" + indexList[i])[0].style.height.split("px")[0] - 5 + "px";
-        					cssHook.getElementsByClassName("copyOne" + (indexList[i] + 1))[0].style.height = cssHook.getElementsByClassName("copyOne" + (indexList[i] + 1))[0].style.height.split("px")[0] - 5 + "px";
-        				}
-
         				this.$refs["overflowHook"].style.height = this.$refs["overflowHook"].getElementsByClassName("table")[0].offsetHeight + "px";
-        				this.$refs["overflowHook"].style.width = window.innerWidth + "px";
+        				this.$refs["overflowHook"].style.width = this.$refs["overflowHook"].getElementsByClassName("table")[0].offsetWidth + "px";
         				cssHook.style.height = window.innerHeight - 121 + "px";
+        				cssHook.style.width = window.innerWidth + "px";
 
-        				new BScroll(cssHook, {scrollY: true, eventPassthrough: "horizontal"});
+        				new BScroll(cssHook, {scrollX: true, scrollY: true, click: true})
         			})
 				}, response1 => {
 					console.log("发送失败" + response.status + "," + response.statusText);
@@ -275,12 +230,6 @@ export default {
 	line-height: 32px
 }
 
-.resultListwrapper {
-	padding-bottom: 30px;
-	overflow: scroll;
-	-webkit-overflow-scrolling: touch;
-}
-
 .resultList-wrapper {
 	padding: 0.5em;
 	padding-bottom: 5em;
@@ -296,6 +245,7 @@ export default {
 }
 .contentWrapper {
 	margin-top: 96px;
+	margin-bottom: 30px;
 }
 .header-Title {
     position: fixed;
@@ -309,8 +259,9 @@ export default {
 }
 .contentTable {
 	width: 100%;
+	overflow: scroll;
+	-webkit-overflow-scrolling : touch;
 	padding-top: 25px;
-	overflow: hidden;
 }
 .table {
 	position: relative;
