@@ -15,8 +15,8 @@ import tabledetail from '@/components/tabledetail/tabledetail';
 import businessQuery from '@/components/businessQuery/businessQuery';
 import sourcePlan from '@/components/sourcePlan/sourcePlan';
 import serialnoDetail from '@/components/serialnoDetail/serialnoDetail';
-import cuttingbedReport from '@/components/cuttingbedReport/cuttingbedReport';
-import productScheduleQuery from '@/components/productScheduleQuery/productScheduleQuery';
+import cuttingbedReport from '@/components/cuttingbedReport/cuttingbedReport?v=2018-5-24';
+import productScheduleQuery from '@/components/productScheduleQuery/productScheduleQuery?v=2018-5-24';
 
 Vue.use(Router);
 
