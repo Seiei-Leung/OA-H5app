@@ -98,8 +98,7 @@
 					<div v-show="item.firstfabricindate"><span class="title">首次布料入仓日期：</span><span>{{String(item.firstfabricindate).split("T")[0]}}</span></div>
 					<div v-show="item.fabricdatedays"><span class="title">布期差异：</span><span>{{String(item.fabricdatedays).split("T")[0]}}</span></div>
 					<div v-show="item.cutsdate"><span class="title">裁剪开始期：</span><span>{{String(item.cutsdate).split("T")[0]}}</span></div>
-					<div v-show="item.cutedate"><span class="title">推算裁剪完成期：</span><span>{{String(item.cutedate).split("T")[0]}}</span></div>
-					<div v-show="item.sendpiecedate"><span class="title">发裁片期：</span><span>{{String(item.sendpiecedate).split("T")[0]}}</span></div>						
+					<div v-show="item.cutedate"><span class="title">推算裁剪完成期：</span><span>{{String(item.cutedate).split("T")[0]}}</span></div>					
 					<div v-show="item.hangpiecedate"><span class="title">开始挂片期：</span><span>{{String(item.hangpiecedate).split("T")[0]}}</span></div>
 					<div v-show="item.ssewdate"><span class="title">开始车缝期：</span><span>{{String(item.ssewdate).split("T")[0]}}</span></div>
 					<div v-show="item.esewdate"><span class="title">完成车缝期：</span><span>{{String(item.esewdate).split("T")[0]}}</span></div>

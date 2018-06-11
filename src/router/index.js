@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import workbench from '@/components/workbench/workbench';
-import addressBook from '@/components/addressBook/addressBook';
+import addressBook from '@/components/addressBook/addressBook?v=2018-6-7';
 import signin from '@/components/signin/signin';
 import announcement from '@/components/announcement/announcement';
 import todoList from '@/components/todoList/todoList?v=2018-5-7';
@@ -13,10 +13,11 @@ import myApplyDetail from '@/components/myApplyDetail/myApplyDetail';
 import personalMsg from '@/components/personalMsg/personalMsg';
 import tabledetail from '@/components/tabledetail/tabledetail';
 import businessQuery from '@/components/businessQuery/businessQuery';
-import sourcePlan from '@/components/sourcePlan/sourcePlan';
+import sourcePlan from '@/components/sourcePlan/sourcePlan?v=2018-5-28';
 import serialnoDetail from '@/components/serialnoDetail/serialnoDetail';
-import cuttingbedReport from '@/components/cuttingbedReport/cuttingbedReport?v=2018-5-24';
+import cuttingbedReport from '@/components/cuttingbedReport/cuttingbedReport?v=2018-5-31';
 import productScheduleQuery from '@/components/productScheduleQuery/productScheduleQuery?v=2018-5-24';
+import test from '@/components/test/test';
 
 Vue.use(Router);
 
@@ -171,6 +172,15 @@ export default new Router({
       path: '/productScheduleQuery',
       name: 'productScheduleQuery',
       component: productScheduleQuery,
+      meta: {
+        keepAlive: false // 需要被缓存
+      }
+    },
+    // 测试
+    {
+      path: '/test',
+      name: 'test',
+      component: test,
       meta: {
         keepAlive: false // 需要被缓存
       }

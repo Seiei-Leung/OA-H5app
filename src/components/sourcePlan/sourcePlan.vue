@@ -22,7 +22,7 @@
         <div style="margin-top: 96px;width: 100%;overflow: scroll;-webkit-overflow-scrolling : touch;" ref="resultListwrapper" v-show="!(isShowDetailTable)">
         	<div class="resultList-wrapper">
         		<div v-for="item in resultList">
-        			<div @click="godetail(item.serialno,item.orderno,item.custname,item.quantity)" class="resultItem">
+        			<div @click="godetail(item.serialno,item.orderno,item.custname,item.quantity, item.picurl)" class="resultItem">
         				<span>{{item.orderno}} </span>
         				<span> {{item.custname}}</span>
         			</div>
@@ -32,8 +32,7 @@
         <!-- 点击搜索表单号 -->
         <div class="serialnoDetail-Wrapper" v-show="isShowDetailTable">
     		<div class="headerBarWrapper">
-    			<div class="header-Title">
-    				{{selectOrderno}} | {{selectCustname}} | <a href="javascript:void(0);" @click="goSerialnoDetail(serialno, selectOrderno, selectCustname, selectOrdernoNum)">{{selectOrdernoNum}}<i class="icon-chevron-right"></i></a>
+    			<div class="header-Title"><img v-bind:src="picurl" class="thumbImg" @click="showPic"><span>{{selectOrderno}} | {{selectCustname}} | </span><a href="javascript:void(0);" @click="goSerialnoDetail(serialno, selectOrderno, selectCustname, selectOrdernoNum)">{{selectOrdernoNum}}> </i></a>
     				<a href="javascript:void(0);" @click="showBackground" class="stayRight">
     					货期<i class="icon-chevron-right"></i>
     				</a>
@@ -81,13 +80,18 @@
         			<div class="item">入仓数：{{saveNum}}</div>
         			<div class="item">领料数：{{takeNum}}</div>
         		</div>
+        		<div>
+        			<div class="item">调入数：{{tuneOutNum}}</div>
+        			<div class="item">调出数：{{tuneInNum}}</div>
+        		</div>
         	</div>
         	<!-- 黑色遮盖 图 -->
         	<div @click="hideBackground">
         		<v-blackBackground v-show="isblackBackground"></v-blackBackground>
         	</div>
+        	<div v-show="isShowPic && isblackBackground" class="pic"><img v-bind:src="picurl"></div>
         	<!-- 货期 -->
-        	<div v-show="isblackBackground" class="deliveryTime">
+        	<div v-show="isdeliveryTime && isblackBackground" class="deliveryTime">
         		<div v-show="backgroundList.length > 0">
         			<div v-for="item in backgroundList">
         				<div><span>工厂离厂货期：</span><span>{{item.facdelivery ? String(item.facdelivery).replace("T00:00:00", "") : ""}}</span></div>
@@ -119,8 +123,11 @@ export default {
 			selectCustname: "",
 			selectOrdernoNum: "",
 			serialno: "",
+			picurl: "",
 			isblackBackground: false,
-			backgroundList: []
+			backgroundList: [],
+			isShowPic: false,
+			isdeliveryTime: false
 		}
 	},
 	methods: {
@@ -142,14 +149,20 @@ export default {
 			}, 1500);
 		},
 		// 获取表单信息
-		godetail: function(arg, orderno, custname, selectOrdernoNum) {
+		godetail: function(arg, orderno, custname, selectOrdernoNum, picurl) {
 			this.$http.get(this.seieiURL + "/estapi/api/Mrpplana?serialno=" + encodeURIComponent(arg)).then(resp => {
 				this.headerTitle = resp.body;
+				this.$nextTick(() => {
+					this.$refs.headerBarHook.getElementsByClassName("active")[0].className = "hearderItem";
+					this.$refs.headerBarHook.getElementsByClassName("hearderItem")[0].className += " active";
+				});
 				this.$http.get(this.seieiURL + "/estapi/api/Mrpplana?serialno1=" + encodeURIComponent(arg)).then(resp1 => {
 					this.isShowDetailTable = true;
+					this.picurl = picurl;
 					this.serialno = arg;
 					this.selectOrderno = orderno;
 					this.selectOrdernoNum = selectOrdernoNum;
+					this.resp
 					this.contentList = resp1.body;
 					this.contentListSource = resp1.body;
 					this.$http.get(this.seieiURL + "/estapi/api/WorkOrder?sname=" + encodeURIComponent(custname)).then(resp2 => {
@@ -192,10 +205,16 @@ export default {
 		},
 		// 显示货期
 		showBackground: function() {
+			this.isdeliveryTime = true;
+			this.isblackBackground = true;
+		},
+		showPic: function() {
+			this.isShowPic = true;
 			this.isblackBackground = true;
 		},
 		hideBackground: function() {
-			console.log(this.isblackBackground);
+			this.isdeliveryTime = false;
+			this.isShowPic = false;
 			this.isblackBackground = false;
 		}
 	},
@@ -232,6 +251,24 @@ export default {
 			if (this.contentList.length > 0) {
 				this.contentList.forEach((item) => {
 					Num += Number(String(item.F19).split(".")[0]);
+				})
+			}
+			return Num;
+		},
+		tuneOutNum: function() {
+			var Num = 0;
+			if (this.contentList.length > 0) {
+				this.contentList.forEach((item) => {
+					Num += Number(String(item.F08).split(".")[0]);
+				})
+			}
+			return Num;
+		},
+		tuneInNum: function() {
+			var Num = 0;
+			if (this.contentList.length > 0) {
+				this.contentList.forEach((item) => {
+					Num += Number(String(item.F09).split(".")[0]);
 				})
 			}
 			return Num;
@@ -278,10 +315,23 @@ export default {
 	width: 100%;
 }
 .headerBarWrapper .header-Title {
+	height: 80px;
+    line-height: 80px;
 	padding-left: 1em;
     background-color: #f5f5f5;
-    line-height: 32px;
     overflow: hidden;
+}
+.headerBarWrapper .header-Title span{
+	padding-left: 5px;
+	vertical-align: top
+}
+.headerBarWrapper .header-Title a {
+	vertical-align: top;
+}
+.thumbImg {
+	margin-top: 3px;
+	width: 75px;
+	height: 75px;
 }
 .headerBar {
 	font-size: 0;
@@ -306,9 +356,9 @@ export default {
 	background-color: #fff;
 }
 .contentWrapper {
-	margin-top: 65px;
-	margin-bottom: 50px;
-	padding: 95px 0 20px 0;
+	margin-top: 85px;
+	margin-bottom: 90px;
+	padding: 120px 0 20px 0;
 	background-color: #fff
 }
 .contentItem {
@@ -357,6 +407,17 @@ export default {
 	background-color: #fff;
 	border-radius: 4px;
 	z-index: 10000
+}
+.pic {
+	position: fixed;
+	top: 45%;
+	width: 100%;
+	margin-top: -50%;
+	text-align: center;
+	z-index: 10000
+}
+.pic img{
+	width: 100%;
 }
 .stayRight {
 	display: inline-block;

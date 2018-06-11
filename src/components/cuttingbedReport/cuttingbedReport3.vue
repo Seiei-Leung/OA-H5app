@@ -22,7 +22,7 @@
         <div style="margin-top: 96px;width: 100%;overflow: scroll;-webkit-overflow-scrolling : touch;" ref="resultListwrapper" v-show="!(isShowDetailTable)">
        		<div class="resultList-wrapper">
        			<div v-for="item in resultList">
-       				<div @click="godetail(item.serialno,item.orderno,item.custname,item.quantity)" class="resultItem">
+       				<div @click="godetail(item.serialno,item.orderno,item.custname,item.quantity,item.picurl)" class="resultItem">
        					<span>{{item.orderno}} </span>
        					<span> {{item.custname}}</span>
        				</div>
@@ -30,6 +30,9 @@
        		</div>
     	</div>
 		<div class="" v-show="isShowDetailTable">
+			<div class="header-Title">
+				<img v-bind:src="picurl" class="thumbImg" @click="showPic"><span>{{orderno}} | {{custname}} | {{ordernonum}}</span>
+			</div>
 			<div class="contentWrapper">
 				<div class="header-Title">
 					{{orderno}} | {{custname}} | {{ordernonum}}
@@ -90,6 +93,8 @@
 
 <script>
 import BScroll from 'better-scroll';
+import blackBackground from '../blackBackground/blackBackground';
+import loading from '../loading/loading';
 
 
 var T;
@@ -109,7 +114,11 @@ export default {
 			totalNums: [],
 			colorList: [],
 			kindTxtList: [],
-			totalNum: ""
+			totalNum: "",
+			picurl: "",
+			isShowPic: false,
+			isblackBackground: false,
+			isLoading: false
 		}
 	},
 	methods: {
@@ -130,7 +139,8 @@ export default {
 				});
 			}, 1500);
 		},
-		godetail: function(serialno, orderno, custname, selectOrdernoNum) {
+		godetail: function(serialno, orderno, custname, selectOrdernoNum, picurl) {
+			this.isLoading = true;
 			this.titleHearder = [];
 			this.contentList = [],
 			this.totalNums = [],
@@ -147,14 +157,15 @@ export default {
 					this.isShowDetailTable = true;
 					this.orderno = orderno;
 					this.custname = custname;
+					this.picurl = picurl;
 					this.ordernonum = selectOrdernoNum;
 					console.log(resp1.body);
 					for (var i=0; i<resp1.body.length; i++) {
 						var forContentList = [];
+						forContentList.push(resp1.body[i].total);
 						for (var j=1; j<this.titleHearder.length+1; j++) {
 							forContentList.push(resp1.body[i]['size' + j]);
 						}
-						forContentList.push(resp1.body[i].total);
 						this.contentList.push(forContentList);
 						this.colorList.push(resp1.body[i]['color']);
 						this.kindTxtList.push(resp1.body[i]['item']);
@@ -211,7 +222,9 @@ export default {
 
         				this.$refs["overflowHook"].style.height = this.$refs["overflowHook"].getElementsByClassName("table")[0].offsetHeight + "px";
         				this.$refs["overflowHook"].style.width = window.innerWidth + "px";
-        				cssHook.style.height = window.innerHeight - 121 + "px";
+        				cssHook.style.height = window.innerHeight - 96 - 50 + "px";
+        				cssHook.style.width = window.innerWidth + "px";
+        				this.isLoading = false;
 
         				new BScroll(cssHook, {scrollY: true, eventPassthrough: "horizontal"});
         			})
@@ -234,7 +247,19 @@ export default {
 				rowBorderHook = this.colorList[index];
 			    return "border";
 			}
+		},
+		showPic: function() {
+			this.isShowPic = true;
+			this.isblackBackground = true;
+		},
+		hideBackground: function() {
+			this.isShowPic = false;
+			this.isblackBackground = false;
 		}
+	},
+	components: {
+        'v-loading': loading,
+        'v-blackBackground': blackBackground
 	}
 }
 </script>
