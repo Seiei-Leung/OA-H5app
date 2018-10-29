@@ -32,7 +32,7 @@
         <!-- 点击搜索表单号 -->
         <div class="serialnoDetail-Wrapper" v-show="isShowDetailTable">
     		<div class="headerBarWrapper">
-    			<div class="header-Title"><img v-bind:src="picurl" class="thumbImg" @click="showPic"><span>{{selectOrderno}} | {{selectCustname}} | {{season}}</span><a href="javascript:void(0);" @click="goSerialnoDetail(serialno, selectOrderno, selectCustname, selectOrdernoNum)">{{selectOrdernoNum}}> </i></a>
+    			<div class="header-Title"><img v-bind:src="picurl" class="thumbImg" @click="showPic"><span>{{selectOrderno}} | {{selectCustname}} | {{season}} | </span><a href="javascript:void(0);" @click="goSerialnoDetail(serialno, selectOrderno, selectCustname, selectOrdernoNum)">{{selectOrdernoNum}}> </i></a>
     				<a href="javascript:void(0);" @click="showBackground" class="stayBottom">
     					货期<i class="icon-chevron-right"></i>
     				</a>
