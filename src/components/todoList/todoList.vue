@@ -11,7 +11,7 @@
             <div class="weui-cells">
                 <a class="weui-cell weui-cell_access" href="javascript:void(0);" v-for="(todo, index) in todoList" @click="goWorkingTable(todo.name, todo.title)">
                     <div class="weui-cell__hd">
-                        <img class="iconImg" v-bind:src="'http://www.seieiblog.top:38080/oa/KQ/img/' + index + '.png'">
+                        <img class="iconImg" v-bind:src="'http://www.etscn.com.cn:38080/oa/KQ/img/' + index + '.png'">
                     </div>
                     <div class="weui-cell__bd weui-cell_primary">
                         <p>{{todo.modname}}<span class="weui-badge redPoint">{{todo.cnt}}</span></p>
@@ -24,7 +24,7 @@
 		<div class="weui-grids" style="margin-top: 50px;background-color: #fff;color:#444" v-show="!(isShowAsList)">
     	    <a href="javascript:void(0);" class="weui-grid" v-for="(todo, index) in todoList" @click="goWorkingTable(todo.name, todo.title)">
     	        <div class="weui-grid__icon">
-    	            <img v-bind:src="'http://www.seieiblog.top:38080/oa/KQ/img/' + index + '.png'" v-bind:alt="todo.modname">
+    	            <img v-bind:src="'http://www.etscn.com.cn:38080/oa/KQ/img/' + index + '.png'" v-bind:alt="todo.modname">
     	        	<span class="weui-badge">{{todo.cnt}}</span>
     	        </div>
     	        <p class="weui-grid__label">{{todo.modname}}</p>

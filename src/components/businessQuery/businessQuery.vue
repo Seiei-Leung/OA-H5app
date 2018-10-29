@@ -11,7 +11,7 @@
             <div class="weui-cells">
                 <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goSourcePlan">
                     <div class="weui-cell__hd">
-                        <img class="iconImg" v-bind:src="'http://www.seieiblog.top:38080/oa/KQ/img/1.png'">
+                        <img class="iconImg" v-bind:src="'http://www.etscn.com.cn:38080/oa/KQ/img/1.png'">
                     </div>
                     <div class="weui-cell__bd weui-cell_primary">
                         <p>物料计划</p>
@@ -22,7 +22,7 @@
             <div class="weui-cells">
                 <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goCuttingbedReport">
                     <div class="weui-cell__hd">
-                        <img class="iconImg" v-bind:src="'http://www.seieiblog.top:38080/oa/KQ/img/2.png'">
+                        <img class="iconImg" v-bind:src="'http://www.etscn.com.cn:38080/oa/KQ/img/2.png'">
                     </div>
                     <div class="weui-cell__bd weui-cell_primary">
                         <p>裁床报表</p>
@@ -33,7 +33,7 @@
             <div class="weui-cells">
                 <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goProductScheduleQuery">
                     <div class="weui-cell__hd">
-                        <img class="iconImg" v-bind:src="'http://www.seieiblog.top:38080/oa/KQ/img/3.png'">
+                        <img class="iconImg" v-bind:src="'http://www.etscn.com.cn:38080/oa/KQ/img/3.png'">
                     </div>
                     <div class="weui-cell__bd weui-cell_primary">
                         <p>生产排期查询</p>
@@ -46,19 +46,19 @@
 		<div class="weui-grids" style="margin-top: 50px;background-color: #fff;color:#444" v-show="!(isShowAsList)">
     	    <a href="javascript:void(0);" class="weui-grid" @click="goSourcePlan">
     	        <div class="weui-grid__icon">
-    	            <img v-bind:src="'http://www.seieiblog.top:38080/oa/KQ/img/1.png'">
+    	            <img v-bind:src="'http://www.etscn.com.cn:38080/oa/KQ/img/1.png'">
     	        </div>
     	        <p class="weui-grid__label">物料计划</p>
     	    </a>
             <a href="javascript:void(0);" class="weui-grid" @click="goCuttingbedReport">
                 <div class="weui-grid__icon">
-                    <img v-bind:src="'http://www.seieiblog.top:38080/oa/KQ/img/2.png'">
+                    <img v-bind:src="'http://www.etscn.com.cn:38080/oa/KQ/img/2.png'">
                 </div>
                 <p class="weui-grid__label">裁床报表</p>
             </a>
             <a href="javascript:void(0);" class="weui-grid" @click="goProductScheduleQuery">
                 <div class="weui-grid__icon">
-                    <img v-bind:src="'http://www.seieiblog.top:38080/oa/KQ/img/2.png'">
+                    <img v-bind:src="'http://www.etscn.com.cn:38080/oa/KQ/img/2.png'">
                 </div>
                 <p class="weui-grid__label">生产排期查询</p>
             </a>

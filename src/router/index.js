@@ -13,7 +13,7 @@ import myApplyDetail from '@/components/myApplyDetail/myApplyDetail';
 import personalMsg from '@/components/personalMsg/personalMsg';
 import tabledetail from '@/components/tabledetail/tabledetail';
 import businessQuery from '@/components/businessQuery/businessQuery';
-import sourcePlan from '@/components/sourcePlan/sourcePlan?v=2018-5-28';
+import sourcePlan from '@/components/sourcePlan/sourcePlan?v=2018-10-29';
 import serialnoDetail from '@/components/serialnoDetail/serialnoDetail';
 import cuttingbedReport from '@/components/cuttingbedReport/cuttingbedReport?v=2018-5-31';
 import productScheduleQuery from '@/components/productScheduleQuery/productScheduleQuery?v=2018-5-24';

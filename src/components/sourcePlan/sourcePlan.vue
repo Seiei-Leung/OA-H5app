@@ -22,7 +22,7 @@
         <div style="margin-top: 96px;width: 100%;overflow: scroll;-webkit-overflow-scrolling : touch;" ref="resultListwrapper" v-show="!(isShowDetailTable)">
         	<div class="resultList-wrapper">
         		<div v-for="item in resultList">
-        			<div @click="godetail(item.serialno,item.orderno,item.custname,item.quantity, item.picurl)" class="resultItem">
+        			<div @click="godetail(item.serialno,item.orderno,item.custname,item.quantity, item.picurl, item.season)" class="resultItem">
         				<span>{{item.orderno}} </span>
         				<span> {{item.custname}}</span>
         			</div>
@@ -32,8 +32,8 @@
         <!-- 点击搜索表单号 -->
         <div class="serialnoDetail-Wrapper" v-show="isShowDetailTable">
     		<div class="headerBarWrapper">
-    			<div class="header-Title"><img v-bind:src="picurl" class="thumbImg" @click="showPic"><span>{{selectOrderno}} | {{selectCustname}} | </span><a href="javascript:void(0);" @click="goSerialnoDetail(serialno, selectOrderno, selectCustname, selectOrdernoNum)">{{selectOrdernoNum}}> </i></a>
-    				<a href="javascript:void(0);" @click="showBackground" class="stayRight">
+    			<div class="header-Title"><img v-bind:src="picurl" class="thumbImg" @click="showPic"><span>{{selectOrderno}} | {{selectCustname}} | {{season}}</span><a href="javascript:void(0);" @click="goSerialnoDetail(serialno, selectOrderno, selectCustname, selectOrdernoNum)">{{selectOrdernoNum}}> </i></a>
+    				<a href="javascript:void(0);" @click="showBackground" class="stayBottom">
     					货期<i class="icon-chevron-right"></i>
     				</a>
     			</div>
@@ -61,6 +61,7 @@
 						<span class="title">确认货期：</span><span>{{item.ConfirmDate ? String(item.ConfirmDate).replace("T00:00:00", "") : ""}}</span>~<span>{{item.F14 ? String(item.F14).replace("T00:00:00", "") : ""}}</span>
 					</div>
 					<div v-show="item.PLANQTY"><span class="title">需求用量：</span><span>{{item.PLANQTY ? String(item.PLANQTY).split(".")[0] : 0}}</span></div>
+					<div v-show="item.bomstduse"><span class="title">单件用量：</span><span>{{item.bomstduse}}</span></div>
 					<div v-show="item.F15"><span class="title">采购数：</span><span>{{item.F15 ? String(item.F15).split(".")[0] : 0}}</span></div>
 					<div v-show="item.F17"><span class="title">入仓数：</span><span>{{item.F17 ? String(item.F17).split(".")[0] : 0}}</span></div>
 					<div v-show="item.F19"><span class="title">领料数：</span><span>{{item.F19 ? String(item.F19).split(".")[0] : 0}}</span></div>
@@ -127,7 +128,8 @@ export default {
 			isblackBackground: false,
 			backgroundList: [],
 			isShowPic: false,
-			isdeliveryTime: false
+			isdeliveryTime: false,
+			season: ""
 		}
 	},
 	methods: {
@@ -149,7 +151,7 @@ export default {
 			}, 1500);
 		},
 		// 获取表单信息
-		godetail: function(arg, orderno, custname, selectOrdernoNum, picurl) {
+		godetail: function(arg, orderno, custname, selectOrdernoNum, picurl, season) {
 			this.$http.get(this.seieiURL + "/estapi/api/Mrpplana?serialno=" + encodeURIComponent(arg)).then(resp => {
 				this.headerTitle = resp.body;
 				this.$nextTick(() => {
@@ -159,6 +161,7 @@ export default {
 				this.$http.get(this.seieiURL + "/estapi/api/Mrpplana?serialno1=" + encodeURIComponent(arg)).then(resp1 => {
 					this.isShowDetailTable = true;
 					this.picurl = picurl;
+					this.season = season;
 					this.serialno = arg;
 					this.selectOrderno = orderno;
 					this.selectOrdernoNum = selectOrdernoNum;
@@ -419,10 +422,12 @@ export default {
 .pic img{
 	width: 100%;
 }
-.stayRight {
+.stayBottom {
 	display: inline-block;
-    float: right;
-    margin-right: 0.5em;
+    position: absolute;
+    top: 55px;
+    left: 92px;
+    line-height: 1;
 }
 .weui-search-bar__form {
 	height: 32px;

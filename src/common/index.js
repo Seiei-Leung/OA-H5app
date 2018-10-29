@@ -6,7 +6,7 @@ export default{
 		Vue.mixin({
 			data: function() {
 				return {
-					seieiURL: "http://www.seieiblog.top:38080"
+					seieiURL: "http://www.etscn.com.cn:38080"
 				}
 			},
 			methods: {
