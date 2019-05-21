@@ -4,34 +4,15 @@
 	<div class="weui-panel__bd">
         <div class="weui-media-box weui-media-box_small-appmsg">
             <div class="weui-cells">
-                        <!-- 相片引用使用 相对路径 -->
-<!--                 <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goDataCube">
+                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goIntegration">
                     <div class="weui-cell__hd">
-                    	<img src="./img/icon_4.png" alt="数据魔方" class="iconImg">
+                        <img src="./img/icon_5.png" alt="快乐有奖分" class="iconImg">
                     </div>
                     <div class="weui-cell__bd weui-cell_primary">
-                        <p>数据魔方</p>
+                        <p style="position: relative;">快乐有奖分</p>
                     </div>
-                	<span class="weui-cell__ft"></span>
-                </a> -->
-                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goDB">
-                    <div class="weui-cell__hd">
-                    	<img src="./img/icon_11.png" alt="通知公告" class="iconImg">
-                    </div>
-                    <div class="weui-cell__bd weui-cell_primary">
-                        <p>通知公告</p>
-                    </div>
-                	<span class="weui-cell__ft"></span>
+                    <span class="weui-cell__ft"></span>
                 </a>
-<!--                 <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goSchedule">
-                    <div class="weui-cell__hd">
-                    	<img src="./img/icon_16.png" alt="日程" class="iconImg">
-                    </div>
-                    <div class="weui-cell__bd weui-cell_primary">
-                        <p>日程</p>
-                    </div>
-                	<span class="weui-cell__ft"></span>
-                </a> -->
                 <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goBusinessQuery">
                     <div class="weui-cell__hd">
                         <img src="./img/icon_7.png" alt="业务查询" class="iconImg">
@@ -41,15 +22,6 @@
                     </div>
                     <span class="weui-cell__ft"></span>
                 </a>
-<!--                 <a class="weui-cell weui-cell_access" href="javascript:void(0);">
-                    <div class="weui-cell__hd">
-                    	<img src="./img/icon_5.png" alt="预警" class="iconImg">
-                    </div>
-                    <div class="weui-cell__bd weui-cell_primary">
-                        <p>预警</p>
-                    </div>
-                	<span class="weui-cell__ft"></span>
-                </a> -->
                 <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goWhere('todolist')">
                     <div class="weui-cell__hd">
                         <img src="./img/icon_41.png" alt="待办事项" class="iconImg">
@@ -59,33 +31,33 @@
                     </div>
                     <span class="weui-cell__ft"></span>
                 </a>
-<!--                 <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goWhere('myapply')">
+                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goVisitMsg" v-if="isShowVisitMsg">
                     <div class="weui-cell__hd">
-                        <img src="./img/icon_16.png" alt="待办事项" class="iconImg">
+                        <img src="./img/icon_4.png" alt="来访记录查询" class="iconImg">
                     </div>
                     <div class="weui-cell__bd weui-cell_primary">
-                        <p style="position: relative;">我的申请<span class="weui-badge redPoint">{{myApplyNum}}</span></p>
+                        <p style="position: relative;">来访记录查询</p>
                     </div>
                     <span class="weui-cell__ft"></span>
                 </a>
-                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goUpLoadimg()">
+                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goClientCheck">
                     <div class="weui-cell__hd">
-                    	<img src="./img/icon_21.png" alt="上传图片" class="iconImg">
+                        <img src="./img/icon_16.png" alt="客户型号对照" class="iconImg">
                     </div>
                     <div class="weui-cell__bd weui-cell_primary">
-                        <p>上传图片</p>
+                        <p style="position: relative;">客户型号对照</p>
                     </div>
                     <span class="weui-cell__ft"></span>
                 </a>
-                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goMap()">
+                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goMarkSpecifications">
                     <div class="weui-cell__hd">
-                    	<img src="./img/icon_37.png" alt="出差约车" class="iconImg">
+                        <img src="./img/icon_16.png" alt="FILA唛头规格分解" class="iconImg">
                     </div>
                     <div class="weui-cell__bd weui-cell_primary">
-                        <p>出差约车</p>
+                        <p style="position: relative;">FILA唛头规格分解</p>
                     </div>
                     <span class="weui-cell__ft"></span>
-                </a> -->
+                </a>
             </div>
         </div>
     </div>
@@ -99,10 +71,15 @@ export default {
         return {
             todoListNum: 0,
             myApplyNum: 0,
-            toast: '审批成功'
+            toast: '审批成功',
+            isShowVisitMsg: false
         };
     },
     created: function() {
+        this.$store.commit("showIndexComponents");
+        if (JSON.parse(this.$store.state.userMsg).checkinflag) {
+            this.isShowVisitMsg = true;
+        }
         // 注释代码用于开发环境或实际项目接口
         // /api/getToDoList
         // http://59.33.36.124:38080/estapi/api/FlowApprove/GetMyApprove?actorid=fang
@@ -126,10 +103,6 @@ export default {
         });
     },
 	methods: {
-        // 进入公告通知
-        goDB: function() {
-            this.$router.push({name: 'announcement'});
-        },
         // 进入待办事项
         goWhere: function(arg) {
             this.$router.push({name: 'todoList', params: {where: arg}});
@@ -150,11 +123,26 @@ export default {
         goMap: function() {
             window.open('./map.html', '_self');
         },
-        // 进入上传图片
-        goUpLoadimg: function() {
-            window.open('./UpLoadimg.html', '_self');
+        // 进入访客记录
+        goVisitMsg: function() {
+            this.$router.push({name: "visitMsg"});
+        },
+        // 进入奖分中心
+        goIntegration: function() {
+            this.$router.push({name: "integration"});
+        },
+        goClientCheck: function() {
+            this.$router.push({name: "clientCheck"});
+        },
+        goMarkSpecifications: function() {
+            this.$router.push({name: "markSpecifications"});
         }
-	}
+    },
+    // 路由离开时触发
+    beforeRouteLeave (to, from, next) {
+        this.$store.commit("hideIndexComponents");
+        next();
+    }
 }
 </script>
 

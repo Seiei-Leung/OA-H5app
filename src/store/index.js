@@ -11,7 +11,15 @@ export default new Vuex.Store({
 		// 用户登陆信息
 		tableDetailData: [],
 		userMsg: UserMsg,
-		seieiURL: "http://www.seieiblog.top:38080",
-		isShowAsList: true
+		isShowIndexComponents: false, // 是否显示首页图标
+	},
+	mutations: {
+		// 切换是否显示首页图标
+		showIndexComponents: function(state) {
+			state.isShowIndexComponents = true;
+		},
+		hideIndexComponents: function(state) {
+			state.isShowIndexComponents = false;
+		}
 	}
 })

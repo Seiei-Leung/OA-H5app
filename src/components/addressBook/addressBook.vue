@@ -2,7 +2,7 @@
 	<!-- 通讯录 -->
 	<div class="addressBook-component">
     <div class="addressbook">
-        <div class="weui-search-bar" id="searchBar">
+        <div class="weui-search-bar" id="searchBar" style="position: fixed;top: 48px;left: 0;right: 0;">
             <form class="weui-search-bar__form">
                 <div class="weui-search-bar__box">
                     <i class="weui-icon-search"></i>
@@ -16,7 +16,7 @@
             </form>
             <a href="javascript:" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
         </div>
-        <div class="addressbook_list">
+        <div class="addressbook_list" style="padding-bottom: 44px;">
             <div class="addressbook_items" v-for="item in dataResource" @click="showDetail(item.name, item.code, item.mobilephone, item.imageurl)">
 <!--                 <div class="addressbook_title" style="padding-left:0.5em;">
                     <p>A</p>
@@ -76,6 +76,7 @@ export default{
         }
     },
     created: function() {
+        this.$store.commit("showIndexComponents");
         this.$http.get(this.seieiURL + "/estapi/api/User/UsersList?a=通讯录").then(resp => {
             console.log(resp.body);
             this.dataResource = resp.body;
@@ -83,6 +84,11 @@ export default{
     },
     components: {
         'v-blackBackground': blackBackground
+    },
+    // 路由离开时触发
+    beforeRouteLeave (to, from, next) {
+        this.$store.commit("hideIndexComponents");
+        next();
     }
 }
 </script>

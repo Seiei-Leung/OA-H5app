@@ -11,7 +11,7 @@
 			<div class="contentTable" ref="cssHook">
 				<table class="table">
 					<tr class="header bar">
-						<th class="item title" class="colorTitleHook">
+						<th class="item title colorTitleHook">
 							颜色
 						</th>
 						<th v-for="item, index in titleHearder" class="item first">

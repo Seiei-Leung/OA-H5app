@@ -27,6 +27,9 @@ export default {
             user: JSON.parse(this.$store.state.userMsg)
         };
     },
+    created: function() {
+        this.$store.commit("showIndexComponents");
+    },
     methods: {
         signout: function() {
             this.$store.state.userMsg = "";
@@ -34,6 +37,11 @@ export default {
             localStorage.forOApersonID = "";
             this.$router.push({name: "signin"});
         }
+    },
+    // 路由离开时触发
+    beforeRouteLeave (to, from, next) {
+        this.$store.commit("hideIndexComponents");
+        next();
     }
 }
 </script>

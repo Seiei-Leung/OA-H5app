@@ -2,9 +2,7 @@
 <template>
   <div id="app">
     <!-- 顶部标题栏 -->
-    <div class="header">
-      衣讯通微OA
-    </div>
+    <div class="header" v-show="isShowIndexComponents">衣讯通微OA</div>
     <!-- 用于页面跳转 以及 Tap台控制显示的内容 -->
     <div>
       <!-- 不缓存 -->
@@ -15,10 +13,10 @@
       <router-view v-if="!$route.meta.keepAlive"></router-view>
     </div>
     <!-- Tap台 -->
-    <div class="tap">
+    <div class="tap" v-show="isShowIndexComponents">
       <ul>
         <li>
-          <router-link to="/message">
+          <router-link to="/messagePage">
             <i class="icon-bubble2"></i>
             <p>消息</p>
           </router-link>
@@ -48,11 +46,20 @@
 
 <script>
 export default {
-  name: 'App',
+  name: "App",
+  data: function() {
+    return {
+    };
+  },
   created: function() {
     console.log("index");
+  },
+  computed: {
+    isShowIndexComponents: function() {
+      return this.$store.state.isShowIndexComponents;
+    }
   }
-}
+};
 </script>
 
 <style scoped>
@@ -73,25 +80,25 @@ export default {
   left: 0;
   width: 100%;
   background-color: #eee;
-  border-top: rgba(0, 0, 0, .1) 1px solid;
+  border-top: rgba(0, 0, 0, 0.1) 1px solid;
 }
-.tap li {    
+.tap li {
   display: inline-block;
   float: left;
-  padding: .2rem 0;
+  padding: 0.2rem 0;
   width: 2.5rem;
   line-height: 1.5;
   text-align: center;
-  font-size: .7em;
+  font-size: 0.7em;
   color: #777;
 }
-.tap .router-link-exact-active{
+.tap .router-link-exact-active {
   color: #67c1bc;
 }
-.tap li a{
+.tap li a {
   color: #777;
 }
-.tap li i{  
-  font-size: .6rem;
+.tap li i {
+  font-size: 0.6rem;
 }
 </style>

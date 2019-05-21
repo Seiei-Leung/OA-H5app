@@ -22,7 +22,7 @@ export default{
 			},
 			created: function () {
       			if (this.$store.state.userMsg.length == 0) {
-      				this.$router.push({name: "signin"});
+      				/*this.$router.push({name: "signin"});*/
       			}
     		}
 		})

@@ -11,13 +11,13 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "vue": "^2.5.2",
-    "vue-router": "^3.0.1",
-    "vue-resource": "1.0.1",
-    "vuex": "^2.5.0",
+    "better-scroll": "1.11.1",
     "echarts": "^3.8.5",
-    "vue-mobile-calendar": "2.0.0",
-    "better-scroll": "1.11.1"
+    "vue": "^2.5.2",
+    "vue-awesome-picker": "^1.1.0",
+    "vue-resource": "1.0.1",
+    "vue-router": "^3.0.1",
+    "vuex": "^2.5.0"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

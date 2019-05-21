@@ -1,14 +1,12 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import workbench from '@/components/workbench/workbench';
+import workbench from '@/components/workbench/workbench?v=2019-5-14';
 import addressBook from '@/components/addressBook/addressBook?v=2018-6-7';
 import signin from '@/components/signin/signin';
 import announcement from '@/components/announcement/announcement';
 import todoList from '@/components/todoList/todoList?v=2018-5-7';
 import workingTable from '@/components/workingTable/workingTable?v=2018-5-10';
 import announcementDetail from '@/components/announcementDetail/announcementDetail';
-import dataCube from '@/components/dataCube/dataCube';
-import schedule from '@/components/schedule/schedule';
 import myApplyDetail from '@/components/myApplyDetail/myApplyDetail';
 import personalMsg from '@/components/personalMsg/personalMsg';
 import tabledetail from '@/components/tabledetail/tabledetail';
@@ -17,6 +15,12 @@ import sourcePlan from '@/components/sourcePlan/sourcePlan?v=2018-10-29';
 import serialnoDetail from '@/components/serialnoDetail/serialnoDetail';
 import cuttingbedReport from '@/components/cuttingbedReport/cuttingbedReport?v=2018-5-31';
 import productScheduleQuery from '@/components/productScheduleQuery/productScheduleQuery?v=2018-5-24';
+import visitMsg from '@/components/visitMsg/visitMsg';
+import clientCheck from '@/components/clientCheck/clientCheck';
+import markSpecifications from '@/components/markSpecifications/markSpecifications';
+import integration from '@/components/integration/integration';
+import messagePage from '@/components/messagePage/messagePage';
+import addOrMinusIntegration from '@/components/addOrMinusIntegration/addOrMinusIntegration';
 import test from '@/components/test/test';
 
 Vue.use(Router);
@@ -37,6 +41,15 @@ export default new Router({
       path: '/addressBook',
       name: 'addressBook',
       component: addressBook,
+      meta: {
+        keepAlive: false // 不需要被缓存
+      }
+    },
+    // 消息
+    {
+      path: '/messagePage',
+      name: 'messagePage',
+      component: messagePage,
       meta: {
         keepAlive: false // 不需要被缓存
       }
@@ -82,24 +95,6 @@ export default new Router({
       path: '/announcementdetail',
       name: 'announcementDetail',
       component: announcementDetail,
-      meta: {
-        keepAlive: false // 不需要被缓存
-      }
-    },
-    // 数据魔方
-    {
-      path: '/datacube',
-      name: 'dataCube',
-      component: dataCube,
-      meta: {
-        keepAlive: false // 不需要被缓存
-      }
-    },
-    // 日程表
-    {
-      path: '/schedule',
-      name: 'schedule',
-      component: schedule,
       meta: {
         keepAlive: false // 不需要被缓存
       }
@@ -176,6 +171,51 @@ export default new Router({
         keepAlive: false // 需要被缓存
       }
     },
+    // 来访记录查询
+    {
+      path: '/visitMsg',
+      name: 'visitMsg',
+      component: visitMsg,
+      meta: {
+        keepAlive: false // 需要被缓存
+      }
+    },
+    // 来访记录查询
+    {
+      path: '/clientCheck',
+      name: 'clientCheck',
+      component: clientCheck,
+      meta: {
+        keepAlive: false // 需要被缓存
+      }
+    },
+    // FILA唛头规格分解
+    {
+      path: '/markSpecifications',
+      name: 'markSpecifications',
+      component: markSpecifications,
+      meta: {
+        keepAlive: false // 需要被缓存
+      }
+    },
+    // 积分中心
+    {
+      path: '/integration',
+      name: 'integration',
+      component: integration,
+      meta: {
+        keepAlive: false // 需要被缓存
+      }
+    },
+    // 积分奖扣
+    {
+      path: '/addOrMinusIntegration',
+      name: 'addOrMinusIntegration',
+      component: addOrMinusIntegration,
+      meta: {
+        keepAlive: false // 需要被缓存
+      }
+    },
     // 测试
     {
       path: '/test',
@@ -184,6 +224,7 @@ export default new Router({
       meta: {
         keepAlive: false // 需要被缓存
       }
-    }
+    },
+
   ]
 })
