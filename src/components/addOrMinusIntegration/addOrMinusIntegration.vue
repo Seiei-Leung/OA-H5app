@@ -5,22 +5,18 @@
         <i class="icon-chevron-left"></i>
         <span>返回</span>
       </a>
-      <div>积分奖扣</div>
+      <div>奖分奖扣</div>
     </div>
     <div
       class="contentWrapper"
       v-show="!isShowSelectEvent && !isShowSelectPerson && !isShowSelectedPerson"
     >
       <div class="inputWrapper">
-        <div class="title">积分事项</div>
-        <div class="input">{{selectEventTxt}}</div>
-        <div class="btn" @click="showSelectEvent">选择</div>
-      </div>
-      <div class="inputWrapper">
-        <div class="title">事项说明</div>
-        <div class="input" style="width: 60%;">
-          <input placeholder="请输入事项说明" v-model="eventExplain">
+        <div class="title">奖分事项</div>
+        <div class="input">
+          <input placeholder="请输入事项说明" v-model="selectEventTxt">
         </div>
+        <div class="btn" @click="showSelectEvent">选择</div>
       </div>
       <div class="inputWrapper">
         <div class="title">奖扣对象</div>
@@ -34,23 +30,21 @@
       </div>
       <div class="inputWrapper">
         <div class="title">奖扣分值</div>
-        <div class="input">{{selectEventIntegration}}</div>
+        <div class="input">
+          <input placeholder="请输入奖扣分值" v-model="selectEventIntegration">
+        </div>
       </div>
       <div class="inputWrapper" style="margin-top: 10px;border-top: 1px solid #ddd;">
         <div class="title">申请人</div>
         <div class="input">{{applicant.Name}}</div>
       </div>
       <div class="inputWrapper">
-        <div class="title">初审人</div>
-        <div class="input"></div>
-      </div>
-      <div class="inputWrapper">
-        <div class="title">终审人</div>
+        <div class="title">审批人</div>
         <div class="input"></div>
       </div>
       <div class="btnWrapper">
-        <div class="btn" @click="saveData">保存</div>
-        <div class="btn" @click="submitData" v-bind:class="{disable : !canSumbit}">提交</div>
+        <!-- <div class="btn" @click="saveData">保存</div> -->
+        <div class="btn" @click="submitData">提交</div>
       </div>
     </div>
     <div class="contentWrapper" v-show="isShowSelectEvent">
@@ -161,33 +155,33 @@ var T;
 export default {
   data: function() {
     return {
-      isShowSelectEvent: false,
-      selectEventTxt: "",
-      selectEventIntegration: "",
-      eventTxtList: [],
-      selectEventIndex: 0,
-      eventExplain: "",
-      searchSelectTxt: "",
-      isShowSelectPerson: false,
-      inputID: "",
-      inputName: "",
-      inputDep: "",
-      inputWorkShop: "",
-      selectPersonList: [],
-      selectPersonBtnTxt: "全选",
-      selectPersonListForActive: [],
-      selectPersonListForSumbit: [],
-      isShowSelectedPerson: false,
-      applicant: "",
-      serialno: "",
-      canSumbit: false,
-      
+      isShowSelectEvent: false, // 是否显示选择事件窗口
+      selectEventTxt: "", // 提交的事件选项
+      selectEventIntegration: "", // 已选事件的奖扣分
+      eventTxtList: [], // 后台获取的所有可选的事件
+      selectEventIndex: 0, // 已选吼后台事件的索引
+      searchSelectTxt: "", // 筛选后台事件列表的模糊查找文本
+      isShowSelectPerson: false, // 是否显示选择员工窗口
+      inputID: "", // 筛选员工的工号
+      inputName: "", // 筛选员工的姓名
+      inputDep: "", // 筛选员工的部门
+      inputWorkShop: "", // 筛选员工的车间
+      selectPersonList: [], // 后台可选员工的列表
+      selectPersonBtnTxt: "全选", // 用于全选按钮或全不选按钮
+      selectPersonListForActive: [], // 用于显示已选员工的视图显示
+      selectPersonListForSumbit: [], // 已选员工的列表
+      isShowSelectedPerson: false, // 是否显示已选员工编辑窗口
+      applicant: "", // 申请人
+      serialno: "", // 保存主表主键
+      canSumbit: false, // 是否可以点击提交按钮
     };
   },
   methods: {
+    // 显示选择事件窗口
     showSelectEvent: function() {
       this.isShowSelectEvent = true;
     },
+    // 选择事件
     selectEvent: function(index) {
       this.selectEventIndex = index;
       this.isShowSelectEvent = false;
@@ -197,6 +191,7 @@ export default {
           ? "-" + this.eventTxtList[this.selectEventIndex].deductintegral
           : this.eventTxtList[this.selectEventIndex].integral;
     },
+    // 显示选择人员窗口
     showSelectPerson: function() {
       this.selectPersonListForActive = this.selectPersonListForSumbit.slice(
         0,
@@ -204,6 +199,7 @@ export default {
       );
       this.isShowSelectPerson = true;
     },
+    // 选择人员窗口取消按钮
     hideSelectPerson: function() {
       this.isShowSelectedPerson = false;
       this.selectPersonBtnTxt = "全选";
@@ -215,6 +211,7 @@ export default {
       this.inputDep = "";
       this.inputWorkShop = "";
     },
+    // 全选按钮
     toggleSelectAllPerson: function() {
       if (this.selectPersonBtnTxt == "全选") {
         for (var i = 0; i < this.selectPersonList.length; i++) {
@@ -249,6 +246,7 @@ export default {
         this.selectPersonBtnTxt = "全选";
       }
     },
+    // 是否为已选人员
     isActiveForSelectPerson: function(code) {
       var isActiveForSelectPerson = false;
       for (var i = 0; i < this.selectPersonListForActive.length; i++) {
@@ -258,6 +256,7 @@ export default {
       }
       return isActiveForSelectPerson;
     },
+    // 点击选择人员
     selectOnePerson: function(item) {
       var index;
       var list = this.selectPersonListForActive.slice(
@@ -276,6 +275,7 @@ export default {
         this.selectPersonListForActive.push(item);
       }
     },
+    // 点击选择人员
     submitSelectPerson: function() {
       this.isShowSelectPerson = false;
       this.isShowSelectedPerson = false;
@@ -284,7 +284,7 @@ export default {
         this.selectPersonListForActive.length
       );
     },
-    // 检查输入框输入事件
+    // 检查人员筛选输入事件
     watchInput: function() {
       var that = this;
       clearTimeout(T);
@@ -311,6 +311,7 @@ export default {
         );
       }, 1500);
     },
+    // 监测选择事件输入框
     watchSelectEventInput: function() {
       var that = this;
       clearTimeout(T);
@@ -331,6 +332,7 @@ export default {
         );
       }, 1500);
     },
+    // 显示选择人员窗口
     showSelectedPerson: function() {
       this.isShowSelectedPerson = true;
       this.selectPersonListForActive = this.selectPersonListForSumbit.slice(
@@ -338,12 +340,20 @@ export default {
         this.selectPersonListForSumbit.length
       );
     },
+    // 选择事件的取消按钮
     hideSelectEvent: function() {
       this.isShowSelectEvent = false;
+      this.selectEventTxt = this.searchSelectTxt;
     },
+    // 保存按钮
     saveData: function() {
-      if (this.selectPersonListForSumbit.length == 0 || this.selectEventTxt == "") {
-        alert("请选择奖扣事件或奖扣对象");
+      var reg = /^\-?\d*$/; // 分数正则表达式
+      console.log(this.selectPersonListForSumbit.length);
+      console.log(this.selectEventTxt);
+      console.log(this.selectEventIntegration);
+      console.log(reg.test(this.selectEventIntegration));
+      if (this.selectPersonListForSumbit.length == 0 || this.selectEventTxt == "" || !reg.test(this.selectEventIntegration)) {
+        alert("请选择奖扣事件、奖扣对象或输入正确格式的分数值");
         return;
       }
       var that = this;
@@ -358,21 +368,36 @@ export default {
         }
       );
     },
+    // 提交按钮
     submitData: function() {
-      if (!this.canSumbit && this.serialno) {
+/*       if (!this.canSumbit && this.serialno) {
         alert("请先保存数据后再点击提交");
         return;
-      }
+      } */
       var that = this;
       var obj = {};
       obj.serialno = this.serialno;
-      obj.eventString = this.eventTxtList[this.selectEventIndex].eventString;
-      obj.frequency = this.eventTxtList[this.selectEventIndex].frequency ? this.eventTxtList[this.selectEventIndex].frequency : "";
-      if (!this.eventTxtList[this.selectEventIndex].integral) {
-        obj.deductintegral = this.eventTxtList[this.selectEventIndex].deductintegral;
+      obj.eventString = this.selectEventTxt;
+      obj.code = this.applicant.Code;
+      if (this.eventTxtList[this.selectEventIndex] && this.eventTxtList[this.selectEventIndex].eventString == this.selectEventTxt) {
+        obj.frequency = this.eventTxtList[this.selectEventIndex].frequency ? this.eventTxtList[this.selectEventIndex].frequency : "";
       } else {
-        obj.addintegral = this.eventTxtList[this.selectEventIndex].integral;
+        obj.frequency = "";
       }
+      
+      var reg = /^\-?\d*$/; // 分数正则表达式
+      if (this.selectPersonListForSumbit.length == 0 || this.selectEventTxt == "" || !reg.test(this.selectEventIntegration)) {
+        alert("请选择奖扣事件、奖扣对象或输入正确格式的分数值");
+        return;
+      }
+
+      // 输入的分数为负数
+      if (this.selectEventIntegration[0] == "-") {
+        obj.deductintegral = this.selectEventIntegration.split("-")[1];
+      } else {
+        obj.addintegral = this.selectEventIntegration;
+      }
+
       obj.buser = this.applicant.Code;
       var personObjList = [];
       for (var i=0; i<this.selectPersonListForSumbit.length; i++) {
@@ -402,8 +427,35 @@ export default {
           console.log("发送失败" + response.status + "," + response.statusText);
         }
       );
-
-    }
+    },
+    // 返回按钮
+    goBack: function() {
+      // 如果当前正在选择事件
+      if (this.isShowSelectEvent) {
+        this.selectEventTxt = this.searchSelectTxt;
+        this.isShowSelectEvent = false;
+      }
+      // 如果当前正在选择员工
+      else if (this.isShowSelectPerson) {
+        this.isShowSelectedPerson = false;
+        this.selectPersonBtnTxt = "全选";
+        this.isShowSelectPerson = false;
+        this.selectPersonList = [];
+        this.selectPersonListForActive = [];
+        this.inputID = "";
+        this.inputName = "";
+        this.inputDep = "";
+        this.inputWorkShop = "";
+      }
+      // 如果当前正在编辑已选员工
+      else if (this.isShowSelectedPerson) {
+        this.isShowSelectedPerson = false;
+      }
+      // 否则返回之前页面
+      else {
+        this.$router.go(-1);
+      }
+    },
   },
   created: function() {
     this.applicant = JSON.parse(this.$store.state.userMsg);

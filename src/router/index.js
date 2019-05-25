@@ -3,7 +3,7 @@ import Router from 'vue-router';
 import workbench from '@/components/workbench/workbench?v=2019-5-14';
 import addressBook from '@/components/addressBook/addressBook?v=2018-6-7';
 import signin from '@/components/signin/signin';
-import announcement from '@/components/announcement/announcement';
+/* import announcement from '@/components/announcement/announcement'; */
 import todoList from '@/components/todoList/todoList?v=2018-5-7';
 import workingTable from '@/components/workingTable/workingTable?v=2018-5-10';
 import announcementDetail from '@/components/announcementDetail/announcementDetail';
@@ -21,6 +21,18 @@ import markSpecifications from '@/components/markSpecifications/markSpecificatio
 import integration from '@/components/integration/integration';
 import messagePage from '@/components/messagePage/messagePage';
 import addOrMinusIntegration from '@/components/addOrMinusIntegration/addOrMinusIntegration';
+import myCoupon from '@/components/myCoupon/myCoupon';
+import myIntegration from '@/components/myIntegration/myIntegration';
+import integrationRanking from '@/components/integrationRanking/integrationRanking';
+import myAuditOfIntegration from '@/components/myAuditOfIntegration/myAuditOfIntegration';
+import integrationDetail from '@/components/integrationDetail/integrationDetail';
+import integrationAnnouncement from '@/components/integrationAnnouncement/integrationAnnouncement';
+import integrationAppraise from '@/components/integrationAppraise/integrationAppraise';
+import integrationSuggest from '@/components/integrationSuggest/integrationSuggest';
+import awardMsg from '@/components/awardMsg/awardMsg';
+import integrationMsg from '@/components/integrationMsg/integrationMsg';
+import myMedal from '@/components/myMedal/myMedal';
+import integrationMission from '@/components/integrationMission/integrationMission';
 import test from '@/components/test/test';
 
 Vue.use(Router);
@@ -64,14 +76,14 @@ export default new Router({
       }
     },
     // 通知公告
-    {
+/*     {
       path: '/announcement',
       name: 'announcement',
       component: announcement,
       meta: {
         keepAlive: false // 不需要被缓存
       }
-    },
+    }, */
     // 待办事项 或 我的申请
     {
       path: '/todolist/:where',
@@ -212,6 +224,114 @@ export default new Router({
       path: '/addOrMinusIntegration',
       name: 'addOrMinusIntegration',
       component: addOrMinusIntegration,
+      meta: {
+        keepAlive: false // 需要被缓存
+      }
+    },
+    // 我的奖卷
+    {
+      path: '/myCoupon',
+      name: 'myCoupon',
+      component: myCoupon,
+      meta: {
+        keepAlive: false // 需要被缓存
+      }
+    },
+    // 我的积分
+    {
+      path: '/myIntegration/:kind',
+      name: 'myIntegration',
+      component: myIntegration,
+      meta: {
+        keepAlive: false // 需要被缓存
+      }
+    },
+    // 奖分排名
+    {
+      path: '/integrationRanking/:kind',
+      name: 'integrationRanking',
+      component: integrationRanking,
+      meta: {
+        keepAlive: false // 需要被缓存
+      }
+    },
+    // 积分我的审核
+    {
+      path: '/myAuditOfIntegration',
+      name: 'myAuditOfIntegration',
+      component: myAuditOfIntegration,
+      meta: {
+        keepAlive: false // 需要被缓存
+      }
+    },
+    // 积分详情
+    {
+      path: '/integrationDetail/:kind',
+      name: 'integrationDetail',
+      component: integrationDetail,
+      meta: {
+        keepAlive: false // 需要被缓存
+      }
+    },
+    // 积分我的审核
+    {
+      path: '/integrationAnnouncement',
+      name: 'integrationAnnouncement',
+      component: integrationAnnouncement,
+      meta: {
+        keepAlive: false // 需要被缓存
+      }
+    },
+    // 积分任务大厅
+    {
+      path: '/integrationMission',
+      name: 'integrationMission',
+      component: integrationMission,
+      meta: {
+        keepAlive: false // 需要被缓存
+      }
+    },
+    // 积分服务评价
+    {
+      path: '/integrationAppraise',
+      name: 'integrationAppraise',
+      component: integrationAppraise,
+      meta: {
+        keepAlive: false // 需要被缓存
+      }
+    },
+    // 奖项详情
+    {
+      path: '/awardMsg',
+      name: 'awardMsg',
+      component: awardMsg,
+      meta: {
+        keepAlive: false // 需要被缓存
+      }
+    },
+    // 奖分详情
+    {
+      path: '/integrationMsg',
+      name: 'integrationMsg',
+      component: integrationMsg,
+      meta: {
+        keepAlive: false // 需要被缓存
+      }
+    },
+    // 我的奖牌
+    {
+      path: '/myMedal',
+      name: 'myMedal',
+      component: myMedal,
+      meta: {
+        keepAlive: false // 需要被缓存
+      }
+    },
+    // 改善建议
+    {
+      path: '/integrationSuggest',
+      name: 'integrationSuggest',
+      component: integrationSuggest,
       meta: {
         keepAlive: false // 需要被缓存
       }
