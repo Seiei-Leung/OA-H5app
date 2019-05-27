@@ -43,7 +43,6 @@
         <div class="input"></div>
       </div>
       <div class="btnWrapper">
-        <!-- <div class="btn" @click="saveData">保存</div> -->
         <div class="btn" @click="submitData">提交</div>
       </div>
     </div>
@@ -344,29 +343,6 @@ export default {
     hideSelectEvent: function() {
       this.isShowSelectEvent = false;
       this.selectEventTxt = this.searchSelectTxt;
-    },
-    // 保存按钮
-    saveData: function() {
-      var reg = /^\-?\d*$/; // 分数正则表达式
-      console.log(this.selectPersonListForSumbit.length);
-      console.log(this.selectEventTxt);
-      console.log(this.selectEventIntegration);
-      console.log(reg.test(this.selectEventIntegration));
-      if (this.selectPersonListForSumbit.length == 0 || this.selectEventTxt == "" || !reg.test(this.selectEventIntegration)) {
-        alert("请选择奖扣事件、奖扣对象或输入正确格式的分数值");
-        return;
-      }
-      var that = this;
-      this.$http.get(this.seieiURL + "/estapi/api/Integral/saveMainTableForIntegral?code=" + that.applicant.Code).then(
-        resp => {
-          this.serialno = resp.body.guid;
-          this.canSumbit = true;
-          alert("保存成功");
-        },
-        response => {
-          console.log("发送失败" + response.status + "," + response.statusText);
-        }
-      );
     },
     // 提交按钮
     submitData: function() {
