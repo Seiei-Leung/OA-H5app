@@ -286,18 +286,6 @@ export default {
 
 </script>
 <style scoped>
-.visitMsg-component {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  overflow: scroll;
-  -webkit-overflow-scrolling: touch;
-  background-color: #f5f5f5;
-  z-index: 1;
-}
-
 .visitMsg-component .tableWrapper {
   margin-top: 48px;
   overflow: scroll;

@@ -34,6 +34,7 @@ i{font-style:normal;-webkit-user-select: none;}
     display: inline-block;
     position: absolute;
     left: 0.2em;
+    height: 48px;
     color: #fff;
     font-size: 0.7em;
 }
@@ -44,4 +45,13 @@ i{font-style:normal;-webkit-user-select: none;}
 .top_title a span{
     vertical-align: top;
     line-height: 48px;
+}
+.top_title .titleRight {
+    display: inline-block;
+    position: absolute;
+    top: 0px;
+    right: 1em;
+    height: 48px;
+    color: #fff;
+    font-size: 14px;
 }

@@ -76,31 +76,34 @@ export default {
         };
     },
     created: function() {
-        this.$store.commit("showIndexComponents");
-        if (JSON.parse(this.$store.state.userMsg).checkinflag) {
-            this.isShowVisitMsg = true;
+        if (this.$store.state.userMsg == "") {
+            this.$router.push({ name: "signin" });
+        } else {
+            var that = this;
+            this.$store.commit("showIndexComponents");
+            if (JSON.parse(this.$store.state.userMsg).checkinflag) {
+                this.isShowVisitMsg = true;
+            }
+            
+            this.$http.get(this.seieiURL + "/estapi/api/FlowApprove/GetMyApprove?actorid=" + JSON.parse(this.$store.state.userMsg).Code).then(resp=>{
+              // resp.body = resp.body.data;
+              resp.body.forEach((item) => {
+                that.todoListNum += item.cnt;
+              });
+            
+              that.$http.get(that.seieiURL + "/estapi/api/FlowApprove/GetMyApply?actorid1=" + JSON.parse(that.$store.state.userMsg).Code).then(resp=>{
+                // resp.body = resp.body.data;
+                resp.body.forEach((item) => {
+                  that.myApplyNum += item.cnt;
+                });
+              }, response => {
+                  console.log("发送失败"+response.status+","+response.statusText);
+              });
+
+            }, response => {
+                console.log("发送失败"+response.status+","+response.statusText);
+            });
         }
-        // 注释代码用于开发环境或实际项目接口
-        // /api/getToDoList
-        // http://59.33.36.124:38080/estapi/api/FlowApprove/GetMyApprove?actorid=fang
-        // /api/getMyApplys
-        // http://59.33.36.124:38080/estapi/api/FlowApprove/GetMyApply?actorid1=fang
-        this.$http.get(this.seieiURL + "/estapi/api/FlowApprove/GetMyApprove?actorid=" + JSON.parse(this.$store.state.userMsg).Code).then(resp=>{
-          // resp.body = resp.body.data;
-          resp.body.forEach((item) => {
-            this.todoListNum += item.cnt;
-          });
-        }, response => {
-            console.log("发送失败"+response.status+","+response.statusText);
-        });
-        this.$http.get(this.seieiURL + "/estapi/api/FlowApprove/GetMyApply?actorid1=" + JSON.parse(this.$store.state.userMsg).Code).then(resp=>{
-          // resp.body = resp.body.data;
-          resp.body.forEach((item) => {
-            this.myApplyNum += item.cnt;
-          });
-        }, response => {
-            console.log("发送失败"+response.status+","+response.statusText);
-        });
     },
 	methods: {
         // 进入待办事项

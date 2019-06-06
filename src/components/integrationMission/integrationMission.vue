@@ -7,7 +7,7 @@
       </a>
       <div>任务大厅</div>
     </div>
-    <div class="contentWrapper">
+    <div class="contentWrapper" v-show="!isShowInputBlock">
       <div class="weui-form-preview" style="margin-bottom: 10px;">
         <div class="weui-form-preview__hd">
           <div class="weui-form-preview__item">
@@ -42,14 +42,85 @@
         </div>
       </div>
     </div>
-    <div class="addMission">
+    <div class="addMission" v-show="!isShowInputBlock" @click="showInputBlock">
       <span class="icon-plus" style="margin-left: 1em;"></span> 新增任务
     </div>
+    <!-- 输入任务页面 -->
+    <div v-show="isShowInputBlock" class="contentWrapper">
+      <div class="weui-cells weui-cells_form">
+        <div class="weui-cell">
+          <div class="weui-cell__hd"><label for="" class="weui-label">日期</label></div>
+          <div class="weui-cell__bd" @click="showsTimePicker">
+            {{inputTime}} <i class="icon-chevron-down"></i>
+          </div>
+        </div>
+        <div class="weui-cell">
+          <div class="weui-cell__hd"><label for="" class="weui-label">发布分数</label></div>
+          <div class="weui-cell__bd">
+            <input class="weui-input" type="number" pattern="[0-9]*" value="weui input error" placeholder="请输入分数">
+          </div>
+        </div>
+        <div class="weui-cell">
+          <div class="weui-cell__hd"><label for="" class="weui-label">地点</label></div>
+          <div class="weui-cell__bd">
+            <input class="weui-input" placeholder="请输入地点">
+          </div>
+        </div>
+      </div>
+      <div class="weui-cells weui-cells_form">
+        <div class="weui-cells__title" style="font-size: 17px;color: #444;">任务详情</div>
+        <div class="weui-cell">
+          <div class="weui-cell__bd">
+            <textarea class="weui-textarea" placeholder="请输入文本" rows="8"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="weui-btn-area">
+        <a class="weui-btn weui-btn_primary" href="javascript:" id="showTooltips">确定</a>
+      </div>
+    </div>
+    <awesome-picker
+      ref="timePicker"
+      :type="'date'"
+      :textTitle="'选择日期'"
+      @confirm="timePickerConfirm"
+    ></awesome-picker>
   </div>
 </template>
 
 <script>
-export default {};
+var now = new Date();
+export default {
+  data: function() {
+    return {
+      isShowInputBlock: false, // 是否显示发布任务页面
+      inputTime: this.formatTime(now.getFullYear() + "年" + (now.getMonth() + 1) + "月" + now.getDate() + "日"), // 时间
+
+    }
+  },
+  methods: {
+    // 显示时间 Picker
+    showsTimePicker: function() {
+      this.$refs.timePicker.show();
+    },
+    // 时间确认按钮
+    timePickerConfirm: function(data) {
+      this.inputTime = this.formatTime(data[0].value + data[1].value + data[2].value);
+    },
+    // 显示任务发布页面
+    showInputBlock: function() {
+      console.log(123)
+      this.isShowInputBlock = true;
+    },
+    goBack: function() {
+      if (this.isShowInputBlock) {
+        this.isShowInputBlock = false;
+        return;
+      }
+      this.$router.go(-1);
+    }
+  }
+};
 </script>
 
 <style scoped>
@@ -61,6 +132,7 @@ export default {};
   left: 0px;
   right: 0px;
   bottom: 0px;
+  color: #444;
   background-color: #fff;
   text-align: center;
   font-size: 16px;

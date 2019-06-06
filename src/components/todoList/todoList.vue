@@ -9,7 +9,7 @@
         <!-- 待办事项列表 -->
         <div class="weui-media-box weui-media-box_small-appmsg" style="margin-top: 48px;" v-show="isShowAsList">
             <div class="weui-cells">
-                <a class="weui-cell weui-cell_access" href="javascript:void(0);" v-for="(todo, index) in todoList" @click="goWorkingTable(todo.name, todo.title)">
+                <a class="weui-cell weui-cell_access" href="javascript:void(0);" v-for="(todo, index) in todoList" @click="goWorkingTable(todo.name, todo.title)" v-bind:key="index">
                     <div class="weui-cell__hd">
                         <img class="iconImg" v-bind:src="'http://www.etscn.com.cn:38080/oa/KQ/img/' + index + '.png'">
                     </div>
@@ -22,7 +22,7 @@
         </div>
         <!-- 待办事项九宫格 -->
 		<div class="weui-grids" style="margin-top: 50px;background-color: #fff;color:#444" v-show="!(isShowAsList)">
-    	    <a href="javascript:void(0);" class="weui-grid" v-for="(todo, index) in todoList" @click="goWorkingTable(todo.name, todo.title)">
+    	    <a href="javascript:void(0);" class="weui-grid" v-for="(todo, index) in todoList" @click="goWorkingTable(todo.name, todo.title)" v-bind:key="index">
     	        <div class="weui-grid__icon">
     	            <img v-bind:src="'http://www.etscn.com.cn:38080/oa/KQ/img/' + index + '.png'" v-bind:alt="todo.modname">
     	        	<span class="weui-badge">{{todo.cnt}}</span>
@@ -85,16 +85,6 @@ export default {
 </script>
 
 <style scoped>
-.todoList-component {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	width: 100%;
-    overflow: scroll;
-    -webkit-overflow-scrolling : touch;
-	background-color: #f5f5f5;
-	z-index: 1;
-}
 .weui-grid__icon {
 	position: relative;
 }

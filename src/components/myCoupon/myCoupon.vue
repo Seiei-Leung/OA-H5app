@@ -5,38 +5,44 @@
         <i class="icon-chevron-left"></i>
         <span>返回</span>
       </a>
-      <div>我的奖券</div>
+      <div>我的奖票</div>
     </div>
     <div class="contentWrapper">
-      <div class="couponCountTxt">
-        未打印的奖票
-        <span class="greenTxt">{{couponCount}}</span> 张
+      <div class="topBar">
+        <div class="item" v-bind:class="{ 'active': isShowUnUsedCoupon }" @click="showUnUsedCoupon">未打印</div>
+        <div class="item" v-bind:class="{ 'active': !isShowUnUsedCoupon }" @click="showUsedCoupon">已打印</div>
       </div>
-      <div class="couponListWrapper">
-        <div class="couponWrapper">
+      <div class="couponCountTxt">
+        共有{{couponList.length}}张奖票，未打印 <span class="greenTxt">{{unUsedCouponList.length}}</span> 张，已打印 <span class="redTxt">{{usedCouponList.length}}</span> 张
+      </div>
+      <!--  -->
+      <div class="couponListWrapper" v-show="isShowUnUsedCoupon">
+        <div class="couponWrapper" v-for="(item, index) in unUsedCouponList" v-bind:key="index">
           <div class="title">
-            <div class="integration">10</div>
+            <div class="integration">{{item.integral}}</div>
             <div class="couponTxt">奖票</div>
           </div>
           <div class="content">
-            <div class="reason">探望生病同事</div>
-            <div class="msg">申请人：李四</div>
-            <div class="msg">初审人：张三</div>
-            <div class="msg">终审人：张三</div>
+            <div class="reason">{{item.eventStr}}</div>
+            <div class="msg">申请人：{{item.name}}</div>
+            <div class="msg">审核人：{{item.auditor}}</div>
+            <div class="msg">终审人：{{item.approver}}</div>
             <div class="halfTopCircle"></div>
             <div class="halfBottomCircle"></div>
           </div>
         </div>
-        <div class="couponWrapper">
+      </div>
+      <div class="couponListWrapper usedCouponListWrapper" v-show="!isShowUnUsedCoupon">
+        <div class="couponWrapper" v-for="(item, index) in usedCouponList" v-bind:key="index">
           <div class="title">
-            <div class="integration">10</div>
+            <div class="integration">{{item.integral}}</div>
             <div class="couponTxt">奖票</div>
           </div>
           <div class="content">
-            <div class="reason">探望生病同事</div>
-            <div class="msg">申请人：李四</div>
-            <div class="msg">初审人：张三</div>
-            <div class="msg">终审人：张三</div>
+            <div class="reason">{{item.eventStr}}</div>
+            <div class="msg">申请人：{{item.name}}</div>
+            <div class="msg">审核人：{{item.auditor}}</div>
+            <div class="msg">审批人：{{item.approver}}</div>
             <div class="halfTopCircle"></div>
             <div class="halfBottomCircle"></div>
           </div>
@@ -50,27 +56,87 @@
 export default {
   data: function() {
     return {
-      couponCount: 2
+      isShowUnUsedCoupon: true, // 是否显示
+      user: {}, // 用户信息
+      couponList: [], // 奖票源列表
+      usedCouponList: [], // 已用票卷列表
+      unUsedCouponList: [], // 未用票卷列表
     };
+  },
+  methods: {
+    showUnUsedCoupon: function() {
+      this.isShowUnUsedCoupon = true;
+    },
+    showUsedCoupon: function() {
+      this.isShowUnUsedCoupon = false;
+    }
+  },
+  created: function() {
+    var that = this;
+    this.user = JSON.parse(this.$store.state.userMsg);
+    this.$http.get(this.seieiURL + "/estapi/api/Integral/getCouponByUserId?userId=" + this.user.EmployeeNo).then(
+      resp => {
+        that.couponList = resp.body;
+        var usedCouponList = [];
+        var unUsedCouponList = [];
+        resp.body.forEach(item => {
+          if (item.isUsed) {
+            usedCouponList.push(item);
+          } else {
+            unUsedCouponList.push(item);
+          }
+        });
+        that.unUsedCouponList = unUsedCouponList;
+        that.usedCouponList = usedCouponList;
+      }
+    )
   }
 };
 </script>
 
 <style scoped>
 .contentWrapper {
-  margin-top: 48px;
-  padding-top: 20px;
+  margin-top: 100px;
+}
+.topBar {
+  position: fixed;
+  top: 48px;
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+  z-index: 1;
+}
+.topBar .item{
+  box-sizing: border-box;
+  flex-grow: 1;
+  font-size: 16px;
+  line-height: 2.5em;
+  color: #444;
+  background-color: #fff;
+  border: 1px solid #eee;
+  text-align: center;
+}
+.topBar .item.active {
+  color: #6fb27c;
+  font-weight: bold;
 }
 .couponCountTxt {
   padding-left: 10px;
   font-size: 16px;
   line-height: 2em;
-  border-top: 1px solid #ddd;
-  border-bottom: 1px solid #ddd;
+  border-top: 1px solid #eee;
+  border-bottom: 1px solid #eee;
   background-color: #fff;
+  color: #666;
 }
 .greenTxt {
   color: #6fb27c;
+}
+.redTxt {
+  color: #ff4343;
+}
+.couponListWrapper {
+  padding-bottom: 10px;
 }
 .couponWrapper {
   margin: auto;
@@ -90,6 +156,9 @@ export default {
   font-size: 20px;
   text-align: center;
   color: #6fb27c;
+}
+.usedCouponListWrapper .title {
+  color: #999;
 }
 .couponWrapper .title .integration {
     font-size: 32px;

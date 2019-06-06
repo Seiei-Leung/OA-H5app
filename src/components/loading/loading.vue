@@ -15,10 +15,13 @@ export default {
 <style scoped>
 .loading-wrapper {
 	position: fixed;
-	top: 45%;
+	top: 0;
+	bottom: 0;
 	width: 100%;
+	padding-top: 40%;
 	text-align: center;
 	z-index: 1000000;
+	background-color: rgba(0,0,0,0.2);	
 }
 .loading-wrapper img {
 	width: 1rem

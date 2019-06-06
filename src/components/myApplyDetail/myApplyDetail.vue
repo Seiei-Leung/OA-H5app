@@ -69,17 +69,6 @@ export default {
 </script>
 
 <style scoped>
-.myApplyDetail-component {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	width: 100%;
-	padding-bottom: 2em;
-    overflow: scroll;
-    -webkit-overflow-scrolling : touch;
-	background-color: #f5f5f5;
-	z-index: 1;
-}
 .billno-time {
 	position: relative;
 	margin-top: 1em;

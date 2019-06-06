@@ -147,16 +147,6 @@ export default {
 </script>
 
 <style scoped>
-.serialno-component {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	width: 100%;
-    overflow: scroll;
-    -webkit-overflow-scrolling : touch;
-	background-color: #f5f5f5;
-	z-index: 1;
-}
 .contentWrapper {
 	margin-top: 48px;
 }

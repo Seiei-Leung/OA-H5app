@@ -25,7 +25,7 @@ import myCoupon from '@/components/myCoupon/myCoupon';
 import myIntegration from '@/components/myIntegration/myIntegration';
 import integrationRanking from '@/components/integrationRanking/integrationRanking';
 import myAuditOfIntegration from '@/components/myAuditOfIntegration/myAuditOfIntegration';
-import integrationDetail from '@/components/integrationDetail/integrationDetail';
+import myIntegrationDetail from '@/components/myIntegrationDetail/myIntegrationDetail';
 import integrationAnnouncement from '@/components/integrationAnnouncement/integrationAnnouncement';
 import integrationAppraise from '@/components/integrationAppraise/integrationAppraise';
 import integrationSuggest from '@/components/integrationSuggest/integrationSuggest';
@@ -33,6 +33,7 @@ import awardMsg from '@/components/awardMsg/awardMsg';
 import integrationMsg from '@/components/integrationMsg/integrationMsg';
 import myMedal from '@/components/myMedal/myMedal';
 import integrationMission from '@/components/integrationMission/integrationMission';
+import integrationDetail from '@/components/integrationDetail/integrationDetail';
 import test from '@/components/test/test';
 
 Vue.use(Router);
@@ -248,7 +249,7 @@ export default new Router({
     },
     // 奖分排名
     {
-      path: '/integrationRanking/:kind',
+      path: '/integrationRanking/:kind/:ranknum',
       name: 'integrationRanking',
       component: integrationRanking,
       meta: {
@@ -264,11 +265,11 @@ export default new Router({
         keepAlive: false // 需要被缓存
       }
     },
-    // 积分详情
+    // 我的奖分详情
     {
-      path: '/integrationDetail/:kind',
-      name: 'integrationDetail',
-      component: integrationDetail,
+      path: '/myIntegrationDetail/:kind',
+      name: 'myIntegrationDetail',
+      component: myIntegrationDetail,
       meta: {
         keepAlive: false // 需要被缓存
       }
@@ -332,6 +333,15 @@ export default new Router({
       path: '/integrationSuggest',
       name: 'integrationSuggest',
       component: integrationSuggest,
+      meta: {
+        keepAlive: false // 需要被缓存
+      }
+    },
+    // 改善建议
+    {
+      path: '/integrationDetail',
+      name: 'integrationDetail',
+      component: integrationDetail,
       meta: {
         keepAlive: false // 需要被缓存
       }

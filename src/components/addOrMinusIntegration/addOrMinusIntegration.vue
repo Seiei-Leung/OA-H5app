@@ -5,7 +5,7 @@
         <i class="icon-chevron-left"></i>
         <span>返回</span>
       </a>
-      <div>奖分奖扣</div>
+      <div>{{isFRank ? "我要奖分" : "奖分申请"}}</div>
     </div>
     <div
       class="contentWrapper"
@@ -20,11 +20,12 @@
       </div>
       <div class="inputWrapper">
         <div class="title">奖扣对象</div>
-        <div class="input" style="width: 30%;">已勾选了{{selectPersonListForSumbit.length}}人</div>
-        <div class="btn" @click="showSelectPerson">新增</div>
+        <div class="input" style="width: 30%;" v-if="isFRank">{{applicant.Name}}</div>
+        <div class="input" style="width: 30%;" v-if="!isFRank">已勾选了{{selectPersonListForSumbit.length}}人</div>
+        <div class="btn" @click="showSelectPerson" v-if="!isFRank">新增</div>
         <div
           class="btn"
-          v-show="selectPersonListForSumbit.length>0"
+          v-show="selectPersonListForSumbit.length>0 && !isFRank"
           @click="showSelectedPerson"
         >查看已选</div>
       </div>
@@ -47,7 +48,6 @@
       </div>
     </div>
     <div class="contentWrapper" v-show="isShowSelectEvent">
-      <div class="selectEventTitle" style="top: 92px;background-color: #e4e4e4;">点击选择奖扣事件</div>
       <div class="weui-search-bar" id="searchBar" style="position: fixed;top: 48px;left: 0;right: 0;">
         <form class="weui-search-bar__form">
           <div class="weui-search-bar__box">
@@ -70,13 +70,25 @@
         </form>
         <a href="javascript:void(0);" class="weui-search-bar__cancel-btn" id="searchCancel">取消</a>
       </div>
+      <div @click="showCategoryPicker" class="categoryPicker">
+        {{selectCategoryTxt}}
+        <i class="icon-chevron-down"></i>
+      </div>
+      <div class="selectEventTitle" style="top: 133px;background-color: #e4e4e4;">点击选择奖扣事件</div>
       <ul class="selectWrapper">
         <li
-          v-for="(item, index) in eventTxtList"
+          v-for="(item, index) in eventTxtListForShow"
           :key="index"
           class="selectItem"
           @click="selectEvent(index)"
-        >{{item.eventString}}</li>
+        >
+          <div>{{item.eventStr}}</div>
+          <div>奖分：
+            <span v-bind:class="{ 'greenFont': item.integral != null && item.integral != 0, 'redFont': item.deductintegral != null && item.deductintegral != 0 }">
+              {{item.integral != null && item.integral != 0 ? item.integral : "-" + item.deductintegral}}
+            </span>
+          </div>
+        </li>
       </ul>
       <div class="cancelWrapper">
         <div class="btn" @click="hideSelectEvent">取消</div>
@@ -99,16 +111,22 @@
           </div>
         </div>
         <div class="inputBar">
-          <div class="inputItem">
-            <div class="title">部门</div>
-            <div class="input">
-              <input placeholder="输入部门" v-model="inputDep" v-on:input="watchInput">
+          <div class="inputItem" style="width: 30%;">
+            <div class="title" style="width: 50%;">部门</div>
+            <div class="input" style="width: 50%;height: 40px;">
+              <input placeholder="部门" v-model="inputDep" v-on:input="watchInput" style="height: 40px;line-height: 40px;">
             </div>
           </div>
-          <div class="inputItem">
-            <div class="title">车间</div>
-            <div class="input">
-              <input placeholder="输入车间" v-model="inputWorkShop" v-on:input="watchInput">
+          <div class="inputItem" style="width: 30%;">
+            <div class="title" style="width: 50%;">车间</div>
+            <div class="input" style="width: 50%;height: 40px;vertical-align: top;">
+              <input placeholder="车间" v-model="inputWorkShop" v-on:input="watchInput" style="height: 40px;line-height: 40px;">
+            </div>
+          </div>
+          <div class="inputItem" style="width: 40%;">
+            <div class="title" style="width: 50%;">生产线</div>
+            <div class="input" style="width: 50%;height: 40px;vertical-align: top;">
+              <input placeholder="生产线" v-model="inputWorkLine" v-on:input="watchInput" style="height: 40px;line-height: 40px;">
             </div>
           </div>
         </div>
@@ -144,11 +162,23 @@
         <div class="btn" @click="hideSelectPerson">取消</div>
       </div>
     </div>
+    <awesome-picker
+      ref="categoryPicker"
+      :data="categoryList"
+      :textTitle="'选择类型'"
+      @confirm="categoryPickerConfirm"
+    ></awesome-picker>
+    <!-- toast -->
+    <v-toast v-bind:text="toast" v-show="isToast"></v-toast>
+    <!-- loading 图 -->
+    <v-loading v-show="isLoading"></v-loading>
   </div>
 </template>
 
 <script>
 import Vue from 'vue';
+import toast from '../toast/toast';
+import loading from '../loading/loading';
 
 var T;
 export default {
@@ -157,6 +187,7 @@ export default {
       isShowSelectEvent: false, // 是否显示选择事件窗口
       selectEventTxt: "", // 提交的事件选项
       selectEventIntegration: "", // 已选事件的奖扣分
+      eventTxtListForShow: [], // 后台获取的所有可选的事件
       eventTxtList: [], // 后台获取的所有可选的事件
       selectEventIndex: 0, // 已选吼后台事件的索引
       searchSelectTxt: "", // 筛选后台事件列表的模糊查找文本
@@ -165,6 +196,7 @@ export default {
       inputName: "", // 筛选员工的姓名
       inputDep: "", // 筛选员工的部门
       inputWorkShop: "", // 筛选员工的车间
+      inputWorkLine: "", // 筛选员工的生产线
       selectPersonList: [], // 后台可选员工的列表
       selectPersonBtnTxt: "全选", // 用于全选按钮或全不选按钮
       selectPersonListForActive: [], // 用于显示已选员工的视图显示
@@ -173,6 +205,13 @@ export default {
       applicant: "", // 申请人
       serialno: "", // 保存主表主键
       canSumbit: false, // 是否可以点击提交按钮
+      isFRank: true, // 是否为 F级别员工
+      fUserMsgObj: {}, // 用于 F级别员工提交数据
+      toast: '',
+      isToast: false,
+      isLoading: false, // 是否显示缓冲图
+      categoryList: [], // 奖分标准类型
+      selectCategoryTxt: "", // 当前奖分标准类型
     };
   },
   methods: {
@@ -184,11 +223,11 @@ export default {
     selectEvent: function(index) {
       this.selectEventIndex = index;
       this.isShowSelectEvent = false;
-      this.selectEventTxt = this.eventTxtList[index].eventString;
+      this.selectEventTxt = this.eventTxtListForShow[index].eventStr;
       this.selectEventIntegration =
-        this.eventTxtList[this.selectEventIndex].integral == null
-          ? "-" + this.eventTxtList[this.selectEventIndex].deductintegral
-          : this.eventTxtList[this.selectEventIndex].integral;
+        this.eventTxtListForShow[this.selectEventIndex].integral == null && this.eventTxtListForShow[this.selectEventIndex].integral != 0 
+          ? "-" + this.eventTxtListForShow[this.selectEventIndex].deductintegral
+          : this.eventTxtListForShow[this.selectEventIndex].integral;
     },
     // 显示选择人员窗口
     showSelectPerson: function() {
@@ -297,12 +336,17 @@ export default {
           "&dep=" +
           that.inputDep +
           "&workshop=" +
-          that.inputWorkShop;
+          that.inputWorkShop +
+          "&workline=" +
+          that.inputWorkLine;
+        that.isLoading = true;
         that.$http.get(url).then(
           resp => {
             that.selectPersonList = resp.body;
+            that.isLoading = false;
           },
           response => {
+            that.isLoading = false;
             console.log(
               "发送失败" + response.status + "," + response.statusText
             );
@@ -315,20 +359,20 @@ export default {
       var that = this;
       clearTimeout(T);
       T = setTimeout(() => {
-        var url =
-          that.seieiURL +
-          "/estapi/api/Integral/getEventByCondition?eventStr=" +
-          that.searchSelectTxt;
-        that.$http.get(url).then(
-          resp => {
-            that.eventTxtList = resp.body;
-          },
-          response => {
-            console.log(
-              "发送失败" + response.status + "," + response.statusText
-            );
+        if (that.searchSelectTxt.trim() == "") {
+          that.eventTxtListForShow = that.eventTxtList;
+          return;
+        }
+        else {
+          var eventTxtListForShow = [];
+          var re = new RegExp(that.searchSelectTxt);
+          for (var i=0; i<that.eventTxtList.length; i++) {
+            if (re.test(that.eventTxtList[i].eventStr)) {
+              eventTxtListForShow.push(that.eventTxtList[i]);
+            }
           }
-        );
+          that.eventTxtListForShow = eventTxtListForShow;
+        }
       }, 1500);
     },
     // 显示选择人员窗口
@@ -346,23 +390,19 @@ export default {
     },
     // 提交按钮
     submitData: function() {
-/*       if (!this.canSumbit && this.serialno) {
-        alert("请先保存数据后再点击提交");
-        return;
-      } */
       var that = this;
       var obj = {};
       obj.serialno = this.serialno;
       obj.eventString = this.selectEventTxt;
       obj.code = this.applicant.Code;
-      if (this.eventTxtList[this.selectEventIndex] && this.eventTxtList[this.selectEventIndex].eventString == this.selectEventTxt) {
-        obj.frequency = this.eventTxtList[this.selectEventIndex].frequency ? this.eventTxtList[this.selectEventIndex].frequency : "";
+      if (this.eventTxtListForShow[this.selectEventIndex] && this.eventTxtListForShow[this.selectEventIndex].eventStr == this.selectEventTxt) {
+        obj.frequency = this.eventTxtListForShow[this.selectEventIndex].frequency ? this.eventTxtListForShow[this.selectEventIndex].frequency : "";
       } else {
         obj.frequency = "";
       }
       
       var reg = /^\-?\d*$/; // 分数正则表达式
-      if (this.selectPersonListForSumbit.length == 0 || this.selectEventTxt == "" || !reg.test(this.selectEventIntegration)) {
+      if ((!this.isFRank && this.selectPersonListForSumbit.length == 0) || this.selectEventTxt == "" || !reg.test(this.selectEventIntegration)) {
         alert("请选择奖扣事件、奖扣对象或输入正确格式的分数值");
         return;
       }
@@ -375,15 +415,28 @@ export default {
       }
 
       obj.buser = this.applicant.Code;
+      obj.employeeNo = this.applicant.EmployeeNo;
       var personObjList = [];
-      for (var i=0; i<this.selectPersonListForSumbit.length; i++) {
-        var personObj = {};
-        personObj.empno = this.selectPersonListForSumbit[i].code;
-        personObj.empname = this.selectPersonListForSumbit[i].name;
-        personObj.dept = this.selectPersonListForSumbit[i].departname;
-        personObj.workshop = this.selectPersonListForSumbit[i].workshop ? this.selectPersonListForSumbit[i].workshop : "";
-        personObj.workgroup = this.selectPersonListForSumbit[i].zhubie ? this.selectPersonListForSumbit[i].zhubie : "";
-        personObjList.push(personObj);
+      if (!this.isFRank) {
+        for (var i=0; i<this.selectPersonListForSumbit.length; i++) {
+          var personObj = {};
+          personObj.empno = this.selectPersonListForSumbit[i].code;
+          personObj.empname = this.selectPersonListForSumbit[i].name;
+          personObj.position = this.selectPersonListForSumbit[i].position;
+          personObj.dept = this.selectPersonListForSumbit[i].departname;
+          personObj.workshop = this.selectPersonListForSumbit[i].workshop ? this.selectPersonListForSumbit[i].workshop : "";
+          personObj.workgroup = this.selectPersonListForSumbit[i].zhubie ? this.selectPersonListForSumbit[i].zhubie : "";
+          personObjList.push(personObj);
+        }
+      } else {
+          var personObj = {};
+          personObj.empno = this.fUserMsgObj.code;
+          personObj.empname = this.fUserMsgObj.name;
+          personObj.dept = this.fUserMsgObj.departname;
+          personObj.workshop = this.fUserMsgObj.workshop ? this.fUserMsgObj.workshop : "";
+          personObj.workgroup = this.fUserMsgObj.zhubie ? this.fUserMsgObj.zhubie : "";
+          personObj.position = this.fUserMsgObj.position;
+          personObjList.push(personObj);
       }
       obj.personObjList = personObjList;
       var form = "=" + JSON.stringify(obj);
@@ -397,12 +450,39 @@ export default {
           that.selectEventTxt = "";
           that.selectEventIntegration = "";
           that.selectPersonListForSumbit = [];
-          alert("提交成功");
+          that.toast = '提交成功';
+          that.isToast = true;
+          setTimeout(() => {
+            that.isToast = false;
+          }, 2000);
         },
         response => {
           console.log("发送失败" + response.status + "," + response.statusText);
         }
       );
+    },
+    showCategoryPicker: function() {
+      this.$refs.categoryPicker.show();
+    },
+    categoryPickerConfirm: function(data) {
+      console.log(data[0].value);
+      this.selectCategoryTxt = data[0].value;
+      var that = this;
+      if (data[0].value != "部门标准") {
+        this.$http.get(this.seieiURL + "/estapi/api/Integral/getStandardByCategory?category=" + data[0].value).then(
+          resp => {
+            that.eventTxtListForShow = resp.body;
+            that.eventTxtList = resp.body;
+          }
+        );
+      } else {
+        this.$http.get(this.seieiURL + "/estapi/api/Integral/getStandardByDept").then(
+          resp => {
+            that.eventTxtListForShow = resp.body;
+            that.eventTxtList = resp.body;
+          }
+        );
+      }
     },
     // 返回按钮
     goBack: function() {
@@ -434,22 +514,73 @@ export default {
     },
   },
   created: function() {
+    var that = this;
     this.applicant = JSON.parse(this.$store.state.userMsg);
+    this.isFRank = this.$store.state.userMsgForIntegration.rank == "F级";
     console.log(this.applicant);
-    this.$http.get(this.seieiURL + "/estapi/api/Integral/getAllEvent").then(
+    that.$http.get(that.seieiURL + "/estapi/api/Integral/getCategoryForIntegral").then(
       resp => {
-        this.eventTxtList = resp.body;
-      },
-      response => {
-        console.log("发送失败" + response.status + "," + response.statusText);
+        that.categoryList.push(resp.body.categoryList);
+        that.selectCategoryTxt = resp.body.categoryList[0];
+        if (resp.body.categoryList[0] != "部门标准") {
+          that.$http.get(that.seieiURL + "/estapi/api/Integral/getStandardByCategory?category=" + that.selectCategoryTxt).then(
+            resp => {
+              that.eventTxtListForShow = resp.body;
+              that.eventTxtList = resp.body;
+              if (that.isFRank) {
+                that.$http.get(that.seieiURL + "/estapi/api/Integral/getStaff?id=" + that.applicant.EmployeeNo + "&name=&dep=&workshop=&workline").then(
+                  resp => {
+                    that.fUserMsgObj = resp.body[0];
+                  },
+                  response => {
+                    console.log("发送失败" + response.status + "," + response.statusText);
+                  }
+                );
+              }
+            }
+          );
+        } else {
+          that.$http.get(that.seieiURL + "/estapi/api/Integral/getStandardByPosition?position=" + that.selectCategoryTxt).then(
+            resp => {
+              that.eventTxtListForShow = resp.body;
+              that.eventTxtList = resp.body;
+              if (that.isFRank) {
+                that.$http.get(that.seieiURL + "/estapi/api/Integral/getStaff?id=" + that.applicant.EmployeeNo + "&name=&dep=&workshop=").then(
+                  resp => {
+                    that.fUserMsgObj = resp.body[0];
+                  },
+                  response => {
+                    console.log("发送失败" + response.status + "," + response.statusText);
+                  }
+                );
+              }
+            }
+          );
+        }
       }
     );
+  },
+  components: {
+    'v-toast': toast,
+    'v-loading': loading
   }
 };
 </script>
 
 <style scoped>
-.addOrMinusIntegration-component {
+.categoryPicker {
+  position: fixed;
+  top: 92px;
+  left: 0;
+  right: 0;
+  box-sizing: border-box;
+  font-size: 16px;
+  line-height: 2.5em;
+  color: #444;
+  background-color: #fff;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+  z-index: 1;
 }
 .contentWrapper {
   margin-top: 48px;
@@ -497,7 +628,7 @@ export default {
   color: #fff;
 }
 .selectWrapper {
-  padding: 72px 0 55px 0;
+  padding: 115px 0 55px 0;
 }
 .selectEventTitle {
   position: fixed;
@@ -571,13 +702,16 @@ export default {
   box-sizing: border-box;
   display: inline-block;
   width: 70%;
-  font-size: 16px;
+  vertical-align: top;
   border-right: 1px solid #ddd;
 }
 .selectPersonWrapper .inputBar .inputItem .input input {
   box-sizing: border-box;
   padding-left: 0.5em;
   width: 100%;
+  height: 40px;
+  line-height: 40px;
+  font-size: 16px;
 }
 .selectPersonWrapper .selectContent {
   padding: 100px 0 55px 15px;
@@ -617,5 +751,15 @@ export default {
 }
 .contentWrapper .btnWrapper .disable {
   background-color: #a6a6a6;
+}
+.greenFont {
+  text-align: left;
+  font-weight: bold;
+  color: #42b983;
+}
+.redFont {
+  text-align: left;
+  font-weight: bold;
+  color: red;
 }
 </style>

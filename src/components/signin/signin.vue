@@ -85,16 +85,6 @@ export default {
 </script>
 
 <style scoped>
-.personalMsg-component {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    width: 100%;
-    overflow: scroll;
-    -webkit-overflow-scrolling : touch;
-    background-color: #f5f5f5;
-    z-index: 1;
-}
 .signin_page .signin_wrapper {
 	margin-top:95px;
 	background-color: #fff;

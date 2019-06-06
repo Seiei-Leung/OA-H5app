@@ -1,18 +1,21 @@
 <template>
-	<div class="shoppingList-component">
+	<div class="workingTable-component">
     	<!-- 详细表格 -->
-    	<div class="top_title" style="position: fixed;top: 0;width: 100%">
-    	    <a href="javascript:void(0);" @click="goBack"><i class="icon-chevron-left"></i><span>返回</span></a>
+    	<div class="top_title">
+    	    <a href="javascript:void(0);" @click="goBack">
+                <i class="icon-chevron-left"></i>
+                <span>返回</span>
+            </a>
     	    <div>{{titleName}}</div>
     	</div>
     	<div class="workdetail-page" ref="findHook">
             <!-- 动态绑定要是用 v-bind ,不然绑定的是整个字符串，下面 ref 就是个例子 -->
-    	    <div class="table-item" v-for="(content, index1) in contentList" v-bind:ref="'table-item' + index1" @click="goMyApply(billnoList[index1])">
+    	    <div class="table-item" v-for="(content, index1) in contentList" v-bind:ref="'table-item' + index1" @click="goMyApply(billnoList[index1])" v-bind:key="index1">
                 <div class="main-table">
                     <!-- 主表 -->
                     <div style="position:relative;">
                         <!--  v-bind:class="{boldFont: (styleList[index1][index2].fontbold == 'true')}" -->
-                        <div v-bind:class="{boldFont:(styleList[index1][index2].fontbold == 'True')}" v-for="(val, index2) in content" v-if="!(val instanceof Array)">
+                        <div v-bind:class="{boldFont:(styleList[index1] && styleList[index1][index2] && (styleList[index1][index2].fontbold == 'True'))}" v-for="(val, index2) in content" v-show="!(val instanceof Array)" v-bind:key="index2">
                             <div class="titlehook">
                                 <span>{{nameList[index1][index2]}}：</span>
                                 <span style="color: #999;">{{String(val).replace("T00:00:00", "")}}</span>
@@ -21,13 +24,13 @@
                         <div v-if="istodoList" class="checkbox" @click="select()" v-bind:data-serialno="serialnoList[index1]" v-bind:data-billno="billnoList[index1]" v-bind:data-index="index1"></div>
                     </div>
                     <!-- 详情链接 -->
-                    <div v-for="(val, index2) in content" v-if="(val instanceof Array) && (!isShowdetail)" style="position: absolute;bottom: -36px;right: 0.5em;line-height: 35px;" @click="goTableDetail(val)">
+                    <div v-for="(val, index2) in content" v-show="(val instanceof Array) && (!isShowdetail)" style="position: absolute;bottom: -36px;right: 0.5em;line-height: 35px;" @click="goTableDetail(val)" v-bind:key="index2">
                         详情
                     </div>
-                    <div v-for="(val, index2) in content" v-if="(val instanceof Array) && isShowdetail" class="border"></div>
-                    <div v-for="(val, index2) in content" v-if="(val instanceof Array) && isShowdetail" class="detailWrapper">
-                        <div v-for="(detailContent, index3) in getDetailList[index1]" class="detailItem">
-                            <div v-for="(detailItem, index4) in detailContent" v-if="!(detailItem instanceof Array)" class="titlehook">
+                    <div v-for="(val, index2) in content" v-show="(val instanceof Array) && isShowdetail" class="border" v-bind:key="index2"></div>
+                    <div v-for="(val, index2) in content" v-show="(val instanceof Array) && isShowdetail" class="detailWrapper" v-bind:key="index2">
+                        <div v-for="(detailContent, index3) in getDetailList[index1]" class="detailItem" v-bind:key="index3">
+                            <div v-for="(detailItem, index4) in detailContent" v-show="!(detailItem instanceof Array)" class="titlehook" v-bind:key="index4">
                                 <span class="itemTitle">{{getDetailNameList[index3][index4]}}:</span><span style="color: #999;">{{detailItem}}</span>
                             </div>
                         </div>
@@ -344,18 +347,8 @@ export default {
 .checkbox.active {
     background-image: url("./img/select.png");
 }
-.shoppingList-component {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	width: 100%;
-    overflow: scroll;
-    -webkit-overflow-scrolling : touch;
-	background-color: #f5f5f5;
-	z-index: 1;
-}
 .workdetail-page {
-	margin: 55px 0
+	margin: 60px 0;
 }
 .titlehook span:first-child {
     display: inline-block;
@@ -417,7 +410,8 @@ export default {
     border-top: 1px solid #ddd
 }
 .footerBar .btn {
-    width: 4em;
+    box-sizing: border-box;
+    min-width: 5em;
     padding: 0.5em;
     line-height: 1;
     text-align: center;
