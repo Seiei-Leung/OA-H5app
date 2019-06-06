@@ -33,6 +33,30 @@
                 <div class="detailItem">
                     <div class="titlehook">
                         <span class="itemTitle">
+                          部门:
+                        </span>
+                        <span style="color: #999;">
+                          {{item.departname}}
+                        </span>
+                    </div>
+                    <div class="titlehook">
+                        <span class="itemTitle">
+                          车间:
+                        </span>
+                        <span style="color: #999;">
+                          {{item.workshop}}
+                        </span>
+                    </div>
+                    <div class="titlehook">
+                        <span class="itemTitle">
+                          生产线:
+                        </span>
+                        <span style="color: #999;">
+                          {{item.workline}}
+                        </span>
+                    </div>
+                    <div class="titlehook">
+                        <span class="itemTitle">
                           姓名:
                         </span>
                         <span style="color: #999;">

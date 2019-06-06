@@ -47,11 +47,11 @@
           <div class="weui-form-preview__bd">
             <div class="weui-form-preview__item">
               <label class="weui-form-preview__label">奖分类型</label>
-              <span class="weui-form-preview__value" style="color: #666;">{{item.title}}</span>
+              <span class="weui-form-preview__value" style="color: #666;text-align: left;">{{item.title}}</span>
             </div>
             <div class="weui-form-preview__item">
               <label class="weui-form-preview__label">奖扣分</label>
-              <span class="weui-form-preview__value greenTxt">{{item.integral}}</span>
+              <span class="weui-form-preview__value greenTxt" style="text-align: left;">{{item.integral}}</span>
             </div>
           </div>
         </div>

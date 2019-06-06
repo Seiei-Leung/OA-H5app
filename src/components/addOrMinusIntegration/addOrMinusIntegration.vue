@@ -113,22 +113,28 @@
         <div class="inputBar">
           <div class="inputItem" style="width: 30%;">
             <div class="title" style="width: 50%;">部门</div>
-            <div class="input" style="width: 50%;height: 40px;">
-              <input placeholder="部门" v-model="inputDep" v-on:input="watchInput" style="height: 40px;line-height: 40px;">
+            <div class="input" style="width: 50%;height: 40px;font-size: 14px;text-overflow: ellipsis;white-space: nowrap;text-align: center;" @click="showDepartnamePicker">
+              <!-- <input placeholder="部门" v-model="inputDep" v-on:input="watchInput" style="height: 40px;line-height: 40px;"> -->
+              {{inputDep}}
             </div>
           </div>
           <div class="inputItem" style="width: 30%;">
             <div class="title" style="width: 50%;">车间</div>
-            <div class="input" style="width: 50%;height: 40px;vertical-align: top;">
-              <input placeholder="车间" v-model="inputWorkShop" v-on:input="watchInput" style="height: 40px;line-height: 40px;">
+            <div class="input" style="width: 50%;height: 40px;vertical-align: top;font-size: 14px;text-overflow: ellipsis;white-space: nowrap;text-align: center;" @click="showWorkshopPicker">
+              <!-- <input placeholder="车间" v-model="inputWorkShop" v-on:input="watchInput" style="height: 40px;line-height: 40px;"> -->
+              {{inputWorkShop}}
             </div>
           </div>
           <div class="inputItem" style="width: 40%;">
             <div class="title" style="width: 50%;">生产线</div>
-            <div class="input" style="width: 50%;height: 40px;vertical-align: top;">
-              <input placeholder="生产线" v-model="inputWorkLine" v-on:input="watchInput" style="height: 40px;line-height: 40px;">
+            <div class="input" style="width: 50%;height: 40px;vertical-align: top;font-size: 14px;text-overflow: ellipsis;white-space: nowrap;text-align: center;" @click="showWorkLinePicker">
+              <!-- <input placeholder="生产线" v-model="inputWorkLine" v-on:input="watchInput" style="height: 40px;line-height: 40px;"> -->
+              {{inputWorkLine}}
             </div>
           </div>
+        </div>
+        <div class="inputBar" style="box-sizing: border-box;padding-top: 4px;height: 40px;background-color: #fff;">
+          <div class="btn" @click="clearFitler" style="margin: auto;width: 120px;border-radius: 4px;color: #fff;background-color: #FA5151;height: 30px;line-height: 30px;text-align: center;font-size: 14px;">清空筛选输入</div>
         </div>
       </div>
       <div class="selectContent">
@@ -162,6 +168,24 @@
         <div class="btn" @click="hideSelectPerson">取消</div>
       </div>
     </div>
+    <awesome-picker
+      ref="departnamePicker"
+      :data="departnameList"
+      :textTitle="'选择部门'"
+      @confirm="departnamePickerConfirm"
+    ></awesome-picker>
+    <awesome-picker
+      ref="workshopPicker"
+      :data="workshopList"
+      :textTitle="'选择车间'"
+      @confirm="workshopPickerConfirm"
+    ></awesome-picker>
+    <awesome-picker
+      ref="worklinePicker"
+      :data="worklineList"
+      :textTitle="'选择生产线'"
+      @confirm="worklinePickerConfirm"
+    ></awesome-picker>
     <awesome-picker
       ref="categoryPicker"
       :data="categoryList"
@@ -212,6 +236,9 @@ export default {
       isLoading: false, // 是否显示缓冲图
       categoryList: [], // 奖分标准类型
       selectCategoryTxt: "", // 当前奖分标准类型
+      departnameList: [], // 部门列表
+      workshopList: [], // 车间列表
+      worklineList: [], // 生产线列表
     };
   },
   methods: {
@@ -248,6 +275,7 @@ export default {
       this.inputName = "";
       this.inputDep = "";
       this.inputWorkShop = "";
+      this.inputWorkLine = "";
     },
     // 全选按钮
     toggleSelectAllPerson: function() {
@@ -464,25 +492,39 @@ export default {
     showCategoryPicker: function() {
       this.$refs.categoryPicker.show();
     },
+    showDepartnamePicker: function() {
+      this.$refs.departnamePicker.show();
+    },
+    showWorkshopPicker: function() {
+      this.$refs.workshopPicker.show();
+    },
+    showWorkLinePicker: function() {
+      this.$refs.worklinePicker.show();
+    },
     categoryPickerConfirm: function(data) {
-      console.log(data[0].value);
       this.selectCategoryTxt = data[0].value;
       var that = this;
-      if (data[0].value != "部门标准") {
-        this.$http.get(this.seieiURL + "/estapi/api/Integral/getStandardByCategory?category=" + data[0].value).then(
-          resp => {
-            that.eventTxtListForShow = resp.body;
-            that.eventTxtList = resp.body;
-          }
-        );
-      } else {
-        this.$http.get(this.seieiURL + "/estapi/api/Integral/getStandardByDept").then(
-          resp => {
-            that.eventTxtListForShow = resp.body;
-            that.eventTxtList = resp.body;
-          }
-        );
+      var eventTxtListForShow = [];
+      for (var i=0; i<that.eventTxtList.length; i++)
+      {
+        if (that.eventTxtList[i].category == that.selectCategoryTxt)
+        {
+          eventTxtListForShow.push(that.eventTxtList[i]);
+        }
       }
+      that.eventTxtListForShow = eventTxtListForShow;
+    },
+    departnamePickerConfirm: function(data) {
+      this.inputDep = data[0].value;
+      this.watchInput();
+    },
+    workshopPickerConfirm: function(data) {
+      this.inputWorkShop = data[0].value;
+      this.watchInput();
+    },
+    worklinePickerConfirm: function(data) {
+      this.inputWorkLine = data[0].value;
+      this.watchInput();
     },
     // 返回按钮
     goBack: function() {
@@ -502,6 +544,7 @@ export default {
         this.inputName = "";
         this.inputDep = "";
         this.inputWorkShop = "";
+        this.inputWorkLine = "";
       }
       // 如果当前正在编辑已选员工
       else if (this.isShowSelectedPerson) {
@@ -512,6 +555,13 @@ export default {
         this.$router.go(-1);
       }
     },
+    clearFitler: function() {
+      this.inputID = "";
+      this.inputName = "";
+      this.inputDep = "";
+      this.inputWorkShop = "";
+      this.inputWorkLine = "";
+    }
   },
   created: function() {
     var that = this;
@@ -522,41 +572,37 @@ export default {
       resp => {
         that.categoryList.push(resp.body.categoryList);
         that.selectCategoryTxt = resp.body.categoryList[0];
-        if (resp.body.categoryList[0] != "部门标准") {
-          that.$http.get(that.seieiURL + "/estapi/api/Integral/getStandardByCategory?category=" + that.selectCategoryTxt).then(
-            resp => {
-              that.eventTxtListForShow = resp.body;
-              that.eventTxtList = resp.body;
-              if (that.isFRank) {
-                that.$http.get(that.seieiURL + "/estapi/api/Integral/getStaff?id=" + that.applicant.EmployeeNo + "&name=&dep=&workshop=&workline").then(
-                  resp => {
-                    that.fUserMsgObj = resp.body[0];
-                  },
-                  response => {
-                    console.log("发送失败" + response.status + "," + response.statusText);
+        that.$http.get(that.seieiURL + "/estapi/api/Integral/getFilterList").then(
+          resp => {
+            that.departnameList.push(resp.body.departnameList);
+            that.workshopList.push(resp.body.workshopList);
+            that.worklineList.push(resp.body.worklineList);
+            that.$http.get(that.seieiURL + "/estapi/api/Integral/getAllStandard").then(
+              resp => {
+                that.eventTxtList = resp.body;
+                var eventTxtListForShow = [];
+                for (var i=0; i<that.eventTxtList.length; i++)
+                {
+                  if (that.eventTxtList[i].category == that.selectCategoryTxt)
+                  {
+                    eventTxtListForShow.push(that.eventTxtList[i]);
                   }
-                );
+                }
+                that.eventTxtListForShow = eventTxtListForShow;
+                if (that.isFRank) {
+                  that.$http.get(that.seieiURL + "/estapi/api/Integral/getStaff?id=" + that.applicant.EmployeeNo + "&name=&dep=&workshop=&workline").then(
+                    resp => {
+                      that.fUserMsgObj = resp.body[0];
+                    },
+                    response => {
+                      console.log("发送失败" + response.status + "," + response.statusText);
+                    }
+                  );
+                }
               }
-            }
-          );
-        } else {
-          that.$http.get(that.seieiURL + "/estapi/api/Integral/getStandardByPosition?position=" + that.selectCategoryTxt).then(
-            resp => {
-              that.eventTxtListForShow = resp.body;
-              that.eventTxtList = resp.body;
-              if (that.isFRank) {
-                that.$http.get(that.seieiURL + "/estapi/api/Integral/getStaff?id=" + that.applicant.EmployeeNo + "&name=&dep=&workshop=").then(
-                  resp => {
-                    that.fUserMsgObj = resp.body[0];
-                  },
-                  response => {
-                    console.log("发送失败" + response.status + "," + response.statusText);
-                  }
-                );
-              }
-            }
-          );
-        }
+            );
+          }
+        );
       }
     );
   },
@@ -714,7 +760,7 @@ export default {
   font-size: 16px;
 }
 .selectPersonWrapper .selectContent {
-  padding: 100px 0 55px 15px;
+  padding: 140px 0 55px 15px;
 }
 .selectPersonWrapper .selectContent .selectItemForPerson {
   display: inline-block;

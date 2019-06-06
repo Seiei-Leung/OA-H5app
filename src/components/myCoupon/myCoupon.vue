@@ -26,7 +26,7 @@
             <div class="reason">{{item.eventStr}}</div>
             <div class="msg">申请人：{{item.name}}</div>
             <div class="msg">审核人：{{item.auditor}}</div>
-            <div class="msg">终审人：{{item.approver}}</div>
+            <div class="msg">审批人：{{item.approver}}</div>
             <div class="halfTopCircle"></div>
             <div class="halfBottomCircle"></div>
           </div>

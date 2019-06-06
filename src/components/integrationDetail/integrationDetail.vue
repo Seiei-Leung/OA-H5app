@@ -106,10 +106,13 @@
       :textTitle="timePicker.title"
       @confirm="etimePickerConfirm"
     ></awesome-picker>
+    <!-- loading 图 -->
+    <v-loading v-show="isLoading"></v-loading>
   </div>
 </template>
 
 <script>
+import loading from '../loading/loading';
 var now = new Date();
 var T;
 
@@ -125,6 +128,7 @@ export default {
       integrationDetailListForShow: [], // 积分详情用于显示的列表
       selectEventTxt: "", // 筛选输入事件
       selectStaffTxt: "", // 筛选员工
+      isLoading: false, // 是否显示缓冲图
     };
   },
   methods: {
@@ -140,11 +144,18 @@ export default {
     etimePickerConfirm: function(data) {
       this.etimeTxt = this.formatTime(data[0].value + data[1].value + data[2].value);
       var that = this;
+      that.isLoading = true;
       this.$http.get(this.seieiURL + "/estapi/api/Integral/getAllIntegralDetail?stime=" + this.stimeTxt +  "&etime=" + this.addOneDay(this.etimeTxt))
         .then(resp => {
           that.integrationDetailList = resp.body.slice(0, resp.body.length);
           that.integrationDetailListForShow = resp.body.slice(0,resp.body.length);
-        });
+          that.isLoading = false;
+        },
+        response => {
+          that.isLoading = false;
+          console.log("发送失败" + response.status + "," + response.statusText);
+        }
+      );
     },
     // 开始时间筛选
     stimePickerConfirm: function(data) {
@@ -152,11 +163,18 @@ export default {
         data[0].value + data[1].value + data[2].value
       );
       var that = this;
+      that.isLoading = true;
       this.$http.get(this.seieiURL + "/estapi/api/Integral/getAllIntegralDetail?stime=" + this.stimeTxt +  "&etime=" + this.addOneDay(this.etimeTxt))
         .then(resp => {
           that.integrationDetailList = resp.body.slice(0, resp.body.length);
           that.integrationDetailListForShow = resp.body.slice(0,resp.body.length);
-        });
+          that.isLoading = false;
+        },
+        response => {
+          that.isLoading = false;
+          console.log("发送失败" + response.status + "," + response.statusText);
+        }
+      );
     },
     // 事件模糊查找
     watchSelectEventInput: function() {
@@ -203,12 +221,21 @@ export default {
   },
   created: function() {
     var that = this;
-    var that = this;
+    that.isLoading = true;
     this.$http.get(this.seieiURL + "/estapi/api/Integral/getAllIntegralDetail?stime=" + this.stimeTxt +  "&etime=" + this.addOneDay(this.etimeTxt))
       .then(resp => {
         that.integrationDetailList = resp.body.slice(0, resp.body.length);
         that.integrationDetailListForShow = resp.body.slice(0,resp.body.length);
-      });
+        that.isLoading = false;
+        },
+        response => {
+          that.isLoading = false;
+          console.log("发送失败" + response.status + "," + response.statusText);
+        }
+      );
+  },
+  components: {
+    'v-loading': loading
   }
 };
 </script>
