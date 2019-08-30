@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import workbench from '@/components/workbench/workbench?v=2019-5-14';
+import workbench from '@/components/workbench/workbench?v=2019-8-16';
 import addressBook from '@/components/addressBook/addressBook?v=2018-6-7';
 import signin from '@/components/signin/signin';
 /* import announcement from '@/components/announcement/announcement'; */
@@ -18,22 +18,8 @@ import productScheduleQuery from '@/components/productScheduleQuery/productSched
 import visitMsg from '@/components/visitMsg/visitMsg';
 import clientCheck from '@/components/clientCheck/clientCheck';
 import markSpecifications from '@/components/markSpecifications/markSpecifications';
-import integration from '@/components/integration/integration';
 import messagePage from '@/components/messagePage/messagePage';
-import addOrMinusIntegration from '@/components/addOrMinusIntegration/addOrMinusIntegration';
-import myCoupon from '@/components/myCoupon/myCoupon';
-import myIntegration from '@/components/myIntegration/myIntegration';
-import integrationRanking from '@/components/integrationRanking/integrationRanking';
-import myAuditOfIntegration from '@/components/myAuditOfIntegration/myAuditOfIntegration';
-import myIntegrationDetail from '@/components/myIntegrationDetail/myIntegrationDetail';
-import integrationAnnouncement from '@/components/integrationAnnouncement/integrationAnnouncement';
-import integrationAppraise from '@/components/integrationAppraise/integrationAppraise';
-import integrationSuggest from '@/components/integrationSuggest/integrationSuggest';
-import awardMsg from '@/components/awardMsg/awardMsg';
-import integrationMsg from '@/components/integrationMsg/integrationMsg';
-import myMedal from '@/components/myMedal/myMedal';
-import integrationMission from '@/components/integrationMission/integrationMission';
-import integrationDetail from '@/components/integrationDetail/integrationDetail';
+import footStepOfFile from '@/components/footStepOfFile/footStepOfFile';
 import test from '@/components/test/test';
 
 Vue.use(Router);
@@ -211,137 +197,11 @@ export default new Router({
         keepAlive: false // 需要被缓存
       }
     },
-    // 积分中心
+    // 
     {
-      path: '/integration',
-      name: 'integration',
-      component: integration,
-      meta: {
-        keepAlive: false // 需要被缓存
-      }
-    },
-    // 积分奖扣
-    {
-      path: '/addOrMinusIntegration',
-      name: 'addOrMinusIntegration',
-      component: addOrMinusIntegration,
-      meta: {
-        keepAlive: false // 需要被缓存
-      }
-    },
-    // 我的奖卷
-    {
-      path: '/myCoupon',
-      name: 'myCoupon',
-      component: myCoupon,
-      meta: {
-        keepAlive: false // 需要被缓存
-      }
-    },
-    // 我的积分
-    {
-      path: '/myIntegration/:kind',
-      name: 'myIntegration',
-      component: myIntegration,
-      meta: {
-        keepAlive: false // 需要被缓存
-      }
-    },
-    // 奖分排名
-    {
-      path: '/integrationRanking/:kind/:ranknum',
-      name: 'integrationRanking',
-      component: integrationRanking,
-      meta: {
-        keepAlive: false // 需要被缓存
-      }
-    },
-    // 积分我的审核
-    {
-      path: '/myAuditOfIntegration',
-      name: 'myAuditOfIntegration',
-      component: myAuditOfIntegration,
-      meta: {
-        keepAlive: false // 需要被缓存
-      }
-    },
-    // 我的奖分详情
-    {
-      path: '/myIntegrationDetail/:kind',
-      name: 'myIntegrationDetail',
-      component: myIntegrationDetail,
-      meta: {
-        keepAlive: false // 需要被缓存
-      }
-    },
-    // 积分我的审核
-    {
-      path: '/integrationAnnouncement',
-      name: 'integrationAnnouncement',
-      component: integrationAnnouncement,
-      meta: {
-        keepAlive: false // 需要被缓存
-      }
-    },
-    // 积分任务大厅
-    {
-      path: '/integrationMission',
-      name: 'integrationMission',
-      component: integrationMission,
-      meta: {
-        keepAlive: false // 需要被缓存
-      }
-    },
-    // 积分服务评价
-    {
-      path: '/integrationAppraise',
-      name: 'integrationAppraise',
-      component: integrationAppraise,
-      meta: {
-        keepAlive: false // 需要被缓存
-      }
-    },
-    // 奖项详情
-    {
-      path: '/awardMsg',
-      name: 'awardMsg',
-      component: awardMsg,
-      meta: {
-        keepAlive: false // 需要被缓存
-      }
-    },
-    // 奖分详情
-    {
-      path: '/integrationMsg',
-      name: 'integrationMsg',
-      component: integrationMsg,
-      meta: {
-        keepAlive: false // 需要被缓存
-      }
-    },
-    // 我的奖牌
-    {
-      path: '/myMedal',
-      name: 'myMedal',
-      component: myMedal,
-      meta: {
-        keepAlive: false // 需要被缓存
-      }
-    },
-    // 改善建议
-    {
-      path: '/integrationSuggest',
-      name: 'integrationSuggest',
-      component: integrationSuggest,
-      meta: {
-        keepAlive: false // 需要被缓存
-      }
-    },
-    // 改善建议
-    {
-      path: '/integrationDetail',
-      name: 'integrationDetail',
-      component: integrationDetail,
+      path: '/footStepOfFile',
+      name: 'footStepOfFile',
+      component: footStepOfFile,
       meta: {
         keepAlive: false // 需要被缓存
       }

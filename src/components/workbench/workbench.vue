@@ -4,18 +4,9 @@
 	<div class="weui-panel__bd">
         <div class="weui-media-box weui-media-box_small-appmsg">
             <div class="weui-cells">
-                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goIntegration">
-                    <div class="weui-cell__hd">
-                        <img src="./img/icon_5.png" alt="快乐有奖分" class="iconImg">
-                    </div>
-                    <div class="weui-cell__bd weui-cell_primary">
-                        <p style="position: relative;">快乐有奖分</p>
-                    </div>
-                    <span class="weui-cell__ft"></span>
-                </a>
                 <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goBusinessQuery">
                     <div class="weui-cell__hd">
-                        <img src="./img/icon_7.png" alt="业务查询" class="iconImg">
+                        <img src="./img/icon_5.png" alt="业务查询" class="iconImg">
                     </div>
                     <div class="weui-cell__bd weui-cell_primary">
                         <p>业务查询</p>
@@ -55,6 +46,15 @@
                     </div>
                     <div class="weui-cell__bd weui-cell_primary">
                         <p style="position: relative;">FILA唛头规格分解</p>
+                    </div>
+                    <span class="weui-cell__ft"></span>
+                </a>
+                <a class="weui-cell weui-cell_access" href="javascript:void(0);" @click="goFootStepOfFile">
+                    <div class="weui-cell__hd">
+                        <img src="./img/icon_7.png" alt="文件交收查询" class="iconImg">
+                    </div>
+                    <div class="weui-cell__bd weui-cell_primary">
+                        <p style="position: relative;">文件交收查询</p>
                     </div>
                     <span class="weui-cell__ft"></span>
                 </a>
@@ -106,6 +106,10 @@ export default {
         }
     },
 	methods: {
+        // 进入文件交收查询
+        goFootStepOfFile: function() {
+            this.$router.push({name: 'footStepOfFile'});
+        },
         // 进入待办事项
         goWhere: function(arg) {
             this.$router.push({name: 'todoList', params: {where: arg}});

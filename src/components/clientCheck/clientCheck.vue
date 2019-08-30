@@ -11,6 +11,7 @@
       <a href="http://www.etscn.com.cn:38080/oa/kq/img/fila2.png" class="item">Fila（童装）号型对照表</a>
       <a href="http://www.etscn.com.cn:38080/oa/kq/img/semir.png" class="item">森马（成人装）号型对照表</a>
       <a href="http://www.etscn.com.cn:38080/oa/kq/img/mb.png" class="item">美特斯邦威（成人装）号型对照表</a>
+      <a href="http://www.etscn.com.cn:38080/oa/kq/img/kingkow.png" class="item">小笑牛（童装）号型对照表</a>
     </div>
   </div>
 </template>
@@ -21,17 +22,6 @@ export default {
 
 </script>
 <style scoped>
-.clientCheck-component {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 100%;
-  height: 100%;
-  overflow: scroll;
-  -webkit-overflow-scrolling: touch;
-  background-color: #f5f5f5;
-  z-index: 1;
-}
 .clientList {
 	margin-top: 70px;
 }
